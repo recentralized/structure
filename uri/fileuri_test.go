@@ -156,7 +156,7 @@ func TestIsAbs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		uri := fileURI{uri{url: tt.url}}
+		uri := FileURI{URI{url: tt.url}}
 		got := uri.IsAbs()
 		if got, want := got, tt.want; got != want {
 			t.Errorf("%q IsAbs() got %t want %t", tt.desc, got, want)
@@ -229,7 +229,7 @@ func TestFilePath(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		uri := fileURI{uri{url: tt.url}}
+		uri := FileURI{URI{url: tt.url}}
 		got, err := uri.FilePath()
 		if tt.wantErr {
 			if err == nil {

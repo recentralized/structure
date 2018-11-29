@@ -108,7 +108,7 @@ func TestNewFromURL(t *testing.T) {
 		{
 			desc: "simple url",
 			url:  newURL("http://example.com"),
-			uri:  uri{url: newURL("http://example.com")},
+			uri:  URI{url: newURL("http://example.com")},
 		},
 		{
 			desc: "nil url",
@@ -155,7 +155,7 @@ func TestString(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		uri := uri{url: tt.url, rawStr: tt.rawStr}
+		uri := URI{url: tt.url, rawStr: tt.rawStr}
 		if got, want := uri.String(), tt.want; got != want {
 			t.Errorf("%q String() got %q, want %q", tt.desc, got, want)
 		}
@@ -177,44 +177,44 @@ func TestEqual(t *testing.T) {
 	}{
 		{
 			desc: "equal url",
-			a:    uri{url: newURL("http://example.com")},
-			b:    uri{url: newURL("http://example.com")},
+			a:    URI{url: newURL("http://example.com")},
+			b:    URI{url: newURL("http://example.com")},
 			want: true,
 		},
 		{
 			desc: "unequal url",
-			a:    uri{url: newURL("http://example.com")},
-			b:    uri{url: newURL("https://example.com")},
+			a:    URI{url: newURL("http://example.com")},
+			b:    URI{url: newURL("https://example.com")},
 			want: false,
 		},
 		{
 			desc: "equal rawStr",
-			a:    uri{rawStr: "/path"},
-			b:    uri{rawStr: "/path"},
+			a:    URI{rawStr: "/path"},
+			b:    URI{rawStr: "/path"},
 			want: true,
 		},
 		{
 			desc: "unequal rawStr",
-			a:    uri{rawStr: "/path"},
-			b:    uri{rawStr: "/paths"},
+			a:    URI{rawStr: "/path"},
+			b:    URI{rawStr: "/paths"},
 			want: false,
 		},
 		{
 			desc: "equal rawStr and url",
-			a:    uri{rawStr: "/path"},
-			b:    uri{url: newURL("/path")},
+			a:    URI{rawStr: "/path"},
+			b:    URI{url: newURL("/path")},
 			want: true,
 		},
 		{
 			desc: "unequal rawStr and url",
-			a:    uri{rawStr: "/paths"},
-			b:    uri{url: newURL("/path")},
+			a:    URI{rawStr: "/paths"},
+			b:    URI{url: newURL("/path")},
 			want: false,
 		},
 		{
 			desc: "spaces are not ignored",
-			a:    uri{rawStr: "/path"},
-			b:    uri{rawStr: " /path"},
+			a:    URI{rawStr: "/path"},
+			b:    URI{rawStr: " /path"},
 			want: false,
 		},
 	}
@@ -240,12 +240,12 @@ func TestURL(t *testing.T) {
 	}{
 		{
 			desc:   "with url",
-			uri:    uri{url: newURL("http://example.com")},
+			uri:    URI{url: newURL("http://example.com")},
 			hasURL: true,
 		},
 		{
 			desc:   "without url",
-			uri:    uri{rawStr: "http://example.com"},
+			uri:    URI{rawStr: "http://example.com"},
 			hasURL: false,
 		},
 	}
@@ -284,7 +284,7 @@ func TestResolveReference(t *testing.T) {
 		}
 		return u
 	}
-	e := uri{url: newURL("")}
+	e := URI{url: newURL("")}
 	re, _ := e.ResolveReference(e)
 	if re != Empty {
 		t.Errorf("Resolving to Empty must == Empty")
@@ -298,56 +298,56 @@ func TestResolveReference(t *testing.T) {
 	}{
 		{
 			desc: "append url path",
-			base: uri{url: newURL("http://example.com/")},
-			ref:  uri{url: newURL("/path")},
-			want: uri{url: newURL("http://example.com/path")},
+			base: URI{url: newURL("http://example.com/")},
+			ref:  URI{url: newURL("/path")},
+			want: URI{url: newURL("http://example.com/path")},
 		},
 		{
 			desc: "append absolute file path",
-			base: uri{url: newURL("file:///root/a/")},
-			ref:  uri{url: newURL("/path")},
-			want: uri{url: newURL("file:///path")},
+			base: URI{url: newURL("file:///root/a/")},
+			ref:  URI{url: newURL("/path")},
+			want: URI{url: newURL("file:///path")},
 		},
 		{
 			desc: "append relative file path",
-			base: uri{url: newURL("file:///root/a/")},
-			ref:  uri{url: newURL("path")},
-			want: uri{url: newURL("file:///root/a/path")},
+			base: URI{url: newURL("file:///root/a/")},
+			ref:  URI{url: newURL("path")},
+			want: URI{url: newURL("file:///root/a/path")},
 		},
 		{
 			desc: "append to empty",
-			base: uri{url: newURL("")},
-			ref:  uri{url: newURL("/path")},
-			want: uri{url: newURL("/path")},
+			base: URI{url: newURL("")},
+			ref:  URI{url: newURL("/path")},
+			want: URI{url: newURL("/path")},
 		},
 		{
 			desc: "append empty",
-			base: uri{url: newURL("http://example.com/")},
-			ref:  uri{url: newURL("")},
-			want: uri{url: newURL("http://example.com/")},
+			base: URI{url: newURL("http://example.com/")},
+			ref:  URI{url: newURL("")},
+			want: URI{url: newURL("http://example.com/")},
 		},
 		{
 			desc: "append empty to empty",
-			base: uri{url: newURL("")},
-			ref:  uri{url: newURL("")},
-			want: uri{url: newURL("")},
+			base: URI{url: newURL("")},
+			ref:  URI{url: newURL("")},
+			want: URI{url: newURL("")},
 		},
 		{
 			desc:    "append valid url to invalid url",
-			base:    uri{rawStr: "/something"},
-			ref:     uri{url: newURL("/path")},
+			base:    URI{rawStr: "/something"},
+			ref:     URI{url: newURL("/path")},
 			wantErr: true,
 		},
 		{
 			desc:    "append invalid url to valid url",
-			base:    uri{url: newURL("/path")},
-			ref:     uri{rawStr: "/something"},
+			base:    URI{url: newURL("/path")},
+			ref:     URI{rawStr: "/something"},
 			wantErr: true,
 		},
 		{
 			desc:    "append invalid url to invalid url",
-			base:    uri{rawStr: "/a"},
-			ref:     uri{rawStr: "/b"},
+			base:    URI{rawStr: "/a"},
+			ref:     URI{rawStr: "/b"},
 			wantErr: true,
 		},
 		{
