@@ -60,6 +60,21 @@ func TestNew(t *testing.T) {
 			wantStr: "%",
 			wantErr: true,
 		},
+		{
+			// AWS
+			str:     "arn:aws:rds:eu-west-1:123456789012:db:mysql-db",
+			wantStr: "arn:aws:rds:eu-west-1:123456789012:db:mysql-db",
+		},
+		{
+			// Generic
+			str:     "news:comp.infosystems.www.servers.unix",
+			wantStr: "news:comp.infosystems.www.servers.unix",
+		},
+		{
+			// Mail
+			str:     "mailto:John.Doe@example.com",
+			wantStr: "mailto:John.Doe@example.com",
+		},
 	}
 	for _, tt := range tests {
 		got, err := New(tt.str)
