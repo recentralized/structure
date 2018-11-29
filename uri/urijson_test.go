@@ -17,26 +17,33 @@ func TestURIJSON(t *testing.T) {
 	}
 	tests := []struct {
 		desc string
-		uri  URI
+		uri  uriStringer
 		json string
 	}{
 		{
-			// Zero value.
-			desc: "zero value",
+			desc: "URI zero value",
 			uri:  URI{},
 			json: `""`,
 		},
 		{
-			// invalid rawStr
-			desc: "rawstr",
+			desc: "URI invald rawstr",
 			uri:  URI{rawStr: "%"},
 			json: `"%"`,
 		},
 		{
-			// URI with error.
-			desc: "uri",
+			desc: "URI",
 			uri:  URI{url: newURL("https://www.example.com")},
 			json: `"https://www.example.com"`,
+		},
+		{
+			desc: "FileURI zero value",
+			uri:  FileURI{},
+			json: `""`,
+		},
+		{
+			desc: "FileURI",
+			uri:  FileURI{URI{url: newURL("file:///path")}},
+			json: `"file:///path"`,
 		},
 	}
 	for _, tt := range tests {
