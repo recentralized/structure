@@ -76,9 +76,17 @@ func (u URI) String() string {
 	return u.rawStr
 }
 
+type uriStringer interface {
+	uriString() string
+}
+
+func (u URI) uriString() string {
+	return u.String()
+}
+
 // Equal compares the string representation of another URI.
-func (u URI) Equal(ref URI) bool {
-	return u.String() == ref.String()
+func (u URI) Equal(ref uriStringer) bool {
+	return u.uriString() == ref.uriString()
 }
 
 // URL returns a url.URL representation. It may be nil if the URI
