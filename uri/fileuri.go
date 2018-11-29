@@ -10,27 +10,16 @@ import (
 	"strings"
 )
 
-// FileURI exstends URI, adding special handling for filesystem paths.
-type FileURI interface {
-	URI
-
-	// IsAbs returns true if the path begins at root.
-	IsAbs() bool
-
-	// FilePath returns an absolute path suitable to use on a filesystem.
-	FilePath() (string, error)
-}
-
 // NewFileFromPath converts the path (abs or rel) to a file:// URI. If the path
 // is empty or the input already contains a scheme (even file://) an error is
 // returned. The path of the returned URI is normalized via filepath.Clean.
 func NewFileFromPath(path string) (FileURI, error) {
 	var err error
 	if path, err = cleanPath(path); err != nil {
-		return nil, err
+		return FileURI{Empty}, err
 	}
 	url := &url.URL{Scheme: "file", Path: path}
-	return fileURI{NewFromURL(url)}, nil
+	return FileURI{NewFromURL(url)}, nil
 }
 
 // NewDirFromPath converts the path (abs or rel) to a file:// URI, assuming
@@ -40,14 +29,14 @@ func NewFileFromPath(path string) (FileURI, error) {
 func NewDirFromPath(path string) (FileURI, error) {
 	var err error
 	if path, err = cleanPath(path); err != nil {
-		return nil, err
+		return FileURI{Empty}, err
 	}
 	// NOTE: ASCII-Only. Is that ok?
 	if path[len(path)-1:] != "/" {
 		path = path + "/"
 	}
 	url := &url.URL{Scheme: "file", Path: path}
-	return fileURI{NewFromURL(url)}, nil
+	return FileURI{NewFromURL(url)}, nil
 }
 
 func cleanPath(path string) (string, error) {
@@ -58,11 +47,13 @@ func cleanPath(path string) (string, error) {
 	return filepath.Clean(path), nil
 }
 
-type fileURI struct {
+// FileURI exstends URI, adding special handling for filesystem paths.
+type FileURI struct {
 	URI
 }
 
-func (u fileURI) IsAbs() bool {
+// IsAbs returns true if the path begins at root.
+func (u FileURI) IsAbs() bool {
 	url := u.URL()
 	if url == nil {
 		return false
@@ -72,10 +63,10 @@ func (u fileURI) IsAbs() bool {
 
 var encodePlus = regexp.MustCompile(`\+`)
 
-// FullFilePath returns the absolute path for use on a filesystem. If the path
+// FilePath returns the absolute path for use on a filesystem. If the path
 // is not absolute or the URI is not a "file" scheme" an error is returned.
 // The resulting path is normalized via filepath.Clean.
-func (u fileURI) FilePath() (string, error) {
+func (u FileURI) FilePath() (string, error) {
 	if !u.IsAbs() {
 		return "", fmt.Errorf("FileURI is not absolute")
 	}
