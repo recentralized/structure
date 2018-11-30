@@ -26,13 +26,12 @@ func main() {
 }
 
 func buildIndex() (*index.Index, error) {
-
-	srcPath, err := uri.NewDirPath("/Users/rcarver/Pictures/samples")
+	srcPath, err := uri.NewDirPath("/tmp/src")
 	if err != nil {
 		return nil, fmt.Errorf("Could not create src path: %s", err)
 	}
 
-	dstPath, err := uri.NewDirPath("/Users/rcarver/Pictures/recentralized")
+	dstPath, err := uri.NewDirPath("/tmp/dst")
 	if err != nil {
 		return nil, fmt.Errorf("Could not create dst path: %s", err)
 	}
