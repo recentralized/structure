@@ -2,6 +2,7 @@ package cid
 
 import (
 	"bytes"
+	"reflect"
 	"testing"
 )
 
@@ -61,6 +62,90 @@ func TestNewInFormat(t *testing.T) {
 		}
 		if got, want := cid.Hash(), tt.wantHash; got != want {
 			t.Errorf("%q Hash() got %s want %s", tt.desc, got, want)
+		}
+	}
+}
+
+func TestEquality(t *testing.T) {
+	build := func(str string, fmt format) ContentID {
+		cid, err := newInFormat(bytes.NewBufferString(str), fmt)
+		if err != nil {
+			t.Fatalf("creating cid: %s", err)
+		}
+		return cid
+	}
+	tests := []struct {
+		desc          string
+		a             ContentID
+		b             ContentID
+		wantEqual     bool
+		wantEqualHash bool
+	}{
+		{
+			desc:          "equal hash",
+			a:             build("a", hash),
+			b:             build("a", hash),
+			wantEqual:     true,
+			wantEqualHash: true,
+		},
+		{
+			desc:          "unequal hash",
+			a:             build("a", hash),
+			b:             build("b", hash),
+			wantEqual:     false,
+			wantEqualHash: false,
+		},
+		{
+			desc:          "equal cidV0",
+			a:             build("a", cidV0),
+			b:             build("a", cidV0),
+			wantEqual:     true,
+			wantEqualHash: true,
+		},
+		{
+			desc:          "unequal cidV0",
+			a:             build("a", cidV0),
+			b:             build("b", cidV0),
+			wantEqual:     false,
+			wantEqualHash: false,
+		},
+		{
+			desc:          "equal cidV1",
+			a:             build("a", cidV1),
+			b:             build("a", cidV1),
+			wantEqual:     true,
+			wantEqualHash: true,
+		},
+		{
+			desc:          "unequal cidV1",
+			a:             build("a", cidV1),
+			b:             build("b", cidV1),
+			wantEqual:     false,
+			wantEqualHash: false,
+		},
+		{
+			desc:          "equal cidv0 and cidV1",
+			a:             build("a", cidV0),
+			b:             build("a", cidV1),
+			wantEqual:     false,
+			wantEqualHash: true,
+		},
+		{
+			desc:          "unequal cidv0 and cidV1",
+			a:             build("a", cidV0),
+			b:             build("b", cidV1),
+			wantEqual:     false,
+			wantEqualHash: false,
+		},
+	}
+	for _, tt := range tests {
+		got := tt.a.Equal(tt.b)
+		if got, want := got, tt.wantEqual; !reflect.DeepEqual(got, want) {
+			t.Errorf("%q Equal()\ngot %t want %t", tt.desc, got, want)
+		}
+		got = tt.a.EqualHash(tt.b)
+		if got, want := got, tt.wantEqualHash; !reflect.DeepEqual(got, want) {
+			t.Errorf("%q EqualHash()\ngot %t want %t", tt.desc, got, want)
 		}
 	}
 }
