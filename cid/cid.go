@@ -76,6 +76,16 @@ func MustNewString(s string) ContentID {
 	return cid
 }
 
+// NewLiteral constructs a ContentID whose value is literally the input. This
+// is intended only for tests.
+func NewLiteral(s string) ContentID {
+	if len(s) >= legacyHashLen {
+		panic(fmt.Sprintf("literal ContentID must be less than %d bytes", legacyHashLen))
+	}
+	h := Hash(s)
+	return ContentID{hash: &h}
+}
+
 // String is the full ContentID string.
 func (c ContentID) String() string {
 	if c.cid != nil {

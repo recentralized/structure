@@ -21,7 +21,7 @@ func (c *ContentID) UnmarshalJSON(data []byte) error {
 	if strings.TrimSpace(s) == "" {
 		return nil
 	}
-	if len(s) == legacyHashLen {
+	if len(s) <= legacyHashLen {
 		hash := Hash(s)
 		cid := ContentID{hash: &hash}
 		*c = cid

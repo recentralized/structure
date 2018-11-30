@@ -5,6 +5,22 @@ import (
 	"testing"
 )
 
+func TestNew(t *testing.T) {
+	if defaultFormat != hash {
+		t.Fatalf("default format changed")
+	}
+	cid, err := New(bytes.NewBufferString("testing 12"))
+	if err != nil {
+		t.Fatalf("failed to new: %s", err)
+	}
+	if cid.cid != nil {
+		t.Fatalf("cid must be nil")
+	}
+	if cid.hash == nil {
+		t.Fatalf("hash must not be nil")
+	}
+}
+
 func TestNewInFormat(t *testing.T) {
 	tests := []struct {
 		desc     string

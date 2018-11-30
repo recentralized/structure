@@ -27,6 +27,11 @@ func TestCIDJSON(t *testing.T) {
 			json: `""`,
 		},
 		{
+			desc: "test literal",
+			cid:  NewLiteral("abc"),
+			json: `"abc"`,
+		},
+		{
 			desc: "legacy hash",
 			cid:  newCID(hash, "testing 123"),
 			json: `"b8dfb080bc33fb564249e34252bf143d88fc018f"`,
