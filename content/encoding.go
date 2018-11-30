@@ -10,7 +10,6 @@ type metaJSON struct {
 	Size        int64        `json:"size"`
 	Inherent    *MetaContent `json:"inherent,omitempty"`
 	Sidecar     *MetaContent `json:"sidecar,omitempty"`
-	User        *MetaContent `json:"user,omitempty"`
 	SrcSpecific              // Embedded fields.
 }
 
@@ -23,6 +22,9 @@ func (m Meta) MarshalJSON() ([]byte, error) {
 	}
 	if !m.Inherent.isZero() {
 		j.Inherent = &m.Inherent
+	}
+	if !m.Sidecar.isZero() {
+		j.Sidecar = &m.Sidecar
 	}
 	return json.Marshal(j)
 }
@@ -37,6 +39,9 @@ func (m *Meta) UnmarshalJSON(data []byte) error {
 	m.Size = j.Size
 	if j.Inherent != nil {
 		m.Inherent = *j.Inherent
+	}
+	if j.Sidecar != nil {
+		m.Sidecar = *j.Sidecar
 	}
 	m.Srcs = j.SrcSpecific
 	return nil

@@ -12,6 +12,10 @@ type Meta struct {
 	// Metadata that came from the content itself.
 	Inherent MetaContent
 
+	// Metadata that came from nearby, such as an XMP sidecar file or other
+	// source of metadata.
+	Sidecar MetaContent
+
 	// Metadata that came from the source of the data.
 	Srcs SrcSpecific
 }
