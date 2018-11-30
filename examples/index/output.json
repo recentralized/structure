@@ -12,5 +12,26 @@
       "data_uri": "file:///tmp/dst/data/",
       "meta_uri": "file:///tmp/dst/meta/"
     }
+  ],
+  "refs": [
+    {
+      "hash": "f42a59131aaf2e5c475f8a35126b034549c05bd5",
+      "srcs": [
+        {
+          "src_id": "e8400c72-f7d0-53f9-98ca-ee23238231fe",
+          "data_uri": "file:///tmp/src/fictional/image.jpg",
+          "meta_uri": "file:///tmp/src/fictional/image.xmp",
+          "modified_at": "2018-11-12T00:00:00Z"
+        }
+      ],
+      "dsts": [
+        {
+          "dst_id": "b9fa3564-95cb-57b3-b2cd-32123cc2032b",
+          "data_uri": "file:///tmp/dst/data/f42a59131aaf2e5c475f8a35126b034549c05bd5.jpg",
+          "meta_uri": "file:///tmp/dst/meta/f42a59131aaf2e5c475f8a35126b034549c05bd5.json",
+          "stored_at": "2018-11-13T00:00:00Z"
+        }
+      ]
+    }
   ]
 }
