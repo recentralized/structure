@@ -75,6 +75,6 @@ some, or all possible information available.
 
 ---
 
-Copyright 2018 Ryan Carver / www.recentralized.org
+Copyright (c) 2018 Ryan Carver / www.recentralized.org
 
 License: MIT
