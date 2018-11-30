@@ -36,13 +36,13 @@ func TestURIJSON(t *testing.T) {
 			json: `"https://www.example.com"`,
 		},
 		{
-			desc: "FileURI zero value",
-			uri:  FileURI{},
+			desc: "FilePath zero value",
+			uri:  FilePath{},
 			json: `""`,
 		},
 		{
-			desc: "FileURI",
-			uri:  FileURI{URI{url: newURL("file:///path")}},
+			desc: "FilePath",
+			uri:  FilePath{URI{url: newURL("file:///path")}},
 			json: `"file:///path"`,
 		},
 	}
