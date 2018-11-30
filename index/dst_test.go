@@ -36,6 +36,31 @@ func TestNewDst(t *testing.T) {
 	}
 }
 
+func TestNewDstWithStandardPaths(t *testing.T) {
+	tests := []struct {
+		desc     string
+		indexURI uri.URI
+		want     Dst
+	}{
+		{
+			desc:     "consistent value",
+			indexURI: uri.TrustedNew("file:///tmp/"),
+			want: Dst{
+				DstID:    DstID("0b1bccaf-e8e2-5693-be3c-320031f4850a"),
+				IndexURI: uri.TrustedNew("file:///tmp/"),
+				DataURI:  uri.TrustedNew("file:///tmp/data/"),
+				MetaURI:  uri.TrustedNew("file:///tmp/meta/"),
+			},
+		},
+	}
+	for _, tt := range tests {
+		got := NewDstWithStandardPaths(tt.indexURI)
+		if !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("%q NewDstWithStandardPaths()\ngot  %s\nwant %s", tt.desc, got, tt.want)
+		}
+	}
+}
+
 func TestNewDstIDFromURIs(t *testing.T) {
 	tests := []struct {
 		desc     string
