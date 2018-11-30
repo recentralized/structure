@@ -1,6 +1,6 @@
-default: build lint test
+default: build lint test test-examples
 
-build: 
+build:
 	go build ./...
 
 lint:
@@ -8,3 +8,7 @@ lint:
 
 test:
 	go test ./...
+
+test-examples:
+	find ./examples -name "main.go" | xargs -n1 -IX go run X > /dev/null
+

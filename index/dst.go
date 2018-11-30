@@ -55,6 +55,15 @@ func NewDst(indexURI, dataURI, metaURI uri.URI) Dst {
 	}
 }
 
+// NewDstWithStandardPaths initializes a Dst with its index at the given URI,
+// using the default "./data" and "./meta" subpaths for data and meta,
+// respectively.
+func NewDstWithStandardPaths(indexURI uri.URI) Dst {
+	data, _ := indexURI.ResolveReference(uri.TrustedNew("./data/"))
+	meta, _ := indexURI.ResolveReference(uri.TrustedNew("./meta/"))
+	return NewDst(indexURI, data, meta)
+}
+
 func (d Dst) String() string {
 	return fmt.Sprintf("<Dst %s index:%s data:%s meta:%s>", d.DstID, strconv.Quote(d.IndexURI.String()), strconv.Quote(d.DataURI.String()), strconv.Quote(d.MetaURI.String()))
 }
