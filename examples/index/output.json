@@ -1,0 +1,16 @@
+{
+  "srcs": [
+    {
+      "src_id": "e8400c72-f7d0-53f9-98ca-ee23238231fe",
+      "src_uri": "file:///tmp/src/"
+    }
+  ],
+  "dsts": [
+    {
+      "dst_id": "b9fa3564-95cb-57b3-b2cd-32123cc2032b",
+      "index_uri": "file:///tmp/dst/",
+      "data_uri": "file:///tmp/dst/data/",
+      "meta_uri": "file:///tmp/dst/meta/"
+    }
+  ]
+}

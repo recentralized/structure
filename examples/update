@@ -1,0 +1,19 @@
+#!/bin/bash
+
+example=$1
+
+if [ "${example}" == "" ]; then
+  echo Missing example name
+  exit 1
+fi
+
+if [ ! -d examples/${example} ]; then
+  echo Not an example: ${example}
+  exit 1
+fi
+
+echo Updating ${example}...
+
+tmp=$(mktemp)
+go run examples/${example}/main.go > examples/${example}/output.json
+
