@@ -86,6 +86,17 @@ func NewLiteral(s string) ContentID {
 	return ContentID{hash: &h}
 }
 
+// Equal determines if the two ContentID's are the same.
+func (c ContentID) Equal(cc ContentID) bool {
+	return c.String() == cc.String()
+}
+
+// EqualHash determines if the two ContentID's have the same content hash, even
+// if they have different formats or other encodings.`
+func (c ContentID) EqualHash(cc ContentID) bool {
+	return c.Hash() == cc.Hash()
+}
+
 // String is the full ContentID string.
 func (c ContentID) String() string {
 	if c.cid != nil {
