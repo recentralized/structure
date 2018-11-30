@@ -13,6 +13,10 @@ import (
 // ContentID is the identifier of a unique piece of content. Under the hood we
 // use ipfs/cid which encodes additional format and versioning information in
 // addition to a multihash of the data.
+//
+// Spec: https://github.com/ipld/cid
+// Impl: https://github.com/ipfs/go-cid/
+//
 type ContentID struct {
 	hash *Hash
 	cid  *cid.Cid

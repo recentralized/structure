@@ -9,6 +9,9 @@ import (
 // Hash is the original content identifier. Use cid.ContentID instead.
 type Hash string
 
+// hashes are always len() 40.
+const legacyHashLen = 40
+
 // newHash calcualtes the original content id. Use cid.New() instead.
 func newHash(r io.Reader) (Hash, error) {
 	sha := sha1.New()
