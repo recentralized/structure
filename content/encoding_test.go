@@ -73,3 +73,67 @@ func TestMetaJSON(t *testing.T) {
 		}
 	}
 }
+
+func TestExifValueJSON(t *testing.T) {
+	tests := []struct {
+		desc  string
+		value ExifValue
+		json  string
+	}{
+		{
+			desc:  "zero value",
+			value: ExifValue{},
+			json:  `{"id":"","val":null}`,
+		},
+		{
+			desc: "string",
+			value: ExifValue{
+				ID:  "0x0111",
+				Val: "ok",
+			},
+			json: `{"id":"0x0111","val":"ok"}`,
+		},
+		{
+			desc: "date as string",
+			value: ExifValue{
+				ID:  "0x0112",
+				Val: "2014:02:09 18:11:38",
+			},
+			json: `{"id":"0x0112","val":"2014:02:09 18:11:38"}`,
+		},
+		{
+			desc: "int as float",
+			value: ExifValue{
+				ID:  "0x010d",
+				Val: float64(500),
+			},
+			json: `{"id":"0x010d","val":500}`,
+		},
+		{
+			desc: "float",
+			value: ExifValue{
+				ID:  "float",
+				Val: 1.12345,
+			},
+			json: `{"id":"float","val":1.12345}`,
+		},
+	}
+	for _, tt := range tests {
+		data, err := json.Marshal(tt.value)
+		if err != nil {
+			t.Fatalf("%q Value failed to marshal: %s", tt.desc, err)
+		}
+		if string(data) != tt.json {
+			t.Errorf("%q Value JSON\ngot  %s\nwant %s", tt.desc, data, tt.json)
+		}
+		log.Printf("%q Value JSON %s", tt.desc, data)
+		got := ExifValue{}
+		err = json.Unmarshal(data, &got)
+		if err != nil {
+			t.Fatalf("%q Value failed to unmarshal: %s", tt.desc, err)
+		}
+		if !reflect.DeepEqual(tt.value, got) {
+			t.Errorf("%q Value Roundtrip\ngot  %#v\nwant %#v", tt.desc, got, tt.value)
+		}
+	}
+}
