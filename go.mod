@@ -8,6 +8,7 @@ require (
 	github.com/mr-tron/base58 v1.1.0 // indirect
 	github.com/multiformats/go-multibase v0.3.0 // indirect
 	github.com/multiformats/go-multihash v1.0.8
+	github.com/satori/go.uuid v1.2.0
 	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72 // indirect
 	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
 	golang.org/x/crypto v0.0.0-20181127143415-eb0de9b17e85 // indirect

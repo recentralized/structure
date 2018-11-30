@@ -12,6 +12,8 @@ github.com/multiformats/go-multibase v0.3.0 h1:KWPXEW0HCkqUHO7XZsoo0jwephTxh9roP
 github.com/multiformats/go-multibase v0.3.0/go.mod h1:RUrDbdRB1mQ1K/3PAh7h7+6NliRK10PA5joM8V0IYLI=
 github.com/multiformats/go-multihash v1.0.8 h1:pyowaBSivNxBr137ZjYkr0q4o41MKSJVPKuO7F7AAfY=
 github.com/multiformats/go-multihash v1.0.8/go.mod h1:sT17phG+xVgnrZc8ht/ZoCIV0sKRwvmZkXk46UfSxM4=
+github.com/satori/go.uuid v1.2.0 h1:0uYX9dsZ2yD7q2RtLRtPSdGDWzjeM3TbMJP9utgA0ww=
+github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
 github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72 h1:qLC7fQah7D6K1B0ujays3HV9gkFtllcxhzImRR7ArPQ=
 github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc h1:BCPnHtcboadS0DvysUuJXZ4lWVv5Bh5i7+tbIyi+ck4=
