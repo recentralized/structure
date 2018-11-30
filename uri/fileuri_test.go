@@ -49,7 +49,7 @@ func TestNewFileFromPath(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		got, err := NewFileFromPath(tt.path)
+		got, err := NewFilePath(tt.path)
 		if tt.wantErr {
 			if err == nil {
 				t.Errorf("%q NewFileFromPath() want error, got none", tt.desc)
@@ -110,7 +110,7 @@ func TestNewDirFromPath(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		got, err := NewDirFromPath(tt.path)
+		got, err := NewDirPath(tt.path)
 		if tt.wantErr {
 			if err == nil {
 				t.Errorf("%q NewFileDir() want error, got none", tt.desc)
@@ -156,8 +156,8 @@ func TestIsAbs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		uri := FileURI{URI{url: tt.url}}
-		got := uri.IsAbs()
+		path := FilePath{URI{url: tt.url}}
+		got := path.IsAbs()
 		if got, want := got, tt.want; got != want {
 			t.Errorf("%q IsAbs() got %t want %t", tt.desc, got, want)
 		}
@@ -229,8 +229,8 @@ func TestFilePath(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		uri := FileURI{URI{url: tt.url}}
-		got, err := uri.FilePath()
+		path := FilePath{URI{url: tt.url}}
+		got, err := path.FilePath()
 		if tt.wantErr {
 			if err == nil {
 				t.Errorf("%q FilePath() want error, got none", tt.desc)
