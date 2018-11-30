@@ -10,5 +10,5 @@ test:
 	go test ./...
 
 test-examples:
-	find ./examples -name "main.go" | xargs -n1 -IX go run X > /dev/null
+	find ./examples -name "main.go" | xargs -t -n1 -IX go run X > /dev/null
 
