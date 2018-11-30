@@ -22,6 +22,11 @@ func TestCIDJSON(t *testing.T) {
 		json string
 	}{
 		{
+			desc: "zero value",
+			cid:  ContentID{},
+			json: `""`,
+		},
+		{
 			desc: "legacy hash",
 			cid:  newCID(hash, "testing 123"),
 			json: `"b8dfb080bc33fb564249e34252bf143d88fc018f"`,
