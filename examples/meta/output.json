@@ -1,0 +1,25 @@
+{
+  "content_type": "jpg",
+  "size": 1024,
+  "inherent": {
+    "created": "2018-01-01T00:00:00Z",
+    "image": {
+      "width": 3000,
+      "height": 5000
+    },
+    "exif": {
+      "ExposureTime": {
+        "id": "ShutterSpeed",
+        "val": "1/60"
+      }
+    }
+  },
+  "sidecar": {
+    "exif": {
+      "FNumber": {
+        "id": "0x829d",
+        "val": 1.8
+      }
+    }
+  }
+}
