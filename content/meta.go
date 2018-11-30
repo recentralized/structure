@@ -20,9 +20,21 @@ type Meta struct {
 	Srcs SrcSpecific
 }
 
-// DateCreated returns the time that the content was created.
+// DateCreated returns the time that the content was created. It chooses the
+// most most likely to be correct time from available sources. If there is no
+// time available it returns time.Time's zero value.
 func (m *Meta) DateCreated() time.Time {
-	return m.Inherent.Created
+	times := []time.Time{
+		m.Sidecar.Created,
+		m.Inherent.Created,
+	}
+	for _, t := range times {
+		if !t.IsZero() {
+			return t
+		}
+	}
+	var t time.Time
+	return t
 }
 
 // Image returns the inherent image data.

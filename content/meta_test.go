@@ -23,6 +23,21 @@ func TestMetaDateCreated(t *testing.T) {
 			},
 			want: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC),
 		},
+		{
+			desc: "sidecar with date",
+			m: &Meta{
+				Sidecar: MetaContent{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
+			},
+			want: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC),
+		},
+		{
+			desc: "prefers sidecar to inherent",
+			m: &Meta{
+				Inherent: MetaContent{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
+				Sidecar:  MetaContent{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
+			},
+			want: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC),
+		},
 	}
 	for _, tt := range tests {
 		got := tt.m.DateCreated()
