@@ -1,4 +1,4 @@
-package structure
+package index
 
 import (
 	"encoding/json"
