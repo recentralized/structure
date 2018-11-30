@@ -12,7 +12,7 @@ if [ ! -d examples/${example} ]; then
   exit 1
 fi
 
-echo Updating ${example}...
+echo Updating output of example: ${example}
 
 tmp=$(mktemp)
 go run examples/${example}/main.go > examples/${example}/output.json
