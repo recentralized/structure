@@ -26,7 +26,7 @@ As an example, we'll use a filesystem-based approach. However, the specifics of 
     image.xmp
 ```
 
-And we want to store that content at `/tmp/dst`. The storage format looks like this:
+And we want to store that content at `/tmp/dst`. The default filesystem format looks like this:
     
 ```
 /tmp/dst/
@@ -91,7 +91,6 @@ The file `/tmp/dst/index.json` contains:
 }
 ```
 See [how this document was generated](examples/index/main.go).
-
 
 ### Meta
 
