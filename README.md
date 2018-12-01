@@ -26,24 +26,28 @@ As an example, we'll use a filesystem-based approach. However, the specifics of 
     image.xmp
 ```
 
-And we want to store that content at `/tmp/dst`. The storage format looks like this:
+And we want to store that content at `/tmp/dst`. The default filesystem format looks like this:
     
 ```
 /tmp/dst/
   index.json
-  data/
-    f42a59131aaf2e5c475f8a35126b034549c05bd5.jpg
+  media/
+    2018/2018-11-10/
+      f42a59131aaf2e5c475f8a35126b034549c05bd5.jpg
   meta/
-    f42a59131aaf2e5c475f8a35126b034549c05bd5.json
+    f4/2a/
+      59131aaf2e5c475f8a35126b034549c05bd5.json
 ```
 
-The image has been stored at `<content-hash>.<format>` and its associated metadata at `<content-hash>.json`. 
+The image has been stored at `media/<date>/<hash>.<format>` and its associated metadata at `meta/<hash>.json`.
 
 ### Index
 
 The index is a catalog of content that's been stored. Where it was found (the
 source), and where it was put (the destination). An index can store any number
-of sources and any number of destinations. You can use the index to find content and retrieve it from the destination, or even put it back where it was originally found on the source.
+of sources and any number of destinations. You can use the index to find content 
+and retrieve it from the destination, or even put it back where it was originally 
+found on the source.
 
 The file `/tmp/dst/index.json` contains:
 
@@ -51,16 +55,16 @@ The file `/tmp/dst/index.json` contains:
 {
   "srcs": [
     {
-      "src_id":  "e8400c72-f7d0-53f9-98ca-ee23238231fe",
+      "src_id": "e8400c72-f7d0-53f9-98ca-ee23238231fe",
       "src_uri": "file:///tmp/src/"
     }
   ],
   "dsts": [
     {
-      "dst_id":    "b9fa3564-95cb-57b3-b2cd-32123cc2032b",
+      "dst_id": "0e73b6c5-26dc-58a6-8fa9-edd5be9ad99d",
       "index_uri": "file:///tmp/dst/",
-      "data_uri":  "file:///tmp/dst/data/",
-      "meta_uri":  "file:///tmp/dst/meta/"
+      "data_uri": "file:///tmp/dst/",
+      "meta_uri": "file:///tmp/dst/"
     }
   ],
   "refs": [
@@ -68,17 +72,17 @@ The file `/tmp/dst/index.json` contains:
       "hash": "f42a59131aaf2e5c475f8a35126b034549c05bd5",
       "srcs": [
         {
-          "src_id":      "e8400c72-f7d0-53f9-98ca-ee23238231fe",
-          "data_uri":    "file:///tmp/src/fictional/image.jpg",
-          "meta_uri":    "file:///tmp/src/fictional/image.xmp",
+          "src_id": "e8400c72-f7d0-53f9-98ca-ee23238231fe",
+          "data_uri": "file:///tmp/src/fictional/image.jpg",
+          "meta_uri": "file:///tmp/src/fictional/image.xmp",
           "modified_at": "2018-11-12T00:00:00Z"
         }
       ],
       "dsts": [
         {
-          "dst_id":    "b9fa3564-95cb-57b3-b2cd-32123cc2032b",
-          "data_uri":  "file:///tmp/dst/data/f42a59131aaf2e5c475f8a35126b034549c05bd5.jpg",
-          "meta_uri":  "file:///tmp/dst/meta/f42a59131aaf2e5c475f8a35126b034549c05bd5.json",
+          "dst_id": "0e73b6c5-26dc-58a6-8fa9-edd5be9ad99d",
+          "data_uri": "file:///tmp/dst/media/2018/2018-11-10/f42a59131aaf2e5c475f8a35126b034549c05bd5.jpg",
+          "meta_uri": "file:///tmp/dst/meta/f4/2a/59131aaf2e5c475f8a35126b034549c05bd5.json",
           "stored_at": "2018-11-13T00:00:00Z"
         }
       ]
@@ -86,8 +90,7 @@ The file `/tmp/dst/index.json` contains:
   ]
 }
 ```
-See [how to generate this output](examples/index/main.go).
-
+See [how this document was generated](examples/index/main.go).
 
 ### Meta
 
@@ -123,7 +126,7 @@ The file `/tmp/dst/meta/f42a59131aaf2e5c475f8a35126b034549c05bd5.json` contains:
   }
 }
 ```
-See [how to generate this output](examples/meta/main.go).
+See [how this document was generated](examples/meta/main.go).
 
 ---
 
