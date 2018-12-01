@@ -50,7 +50,7 @@ func buildIndex() (*index.Index, error) {
 	}
 
 	src := index.NewSrc(srcPath.URI)
-	dst := index.NewDstWithStandardPaths(dstPath.URI)
+	dst := index.NewDstAllAt(dstPath.URI)
 
 	idx := &index.Index{
 		Srcs: []index.Src{src},
@@ -123,10 +123,21 @@ func buildSrcItem(src index.Src) (index.SrcItem, *content.Meta, error) {
 }
 
 func buildDstItem(loc dst.Locator, dst index.Dst, cid cid.ContentID, meta *content.Meta) (index.DstItem, error) {
-	dataURI := loc.DataURI(cid, meta)
-	metaURI := loc.MetaURI(cid, meta)
+	var item index.DstItem
 
-	item := index.DstItem{
+	dataPath := loc.DataURI(cid, meta)
+	dataURI, err := dst.DataURI.ResolveReference(dataPath)
+	if err != nil {
+		return item, err
+	}
+
+	metaPath := loc.MetaURI(cid, meta)
+	metaURI, err := dst.DataURI.ResolveReference(metaPath)
+	if err != nil {
+		return item, err
+	}
+
+	item = index.DstItem{
 		DstID:    dst.DstID,
 		DataURI:  dataURI,
 		MetaURI:  metaURI,
