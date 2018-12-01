@@ -94,7 +94,7 @@ type DstItem struct {
 	StoredAt time.Time `json:"stored_at"`
 }
 
-// EqualKey determins if two DstItem have the same primary key.
+// EqualKey determines if two DstItem have the same primary key.
 func (d DstItem) EqualKey(dd DstItem) bool {
 	switch {
 	case d.DstID != dd.DstID:
