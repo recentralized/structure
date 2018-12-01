@@ -97,7 +97,7 @@ See [how this document was generated](examples/index/main.go).
 Meta is a document describing the content. Each piece of content may have none,
 some, or all possible information available. You can use the meta document to find out information about a piece of content.
 
-The file `/tmp/dst/meta/f42a59131aaf2e5c475f8a35126b034549c05bd5.json` contains:
+The file `/tmp/dst/meta/f4/2a/59131aaf2e5c475f8a35126b034549c05bd5.json` contains:
 
 ```json
 {
