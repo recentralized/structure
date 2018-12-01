@@ -181,8 +181,8 @@ func TestIndexRef(t *testing.T) {
 				Refs: []*URef{
 					{
 						Hash: cid.NewLiteral("b"),
-						Srcs: []SrcItem{SrcItem{SrcID: SrcID("a")}},
-						Dsts: []DstItem{DstItem{DstID: DstID("a")}},
+						Srcs: []SrcItem{{SrcID: SrcID("a")}},
+						Dsts: []DstItem{{DstID: DstID("a")}},
 					},
 				},
 			},
@@ -201,8 +201,8 @@ func TestIndexRef(t *testing.T) {
 				Refs: []*URef{
 					{
 						Hash: cid.NewLiteral("a"),
-						Srcs: []SrcItem{SrcItem{SrcID: SrcID("a")}},
-						Dsts: []DstItem{DstItem{DstID: DstID("b")}},
+						Srcs: []SrcItem{{SrcID: SrcID("a")}},
+						Dsts: []DstItem{{DstID: DstID("b")}},
 					},
 				},
 			},
@@ -221,8 +221,8 @@ func TestIndexRef(t *testing.T) {
 				Refs: []*URef{
 					{
 						Hash: cid.NewLiteral("a"),
-						Srcs: []SrcItem{SrcItem{SrcID: SrcID("b")}},
-						Dsts: []DstItem{DstItem{DstID: DstID("a")}},
+						Srcs: []SrcItem{{SrcID: SrcID("b")}},
+						Dsts: []DstItem{{DstID: DstID("a")}},
 					},
 				},
 			},
@@ -241,8 +241,8 @@ func TestIndexRef(t *testing.T) {
 				Refs: []*URef{
 					{
 						Hash: cid.NewLiteral("a"),
-						Srcs: []SrcItem{SrcItem{SrcID: SrcID("a")}},
-						Dsts: []DstItem{DstItem{DstID: DstID("a")}},
+						Srcs: []SrcItem{{SrcID: SrcID("a")}},
+						Dsts: []DstItem{{DstID: DstID("a")}},
 					},
 				},
 			},
