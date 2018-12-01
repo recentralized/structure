@@ -72,6 +72,8 @@ const (
 )
 
 var typeClass = map[Type]Class{
+	UnknownContentType: Uncategorized,
+
 	// Image formats.
 	JPG: Image,
 	PNG: Image,
