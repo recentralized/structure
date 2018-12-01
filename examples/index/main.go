@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/recentralized/structure/cid"
+	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/dst"
 	"github.com/recentralized/structure/index"
 	"github.com/recentralized/structure/uri"
 )
@@ -19,7 +21,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = addRefs(index)
+	locator := dst.NewFilesystemLocator()
+
+	err = addRefs(locator, index)
 	if err != nil {
 		fmt.Printf("Failed to add refs: %s", err)
 		os.Exit(1)
@@ -46,7 +50,7 @@ func buildIndex() (*index.Index, error) {
 	}
 
 	src := index.NewSrc(srcPath.URI)
-	dst := index.NewDstWithStandardPaths(dstPath.URI)
+	dst := index.NewDstAllAt(dstPath.URI)
 
 	idx := &index.Index{
 		Srcs: []index.Src{src},
@@ -56,7 +60,7 @@ func buildIndex() (*index.Index, error) {
 	return idx, nil
 }
 
-func addRefs(idx *index.Index) error {
+func addRefs(loc dst.Locator, idx *index.Index) error {
 	src := idx.Srcs[0]
 	dst := idx.Dsts[0]
 
@@ -66,12 +70,15 @@ func addRefs(idx *index.Index) error {
 		return err
 	}
 
-	srcItem, err := buildSrcItem(src)
+	srcItem, meta, err := buildSrcItem(src)
 	if err != nil {
 		return err
 	}
 
-	dstItem, err := buildDstItem(cid, dst)
+	dstItem, err := buildDstItem(loc, dst, cid, meta)
+	if err != nil {
+		return err
+	}
 
 	idx.AddRef(index.Ref{
 		Hash: cid,
@@ -82,19 +89,20 @@ func addRefs(idx *index.Index) error {
 	return nil
 }
 
-func buildSrcItem(src index.Src) (index.SrcItem, error) {
+func buildSrcItem(src index.Src) (index.SrcItem, *content.Meta, error) {
 	var item index.SrcItem
+	var meta *content.Meta
 
 	dataPath := uri.TrustedNew("fictional/image.jpg")
 	dataURI, err := src.SrcURI.ResolveReference(dataPath)
 	if err != nil {
-		return item, err
+		return item, meta, err
 	}
 
 	metaPath := uri.TrustedNew("fictional/image.xmp")
 	metaURI, err := src.SrcURI.ResolveReference(metaPath)
 	if err != nil {
-		return item, err
+		return item, meta, err
 	}
 
 	item = index.SrcItem{
@@ -104,20 +112,27 @@ func buildSrcItem(src index.Src) (index.SrcItem, error) {
 		ModifiedAt: time.Date(2018, 11, 12, 0, 0, 0, 0, time.UTC),
 	}
 
-	return item, nil
+	meta = &content.Meta{
+		ContentType: content.JPG,
+		Inherent: content.MetaContent{
+			Created: time.Date(2018, 11, 10, 0, 0, 0, 0, time.UTC),
+		},
+	}
+
+	return item, meta, nil
 }
 
-func buildDstItem(cid cid.ContentID, dst index.Dst) (index.DstItem, error) {
+func buildDstItem(loc dst.Locator, dst index.Dst, cid cid.ContentID, meta *content.Meta) (index.DstItem, error) {
 	var item index.DstItem
 
-	dataPath := uri.TrustedNew(fmt.Sprintf("%s.jpg", cid.String()))
+	dataPath := loc.DataURI(cid, meta)
 	dataURI, err := dst.DataURI.ResolveReference(dataPath)
 	if err != nil {
 		return item, err
 	}
 
-	metaPath := uri.TrustedNew(fmt.Sprintf("%s.json", cid.String()))
-	metaURI, err := dst.MetaURI.ResolveReference(metaPath)
+	metaPath := loc.MetaURI(cid, meta)
+	metaURI, err := dst.DataURI.ResolveReference(metaPath)
 	if err != nil {
 		return item, err
 	}
