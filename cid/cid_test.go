@@ -6,6 +6,35 @@ import (
 	"testing"
 )
 
+func TestParse(t *testing.T) {
+	tests := []struct {
+		desc string
+		cid  string
+	}{
+		{
+			desc: "legacy hash format",
+			cid:  "b8dfb080bc33fb564249e34252bf143d88fc018f",
+		},
+		{
+			desc: "cidv0",
+			cid:  "Qmc6SoJUtjspmudTyBHk71prbGnd7ajhS6uxCLsy8NtxEL",
+		},
+		{
+			desc: "cidv1",
+			cid:  "zb2rhkQ5HMh8b8qj6V1xH42nvDKMYW7q54SLsi2W1mYtes8S4",
+		},
+	}
+	for _, tt := range tests {
+		cid, err := Parse(tt.cid)
+		if err != nil {
+			t.Fatalf("%q failed: %s", tt.desc, err)
+		}
+		if got, want := cid.String(), tt.cid; got != want {
+			t.Errorf("%q String() got %s want %s", tt.desc, got, want)
+		}
+	}
+}
+
 func TestNew(t *testing.T) {
 	if defaultFormat != hash {
 		t.Fatalf("default format changed")

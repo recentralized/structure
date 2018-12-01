@@ -32,6 +32,19 @@ const (
 
 const defaultFormat = hash
 
+// Parse converts a string to a ContentID.
+func Parse(s string) (ContentID, error) {
+	if len(s) <= legacyHashLen {
+		hash := Hash(s)
+		return ContentID{hash: &hash}, nil
+	}
+	decoded, err := cid.Decode(s)
+	if err != nil {
+		return ContentID{}, err
+	}
+	return ContentID{cid: &decoded}, nil
+}
+
 // New calculates a ContentID from data.
 func New(r io.Reader) (ContentID, error) {
 	return newInFormat(r, defaultFormat)

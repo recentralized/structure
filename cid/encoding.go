@@ -3,8 +3,6 @@ package cid
 import (
 	"encoding/json"
 	"strings"
-
-	"github.com/ipfs/go-cid"
 )
 
 // MarshalJSON implements json.Marshaler.
@@ -21,16 +19,10 @@ func (c *ContentID) UnmarshalJSON(data []byte) error {
 	if strings.TrimSpace(s) == "" {
 		return nil
 	}
-	if len(s) <= legacyHashLen {
-		hash := Hash(s)
-		cid := ContentID{hash: &hash}
-		*c = cid
-		return nil
-	}
-	decoded, err := cid.Decode(s)
+	cid, err := Parse(s)
 	if err != nil {
 		return err
 	}
-	*c = ContentID{cid: &decoded}
+	*c = cid
 	return nil
 }
