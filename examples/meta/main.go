@@ -11,7 +11,6 @@ import (
 
 func main() {
 	meta, err := buildMeta()
-
 	if err != nil {
 		fmt.Printf("Failed to build meta: %s", err)
 		os.Exit(1)
