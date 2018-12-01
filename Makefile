@@ -5,9 +5,13 @@ build:
 
 lint:
 	golint ./...
+	gofmt -s -d $$(find . -name '*.go')
 
 test:
 	go test ./...
+
+gofmt:
+	gofmt -s -w $$(find . -name '*.go')
 
 cover:
 	go test -coverprofile=coverage.out ./...
