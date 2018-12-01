@@ -1,4 +1,6 @@
-# Structure
+
+
+# Structure [![Go Report Card](https://goreportcard.com/badge/github.com/recentralized/structure)]
 
 Official structures and specs of the storage format. Reference implementation in Go (golang).
 
