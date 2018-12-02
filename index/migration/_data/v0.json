@@ -1,0 +1,37 @@
+{
+  "srcs": [
+    {
+      "src_id": "e83a2534-1f41-5041-8086-8b32aaa94b64",
+      "src_uri": "https://www.flickr.com/people/rcarver/"
+    }
+  ],
+  "dsts": [
+    {
+      "dst_id": "7773ef7a-45f9-58de-80e6-3916f92240be",
+      "index_uri": "file:///Users/rcarver/Desktop/flickrsync/",
+      "data_uri": "file:///Users/rcarver/Desktop/flickrsync/",
+      "meta_uri": "file:///Users/rcarver/Desktop/flickrsync/"
+    }
+  ],
+  "refs": [
+    {
+      "hash": "750839b963918b944ec5e1faeb1cddc66ff35071",
+      "srcs": [
+        {
+          "src_id": "e83a2534-1f41-5041-8086-8b32aaa94b64",
+          "data_uri": "https://farm5.staticflickr.com/4302/35563185083_f55605e108_o.png",
+          "meta_uri": "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&photo_id=35563185083",
+          "modified": "2017-08-04T10:19:44.000000Z" 
+        }
+      ],
+      "dsts": [
+        {
+          "dst_id": "7773ef7a-45f9-58de-80e6-3916f92240be",
+          "data_uri": "media/2017/2017-08-03/750839b963918b944ec5e1faeb1cddc66ff35071.png",
+          "meta_uri": "meta/75/08/39b963918b944ec5e1faeb1cddc66ff35071.json",
+          "stored_at": "2018-12-01T04:52:17.770304Z"
+        }
+      ]
+    }
+  ]
+}

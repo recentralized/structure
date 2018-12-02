@@ -52,10 +52,9 @@ func buildIndex() (*index.Index, error) {
 	src := index.NewSrc(srcPath.URI)
 	dst := index.NewDstAllAt(dstPath.URI)
 
-	idx := &index.Index{
-		Srcs: []index.Src{src},
-		Dsts: []index.Dst{dst},
-	}
+	idx := index.New()
+	idx.Srcs = []index.Src{src}
+	idx.Dsts = []index.Dst{dst}
 
 	return idx, nil
 }

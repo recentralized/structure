@@ -245,11 +245,12 @@ func TestIndexJSON(t *testing.T) {
 		{
 			desc: "zero value",
 			idx:  Index{},
-			json: `{}`,
+			json: `{"version":""}`,
 		},
 		{
 			desc: "srcs + dsts",
 			idx: Index{
+				Version: "v1",
 				Srcs: []Src{
 					{SrcID: SrcID("a")},
 				},
@@ -257,11 +258,12 @@ func TestIndexJSON(t *testing.T) {
 					{DstID: DstID("abc")},
 				},
 			},
-			json: `{"srcs":[{"src_id":"a","src_uri":""}],"dsts":[{"dst_id":"abc","index_uri":"","data_uri":"","meta_uri":""}]}`,
+			json: `{"version":"v1","srcs":[{"src_id":"a","src_uri":""}],"dsts":[{"dst_id":"abc","index_uri":"","data_uri":"","meta_uri":""}]}`,
 		},
 		{
 			desc: "refs",
 			idx: Index{
+				Version: "v1",
 				Refs: []*URef{
 					{
 						Hash: cid.NewLiteral("xyz"),
@@ -274,7 +276,7 @@ func TestIndexJSON(t *testing.T) {
 					},
 				},
 			},
-			json: `{"refs":[{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"","meta_uri":"","modified_at":null}],"dsts":[{"dst_id":"abc","data_uri":"","meta_uri":"","stored_at":null}]}]}`,
+			json: `{"version":"v1","refs":[{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"","meta_uri":"","modified_at":null}],"dsts":[{"dst_id":"abc","data_uri":"","meta_uri":"","stored_at":null}]}]}`,
 		},
 	}
 	for _, tt := range tests {
