@@ -22,7 +22,7 @@ const (
 
 // ErrWrongVersion means that the parsed index is not at the current version,
 // so its data may be incorrectly interpreted.
-var ErrWrongVersion = errors.New("index is not at a compatible verison")
+var ErrWrongVersion = errors.New("index is not at a compatible version")
 
 // Index is the set of sources, destinations, and refs.
 //

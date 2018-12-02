@@ -23,7 +23,7 @@ const Version = versionV1
 
 // ErrWrongVersion means that the parsed meta is not at the current
 // version, so its data may be incorrectly interpreted.
-var ErrWrongVersion = errors.New("meta is not at a compatible verison")
+var ErrWrongVersion = errors.New("meta is not at a compatible version")
 
 // Meta is all of the potential metadata about content.
 type Meta struct {
