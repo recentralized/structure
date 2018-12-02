@@ -125,17 +125,8 @@ func buildSrcItem(src index.Src) (index.SrcItem, *content.Meta, error) {
 func buildDstItem(loc dst.Locator, dst index.Dst, cid cid.ContentID, meta *content.Meta) (index.DstItem, error) {
 	var item index.DstItem
 
-	dataPath := loc.DataURI(cid, meta)
-	dataURI, err := dst.DataURI.ResolveReference(dataPath)
-	if err != nil {
-		return item, err
-	}
-
-	metaPath := loc.MetaURI(cid, meta)
-	metaURI, err := dst.DataURI.ResolveReference(metaPath)
-	if err != nil {
-		return item, err
-	}
+	dataURI := loc.DataURI(cid, meta)
+	metaURI := loc.MetaURI(cid, meta)
 
 	item = index.DstItem{
 		DstID:    dst.DstID,
