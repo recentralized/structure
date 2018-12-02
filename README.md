@@ -55,6 +55,7 @@ The file `/tmp/dst/index.json` contains:
 
 ```json
 {
+  "version": "v1",
   "srcs": [
     {
       "src_id": "e8400c72-f7d0-53f9-98ca-ee23238231fe",
@@ -104,6 +105,7 @@ The file `/tmp/dst/meta/f4/2a/59131aaf2e5c475f8a35126b034549c05bd5.json` contain
 
 ```json
 {
+  "version": "v1",
   "content_type": "jpg",
   "size": 1024,
   "inherent": {
