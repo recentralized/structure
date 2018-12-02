@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/recentralized/structure/cid"
-	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/dst"
 	"github.com/recentralized/structure/index"
 	"github.com/recentralized/structure/meta"
@@ -112,7 +112,7 @@ func buildSrcItem(src index.Src) (index.SrcItem, *meta.Meta, error) {
 	}
 
 	doc := meta.New()
-	doc.ContentType = content.JPG
+	doc.Type = data.JPG
 	doc.Inherent = meta.Content{
 		Created: time.Date(2018, 11, 10, 0, 0, 0, 0, time.UTC),
 	}

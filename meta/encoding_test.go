@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/data"
 )
 
 func TestMetaJSON(t *testing.T) {
@@ -20,14 +20,14 @@ func TestMetaJSON(t *testing.T) {
 		{
 			desc: "zero value",
 			meta: Meta{},
-			json: `{"version":"","content_type":"","size":0}`,
+			json: `{"version":"","type":"","size":0}`,
 		},
 		{
 			desc: "basic fields",
 			meta: Meta{
-				Version:     "v1",
-				ContentType: content.JPG,
-				Size:        100,
+				Version: "v1",
+				Type:    data.JPG,
+				Size:    100,
 				Inherent: Content{
 					Created: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
 					Image: Image{
@@ -45,7 +45,7 @@ func TestMetaJSON(t *testing.T) {
 					Created: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
 				},
 			},
-			json: `{"version":"v1","content_type":"jpg","size":100,"inherent":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}},"sidecar":{"created":"0002-02-03T04:05:06.000000007Z"}}`,
+			json: `{"version":"v1","type":"jpg","size":100,"inherent":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}},"sidecar":{"created":"0002-02-03T04:05:06.000000007Z"}}`,
 		},
 		{
 			desc: "src-specific fields",
@@ -55,7 +55,7 @@ func TestMetaJSON(t *testing.T) {
 					//Flickr:
 				},
 			},
-			json: `{"version":"v1","content_type":"","size":0}`,
+			json: `{"version":"v1","type":"","size":0}`,
 		},
 	}
 	for _, tt := range tests {

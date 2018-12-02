@@ -6,7 +6,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/data"
 )
 
 const (
@@ -27,9 +27,9 @@ var ErrWrongVersion = errors.New("meta is not at a compatible version")
 
 // Meta is all of the potential metadata about content.
 type Meta struct {
-	Version     string
-	ContentType content.Type
-	Size        int64
+	Version string
+	Type    data.Type
+	Size    int64
 
 	// Metadata that came from the content itself.
 	Inherent Content

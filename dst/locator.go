@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/recentralized/structure/cid"
-	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/meta"
 	"github.com/recentralized/structure/uri"
 )
@@ -37,8 +37,8 @@ type Locator interface {
 func NewFilesystemLocator() Locator {
 	return fsLocator{
 		indexFile: "index.json",
-		classToCategory: map[content.Class]string{
-			content.Image: "media",
+		classToCategory: map[data.Class]string{
+			data.Image: "media",
 		},
 		unknownCategory: "unknown",
 		zeroDateDir:     "Undated",
@@ -47,7 +47,7 @@ func NewFilesystemLocator() Locator {
 
 type fsLocator struct {
 	indexFile       string
-	classToCategory map[content.Class]string
+	classToCategory map[data.Class]string
 	unknownCategory string
 	zeroDateDir     string
 }
@@ -70,11 +70,11 @@ func (l fsLocator) RefsURI(cid cid.ContentID) uri.URI {
 func (l fsLocator) DataURI(cid cid.ContentID, meta *meta.Meta) uri.URI {
 	var (
 		key string
-		ext = meta.ContentType.Ext()
-		cls = meta.ContentType.Class()
+		ext = meta.Type.Ext()
+		cls = meta.Type.Class()
 	)
 
-	// Categorize by the class of content.
+	// Categorize by the class of data.
 	category := l.classToCategory[cls]
 	if category == "" {
 		category = l.unknownCategory

@@ -1,6 +1,6 @@
 {
   "version": "v1",
-  "content_type": "jpg",
+  "type": "jpg",
   "size": 549322,
   "inherent": {
     "created": "2008-02-03T18:44:33Z",
