@@ -6,6 +6,7 @@ import (
 )
 
 type metaJSON struct {
+	Version     string       `json:"version"`
 	ContentType Type         `json:"content_type"`
 	Size        int64        `json:"size"`
 	Inherent    *MetaContent `json:"inherent,omitempty"`
@@ -16,6 +17,7 @@ type metaJSON struct {
 // MarshalJSON converts Meta to JSON.
 func (m Meta) MarshalJSON() ([]byte, error) {
 	j := metaJSON{
+		Version:     m.Version,
 		ContentType: m.ContentType,
 		Size:        m.Size,
 		SrcSpecific: m.Srcs,
@@ -35,6 +37,7 @@ func (m *Meta) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &j); err != nil {
 		return err
 	}
+	m.Version = j.Version
 	m.ContentType = j.ContentType
 	m.Size = j.Size
 	if j.Inherent != nil {

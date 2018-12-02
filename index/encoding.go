@@ -43,6 +43,7 @@ type srcItemJSON struct {
 	DataURI    uri.URI    `json:"data_uri"`
 	MetaURI    uri.URI    `json:"meta_uri"`
 	ModifiedAt *time.Time `json:"modified_at"`
+	Modified   *time.Time `json:"modified,omitempty"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -69,6 +70,11 @@ func (s *SrcItem) UnmarshalJSON(data []byte) error {
 	s.MetaURI = sj.MetaURI
 	if sj.ModifiedAt != nil {
 		s.ModifiedAt = *sj.ModifiedAt
+	} else {
+		// migrate: v0 to v1
+		if sj.Modified != nil {
+			s.ModifiedAt = *sj.Modified
+		}
 	}
 	return nil
 }

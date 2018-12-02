@@ -1,6 +1,28 @@
 package index
 
-import "github.com/recentralized/structure/cid"
+import (
+	"encoding/json"
+	"errors"
+	"io"
+
+	"github.com/recentralized/structure/cid"
+)
+
+// Version identifies the version of the index structure. A new version will be
+// introduced for backward-incompatible changes.
+const Version = versionV1
+
+const (
+	// versionv0 is the original implementation.
+	versionV0 = ""
+
+	// versionv1 is the first `structure` implementation.
+	versionV1 = "v1"
+)
+
+// ErrWrongVersion means that the parsed index is not at the current version,
+// so its data may be incorrectly interpreted.
+var ErrWrongVersion = errors.New("index is not at a compatible verison")
 
 // Index is the set of sources, destinations, and refs.
 //
@@ -9,9 +31,34 @@ import "github.com/recentralized/structure/cid"
 // such as a relational dataase, the methods here serve as documentation of the
 // algorithms to add and retrieve data.
 type Index struct {
-	Srcs []Src   `json:"srcs,omitempty"`
-	Dsts []Dst   `json:"dsts,omitempty"`
-	Refs []*URef `json:"refs,omitempty"`
+	Version string  `json:"version"`
+	Srcs    []Src   `json:"srcs,omitempty"`
+	Dsts    []Dst   `json:"dsts,omitempty"`
+	Refs    []*URef `json:"refs,omitempty"`
+}
+
+// New initializes a new Index at the current version.
+func New() *Index {
+	return &Index{Version: Version}
+}
+
+// ParseJSON loads an Index from JSON. If the loaded data cannot be
+// transparently upgraded to the current version then ErrWrongVersion is
+// returned.
+func ParseJSON(r io.Reader) (*Index, error) {
+	idx := &Index{}
+	err := json.NewDecoder(r).Decode(idx)
+	if err != nil {
+		return nil, err
+	}
+	switch idx.Version {
+	case versionV1:
+	case versionV0:
+		idx.Version = versionV1
+	default:
+		return nil, ErrWrongVersion
+	}
+	return idx, nil
 }
 
 // AddSrc adds a source to the index. It's idempotent, returning true if the

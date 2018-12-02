@@ -2,6 +2,7 @@ package dst
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/recentralized/structure/cid"
 	"github.com/recentralized/structure/content"
@@ -11,14 +12,30 @@ import (
 // Locator is the interface for defining the locations of data in a
 // destination.
 type Locator interface {
+
+	// NewHash generates the hash for data.
+	NewHash(io.Reader) (cid.ContentID, error)
+
+	// IndexURI returns the document that stores the index.
+	IndexURI() uri.URI
+
+	// RefsURI returns the document that should store this ref. This is
+	// generally the same as IndexURI, but returning a different value
+	// would allow you to shard the refs.
+	RefsURI(cid.ContentID) uri.URI
+
+	// DataURI returns the location that this data should be stored.
 	DataURI(cid.ContentID, *content.Meta) uri.URI
+
+	// MetaURI returns the location that this meta should be stored.
 	MetaURI(cid.ContentID, *content.Meta) uri.URI
 }
 
-// NewFilesystemLocator initialzes the standard locator for use on filesystems
+// NewFilesystemLocator initializes the standard locator for use on filesystems
 // and filesystem-like storage media such as AWS S3.
 func NewFilesystemLocator() Locator {
 	return fsLocator{
+		indexFile: "index.json",
 		classToCategory: map[content.Class]string{
 			content.Image: "media",
 		},
@@ -28,9 +45,22 @@ func NewFilesystemLocator() Locator {
 }
 
 type fsLocator struct {
+	indexFile       string
 	classToCategory map[content.Class]string
 	unknownCategory string
 	zeroDateDir     string
+}
+
+func (l fsLocator) NewHash(r io.Reader) (cid.ContentID, error) {
+	return cid.New(r)
+}
+
+func (l fsLocator) IndexURI() uri.URI {
+	return uri.TrustedNew(l.indexFile)
+}
+
+func (l fsLocator) RefsURI(cid cid.ContentID) uri.URI {
+	return uri.TrustedNew(l.indexFile)
 }
 
 // media/2006/2006-01-02/<cid>.<ext>

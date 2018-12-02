@@ -52,10 +52,9 @@ func buildIndex() (*index.Index, error) {
 	src := index.NewSrc(srcPath.URI)
 	dst := index.NewDstAllAt(dstPath.URI)
 
-	idx := &index.Index{
-		Srcs: []index.Src{src},
-		Dsts: []index.Dst{dst},
-	}
+	idx := index.New()
+	idx.Srcs = []index.Src{src}
+	idx.Dsts = []index.Dst{dst}
 
 	return idx, nil
 }
@@ -65,7 +64,7 @@ func addRefs(loc dst.Locator, idx *index.Index) error {
 	dst := idx.Dsts[0]
 
 	data := []byte("fictional image data")
-	cid, err := cid.New(bytes.NewReader(data))
+	cid, err := loc.NewHash(bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
@@ -125,17 +124,8 @@ func buildSrcItem(src index.Src) (index.SrcItem, *content.Meta, error) {
 func buildDstItem(loc dst.Locator, dst index.Dst, cid cid.ContentID, meta *content.Meta) (index.DstItem, error) {
 	var item index.DstItem
 
-	dataPath := loc.DataURI(cid, meta)
-	dataURI, err := dst.DataURI.ResolveReference(dataPath)
-	if err != nil {
-		return item, err
-	}
-
-	metaPath := loc.MetaURI(cid, meta)
-	metaURI, err := dst.DataURI.ResolveReference(metaPath)
-	if err != nil {
-		return item, err
-	}
+	dataURI := loc.DataURI(cid, meta)
+	metaURI := loc.MetaURI(cid, meta)
 
 	item = index.DstItem{
 		DstID:    dst.DstID,
