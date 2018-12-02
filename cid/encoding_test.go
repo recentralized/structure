@@ -10,7 +10,7 @@ import (
 
 func TestCIDJSON(t *testing.T) {
 	newCID := func(fmt Format, input string) ContentID {
-		cid, err := NewInFormat(bytes.NewBufferString(input), fmt)
+		cid, err := New(bytes.NewBufferString(input), fmt)
 		if err != nil {
 			t.Fatalf("failed to cid: %s", err)
 		}
@@ -32,8 +32,8 @@ func TestCIDJSON(t *testing.T) {
 			json: `"abc"`,
 		},
 		{
-			desc: "hash",
-			cid:  newCID(Hash, "testing 123"),
+			desc: "sha1",
+			cid:  newCID(SHA1, "testing 123"),
 			json: `"b8dfb080bc33fb564249e34252bf143d88fc018f"`,
 		},
 		{

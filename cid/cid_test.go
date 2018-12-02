@@ -36,22 +36,6 @@ func TestParse(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
-	if defaultFormat != Hash {
-		t.Fatalf("default format changed")
-	}
-	cid, err := New(bytes.NewBufferString("testing 12"))
-	if err != nil {
-		t.Fatalf("failed to new: %s", err)
-	}
-	if cid.cid != nil {
-		t.Fatalf("cid must be nil")
-	}
-	if cid.hash == nil {
-		t.Fatalf("hash must not be nil")
-	}
-}
-
-func TestNewInFormat(t *testing.T) {
 	tests := []struct {
 		desc     string
 		fmt      Format
@@ -60,8 +44,8 @@ func TestNewInFormat(t *testing.T) {
 		wantHash string
 	}{
 		{
-			desc:     "hash format",
-			fmt:      Hash,
+			desc:     "sha1",
+			fmt:      SHA1,
 			input:    "testing 123",
 			wantCID:  "b8dfb080bc33fb564249e34252bf143d88fc018f",
 			wantHash: "b8dfb080bc33fb564249e34252bf143d88fc018f",
@@ -82,7 +66,7 @@ func TestNewInFormat(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		cid, err := NewInFormat(bytes.NewBufferString(tt.input), tt.fmt)
+		cid, err := New(bytes.NewBufferString(tt.input), tt.fmt)
 		if err != nil {
 			t.Fatalf("%q failed: %s", tt.desc, err)
 		}
@@ -97,7 +81,7 @@ func TestNewInFormat(t *testing.T) {
 
 func TestEquality(t *testing.T) {
 	build := func(str string, fmt Format) ContentID {
-		cid, err := NewInFormat(bytes.NewBufferString(str), fmt)
+		cid, err := New(bytes.NewBufferString(str), fmt)
 		if err != nil {
 			t.Fatalf("creating cid: %s", err)
 		}
@@ -111,16 +95,16 @@ func TestEquality(t *testing.T) {
 		wantEqualHash bool
 	}{
 		{
-			desc:          "equal hash",
-			a:             build("a", Hash),
-			b:             build("a", Hash),
+			desc:          "equal sha1",
+			a:             build("a", SHA1),
+			b:             build("a", SHA1),
 			wantEqual:     true,
 			wantEqualHash: true,
 		},
 		{
-			desc:          "unequal hash",
-			a:             build("a", Hash),
-			b:             build("b", Hash),
+			desc:          "unequal sha1",
+			a:             build("a", SHA1),
+			b:             build("b", SHA1),
 			wantEqual:     false,
 			wantEqualHash: false,
 		},

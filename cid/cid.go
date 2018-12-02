@@ -1,7 +1,8 @@
 package cid
 
 import (
-	"bytes"
+	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -18,8 +19,8 @@ import (
 // Impl: https://github.com/ipfs/go-cid/
 //
 type ContentID struct {
-	hash *hash
-	cid  *cid.Cid
+	str *string
+	cid *cid.Cid
 }
 
 // Format is the kind of CID to generate.
@@ -27,18 +28,15 @@ type Format int
 
 // Format options
 const (
-	Hash Format = iota
+	SHA1 Format = iota
 	CidV0
 	CidV1
 )
 
-const defaultFormat = Hash
-
 // Parse converts a string to a ContentID.
 func Parse(s string) (ContentID, error) {
-	if len(s) <= legacyHashLen {
-		hash := hash(s)
-		return ContentID{hash: &hash}, nil
+	if len(s) <= sha1Length {
+		return ContentID{str: &s}, nil
 	}
 	decoded, err := cid.Decode(s)
 	if err != nil {
@@ -47,21 +45,16 @@ func Parse(s string) (ContentID, error) {
 	return ContentID{cid: &decoded}, nil
 }
 
-// New calculates a ContentID from data.
-func New(r io.Reader) (ContentID, error) {
-	return NewInFormat(r, defaultFormat)
-}
-
-// NewInFormat calculates a ContentID from data, in the given format.
-func NewInFormat(r io.Reader, fmt Format) (ContentID, error) {
+// New calculates a ContentID from data, in the given format.
+func New(r io.Reader, fmt Format) (ContentID, error) {
 	var builder cid.Builder
 	switch fmt {
-	case Hash:
-		hash, err := newHash(r)
+	case SHA1:
+		hash, err := newSHA1(r)
 		if err != nil {
-			return ContentID{cid: &cid.Undef}, err
+			return ContentID{}, err
 		}
-		return ContentID{hash: &hash}, nil
+		return ContentID{str: &hash}, nil
 	case CidV0:
 		builder = cid.V0Builder{}
 	case CidV1:
@@ -73,33 +66,22 @@ func NewInFormat(r io.Reader, fmt Format) (ContentID, error) {
 	// NOTE: is there any way to stream data in? Why isn't this a problem for IPFS?
 	data, err := ioutil.ReadAll(r)
 	if err != nil {
-		return ContentID{cid: &cid.Undef}, err
+		return ContentID{}, err
 	}
 	v1, err := builder.Sum(data)
 	if err != nil {
-		return ContentID{cid: &cid.Undef}, err
+		return ContentID{}, err
 	}
 	return ContentID{cid: &v1}, nil
-}
-
-// MustNewString creates a ContentID from string and panics if it fails.  This
-// is intended only for tests.
-func MustNewString(s string) ContentID {
-	cid, err := New(bytes.NewBufferString(s))
-	if err != nil {
-		panic(fmt.Sprintf("failed to create content id: %s", err))
-	}
-	return cid
 }
 
 // NewLiteral constructs a ContentID whose value is literally the input. This
 // is intended only for tests.
 func NewLiteral(s string) ContentID {
-	if len(s) >= legacyHashLen {
-		panic(fmt.Sprintf("literal ContentID must be less than %d bytes", legacyHashLen))
+	if len(s) >= sha1Length {
+		panic(fmt.Sprintf("literal ContentID must be less than %d bytes", sha1Length))
 	}
-	h := hash(s)
-	return ContentID{hash: &h}
+	return ContentID{str: &s}
 }
 
 // Equal determines if the two ContentID's are the same.
@@ -118,8 +100,8 @@ func (c ContentID) String() string {
 	if c.cid != nil {
 		return c.cid.String()
 	}
-	if c.hash != nil {
-		return c.hash.String()
+	if c.str != nil {
+		return *c.str
 	}
 	return ""
 }
@@ -130,8 +112,21 @@ func (c ContentID) Hash() string {
 		hash := c.cid.Hash()
 		return hash.B58String()
 	}
-	if c.hash != nil {
-		return c.hash.String()
+	if c.str != nil {
+		return *c.str
 	}
 	return ""
+}
+
+const sha1Length = 40
+
+// newSHA1 calcualtes the original Hash content id.
+func newSHA1(r io.Reader) (string, error) {
+	sha := sha1.New()
+	_, err := io.Copy(sha, r)
+	if err != nil {
+		return "", err
+	}
+	shaStr := hex.EncodeToString(sha.Sum(nil))
+	return shaStr, nil
 }
