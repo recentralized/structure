@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/recentralized/structure/cid"
+	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/uri"
 )
 
@@ -194,7 +194,7 @@ func TestURefJSON(t *testing.T) {
 		{
 			desc: "all fields",
 			ref: URef{
-				Hash: cid.NewLiteral("xyz"),
+				Hash: data.LiteralHash("xyz"),
 				Srcs: []SrcItem{
 					{
 						SrcID:      SrcID("a"),
@@ -266,7 +266,7 @@ func TestIndexJSON(t *testing.T) {
 				Version: "v1",
 				Refs: []*URef{
 					{
-						Hash: cid.NewLiteral("xyz"),
+						Hash: data.LiteralHash("xyz"),
 						Srcs: []SrcItem{
 							{SrcID: SrcID("a")},
 						},

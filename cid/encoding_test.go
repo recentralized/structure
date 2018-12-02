@@ -9,8 +9,8 @@ import (
 )
 
 func TestCIDJSON(t *testing.T) {
-	newCID := func(fmt format, input string) ContentID {
-		cid, err := newInFormat(bytes.NewBufferString(input), fmt)
+	newCID := func(fmt Format, input string) ContentID {
+		cid, err := New(bytes.NewBufferString(input), fmt)
 		if err != nil {
 			t.Fatalf("failed to cid: %s", err)
 		}
@@ -32,18 +32,18 @@ func TestCIDJSON(t *testing.T) {
 			json: `"abc"`,
 		},
 		{
-			desc: "legacy hash",
-			cid:  newCID(hash, "testing 123"),
+			desc: "sha1",
+			cid:  newCID(SHA1, "testing 123"),
 			json: `"b8dfb080bc33fb564249e34252bf143d88fc018f"`,
 		},
 		{
 			desc: "cidv0",
-			cid:  newCID(cidV0, "testing 123"),
+			cid:  newCID(CidV0, "testing 123"),
 			json: `"Qmc6SoJUtjspmudTyBHk71prbGnd7ajhS6uxCLsy8NtxEL"`,
 		},
 		{
 			desc: "cidv1",
-			cid:  newCID(cidV1, "testing 123"),
+			cid:  newCID(CidV1, "testing 123"),
 			json: `"zb2rhkQ5HMh8b8qj6V1xH42nvDKMYW7q54SLsi2W1mYtes8S4"`,
 		},
 	}

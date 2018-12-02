@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/recentralized/structure/cid"
+	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/uri"
 )
 
@@ -109,9 +109,9 @@ func (d *DstItem) UnmarshalJSON(b []byte) error {
 }
 
 type uRefJSON struct {
-	Hash cid.ContentID `json:"hash"`
-	Srcs []SrcItem     `json:"srcs"`
-	Dsts []DstItem     `json:"dsts"`
+	Hash data.Hash `json:"hash"`
+	Srcs []SrcItem `json:"srcs"`
+	Dsts []DstItem `json:"dsts"`
 }
 
 // MarshalJSON implements json.Marshaler.

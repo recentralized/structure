@@ -7,8 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/recentralized/structure/cid"
-	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/dst"
 	"github.com/recentralized/structure/index"
 	"github.com/recentralized/structure/meta"
@@ -65,7 +64,7 @@ func addRefs(loc dst.Locator, idx *index.Index) error {
 	dst := idx.Dsts[0]
 
 	data := []byte("fictional image data")
-	cid, err := loc.NewHash(bytes.NewReader(data))
+	hash, err := loc.NewHash(bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
@@ -75,13 +74,13 @@ func addRefs(loc dst.Locator, idx *index.Index) error {
 		return err
 	}
 
-	dstItem, err := buildDstItem(loc, dst, cid, meta)
+	dstItem, err := buildDstItem(loc, dst, hash, meta)
 	if err != nil {
 		return err
 	}
 
 	idx.AddRef(index.Ref{
-		Hash: cid,
+		Hash: hash,
 		Src:  srcItem,
 		Dst:  dstItem,
 	})
@@ -112,7 +111,7 @@ func buildSrcItem(src index.Src) (index.SrcItem, *meta.Meta, error) {
 	}
 
 	doc := meta.New()
-	doc.ContentType = content.JPG
+	doc.Type = data.JPG
 	doc.Inherent = meta.Content{
 		Created: time.Date(2018, 11, 10, 0, 0, 0, 0, time.UTC),
 	}
@@ -120,11 +119,11 @@ func buildSrcItem(src index.Src) (index.SrcItem, *meta.Meta, error) {
 	return item, doc, nil
 }
 
-func buildDstItem(loc dst.Locator, dst index.Dst, cid cid.ContentID, meta *meta.Meta) (index.DstItem, error) {
+func buildDstItem(loc dst.Locator, dst index.Dst, hash data.Hash, meta *meta.Meta) (index.DstItem, error) {
 	var item index.DstItem
 
-	dataURI := loc.DataURI(cid, meta)
-	metaURI := loc.MetaURI(cid, meta)
+	dataURI := loc.DataURI(hash, meta)
+	metaURI := loc.MetaURI(hash, meta)
 
 	item = index.DstItem{
 		DstID:    dst.DstID,

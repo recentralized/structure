@@ -1,4 +1,4 @@
-package content
+package data
 
 import "fmt"
 
@@ -31,9 +31,8 @@ func (t Type) Class() Class {
 
 // Type definitions.
 const (
-	// UnknownContentType is the zero value for Type, meaning it is
-	// unknown.
-	UnknownContentType Type = ""
+	// UnknownType is the zero value for Type, meaning it is unknown.
+	UnknownType Type = ""
 
 	// Image formats.
 	JPG = "jpg" // Standard JPG file.
@@ -72,7 +71,7 @@ const (
 )
 
 var typeClass = map[Type]Class{
-	UnknownContentType: Uncategorized,
+	UnknownType: Uncategorized,
 
 	// Image formats.
 	JPG: Image,

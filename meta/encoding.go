@@ -4,23 +4,24 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/data"
 )
 
 type metaJSON struct {
-	Version     string       `json:"version"`
-	ContentType content.Type `json:"content_type"`
-	Size        int64        `json:"size"`
-	Inherent    *Content     `json:"inherent,omitempty"`
-	Sidecar     *Content     `json:"sidecar,omitempty"`
-	SrcSpecific              // Embedded fields.
+	Version     string    `json:"version"`
+	Type        data.Type `json:"type"`
+	ContentType data.Type `json:"content_type,omitempty"`
+	Size        int64     `json:"size"`
+	Inherent    *Content  `json:"inherent,omitempty"`
+	Sidecar     *Content  `json:"sidecar,omitempty"`
+	SrcSpecific           // Embedded fields.
 }
 
 // MarshalJSON converts Meta to JSON.
 func (m Meta) MarshalJSON() ([]byte, error) {
 	j := metaJSON{
 		Version:     m.Version,
-		ContentType: m.ContentType,
+		Type:        m.Type,
 		Size:        m.Size,
 		SrcSpecific: m.Srcs,
 	}
@@ -40,7 +41,10 @@ func (m *Meta) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	m.Version = j.Version
-	m.ContentType = j.ContentType
+	m.Type = j.Type
+	if m.Type == "" && j.ContentType != "" {
+		m.Type = j.ContentType
+	}
 	m.Size = j.Size
 	if j.Inherent != nil {
 		m.Inherent = *j.Inherent

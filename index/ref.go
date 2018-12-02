@@ -3,14 +3,14 @@ package index
 import (
 	"fmt"
 
-	"github.com/recentralized/structure/cid"
+	"github.com/recentralized/structure/data"
 )
 
 // Ref is a distinct piece of content (represented by Hash), where it was found
 // (SrcItem) and where it was stored (DstItem). Refs are generally created
 // while searching a Src and copying to a Dst.
 type Ref struct {
-	Hash cid.ContentID
+	Hash data.Hash
 	Src  SrcItem
 	Dst  DstItem
 }
@@ -38,7 +38,7 @@ func (r Ref) String() string {
 // as a relational dataase, the methods here serve as documentation of the
 // algorithms to add and retrieve data.
 type URef struct {
-	Hash cid.ContentID
+	Hash data.Hash
 	Srcs []SrcItem
 	Dsts []DstItem
 }

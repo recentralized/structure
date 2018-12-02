@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/meta"
 )
 
@@ -29,7 +29,7 @@ func main() {
 func buildMeta() (*meta.Meta, error) {
 
 	doc := meta.New()
-	doc.ContentType = content.JPG
+	doc.Type = data.JPG
 	doc.Size = 1024
 
 	doc.Inherent = meta.Content{
