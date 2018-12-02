@@ -18,24 +18,26 @@ import (
 // Impl: https://github.com/ipfs/go-cid/
 //
 type ContentID struct {
-	hash *Hash
+	hash *hash
 	cid  *cid.Cid
 }
 
-type format int
+// Format is the kind of CID to generate.
+type Format int
 
+// Format options
 const (
-	hash format = iota
-	cidV0
-	cidV1
+	Hash Format = iota
+	CidV0
+	CidV1
 )
 
-const defaultFormat = hash
+const defaultFormat = Hash
 
 // Parse converts a string to a ContentID.
 func Parse(s string) (ContentID, error) {
 	if len(s) <= legacyHashLen {
-		hash := Hash(s)
+		hash := hash(s)
 		return ContentID{hash: &hash}, nil
 	}
 	decoded, err := cid.Decode(s)
@@ -47,21 +49,22 @@ func Parse(s string) (ContentID, error) {
 
 // New calculates a ContentID from data.
 func New(r io.Reader) (ContentID, error) {
-	return newInFormat(r, defaultFormat)
+	return NewInFormat(r, defaultFormat)
 }
 
-func newInFormat(r io.Reader, fmt format) (ContentID, error) {
+// NewInFormat calculates a ContentID from data, in the given format.
+func NewInFormat(r io.Reader, fmt Format) (ContentID, error) {
 	var builder cid.Builder
 	switch fmt {
-	case hash:
+	case Hash:
 		hash, err := newHash(r)
 		if err != nil {
 			return ContentID{cid: &cid.Undef}, err
 		}
 		return ContentID{hash: &hash}, nil
-	case cidV0:
+	case CidV0:
 		builder = cid.V0Builder{}
-	case cidV1:
+	case CidV1:
 		builder = cid.V1Builder{
 			Codec:  cid.Raw,
 			MhType: mh.SHA2_256,
@@ -95,7 +98,7 @@ func NewLiteral(s string) ContentID {
 	if len(s) >= legacyHashLen {
 		panic(fmt.Sprintf("literal ContentID must be less than %d bytes", legacyHashLen))
 	}
-	h := Hash(s)
+	h := hash(s)
 	return ContentID{hash: &h}
 }
 

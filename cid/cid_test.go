@@ -12,7 +12,7 @@ func TestParse(t *testing.T) {
 		cid  string
 	}{
 		{
-			desc: "legacy hash format",
+			desc: "hash format",
 			cid:  "b8dfb080bc33fb564249e34252bf143d88fc018f",
 		},
 		{
@@ -36,7 +36,7 @@ func TestParse(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
-	if defaultFormat != hash {
+	if defaultFormat != Hash {
 		t.Fatalf("default format changed")
 	}
 	cid, err := New(bytes.NewBufferString("testing 12"))
@@ -54,35 +54,35 @@ func TestNew(t *testing.T) {
 func TestNewInFormat(t *testing.T) {
 	tests := []struct {
 		desc     string
-		fmt      format
+		fmt      Format
 		input    string
 		wantCID  string
 		wantHash string
 	}{
 		{
-			desc:     "legacy hash format",
-			fmt:      hash,
+			desc:     "hash format",
+			fmt:      Hash,
 			input:    "testing 123",
 			wantCID:  "b8dfb080bc33fb564249e34252bf143d88fc018f",
 			wantHash: "b8dfb080bc33fb564249e34252bf143d88fc018f",
 		},
 		{
 			desc:     "cidv0",
-			fmt:      cidV0,
+			fmt:      CidV0,
 			input:    "testing 123",
 			wantCID:  "Qmc6SoJUtjspmudTyBHk71prbGnd7ajhS6uxCLsy8NtxEL",
 			wantHash: "Qmc6SoJUtjspmudTyBHk71prbGnd7ajhS6uxCLsy8NtxEL",
 		},
 		{
 			desc:     "cidv1",
-			fmt:      cidV1,
+			fmt:      CidV1,
 			input:    "testing 123",
 			wantCID:  "zb2rhkQ5HMh8b8qj6V1xH42nvDKMYW7q54SLsi2W1mYtes8S4",
 			wantHash: "Qmc6SoJUtjspmudTyBHk71prbGnd7ajhS6uxCLsy8NtxEL",
 		},
 	}
 	for _, tt := range tests {
-		cid, err := newInFormat(bytes.NewBufferString(tt.input), tt.fmt)
+		cid, err := NewInFormat(bytes.NewBufferString(tt.input), tt.fmt)
 		if err != nil {
 			t.Fatalf("%q failed: %s", tt.desc, err)
 		}
@@ -96,8 +96,8 @@ func TestNewInFormat(t *testing.T) {
 }
 
 func TestEquality(t *testing.T) {
-	build := func(str string, fmt format) ContentID {
-		cid, err := newInFormat(bytes.NewBufferString(str), fmt)
+	build := func(str string, fmt Format) ContentID {
+		cid, err := NewInFormat(bytes.NewBufferString(str), fmt)
 		if err != nil {
 			t.Fatalf("creating cid: %s", err)
 		}
@@ -112,57 +112,57 @@ func TestEquality(t *testing.T) {
 	}{
 		{
 			desc:          "equal hash",
-			a:             build("a", hash),
-			b:             build("a", hash),
+			a:             build("a", Hash),
+			b:             build("a", Hash),
 			wantEqual:     true,
 			wantEqualHash: true,
 		},
 		{
 			desc:          "unequal hash",
-			a:             build("a", hash),
-			b:             build("b", hash),
+			a:             build("a", Hash),
+			b:             build("b", Hash),
 			wantEqual:     false,
 			wantEqualHash: false,
 		},
 		{
 			desc:          "equal cidV0",
-			a:             build("a", cidV0),
-			b:             build("a", cidV0),
+			a:             build("a", CidV0),
+			b:             build("a", CidV0),
 			wantEqual:     true,
 			wantEqualHash: true,
 		},
 		{
 			desc:          "unequal cidV0",
-			a:             build("a", cidV0),
-			b:             build("b", cidV0),
+			a:             build("a", CidV0),
+			b:             build("b", CidV0),
 			wantEqual:     false,
 			wantEqualHash: false,
 		},
 		{
 			desc:          "equal cidV1",
-			a:             build("a", cidV1),
-			b:             build("a", cidV1),
+			a:             build("a", CidV1),
+			b:             build("a", CidV1),
 			wantEqual:     true,
 			wantEqualHash: true,
 		},
 		{
 			desc:          "unequal cidV1",
-			a:             build("a", cidV1),
-			b:             build("b", cidV1),
+			a:             build("a", CidV1),
+			b:             build("b", CidV1),
 			wantEqual:     false,
 			wantEqualHash: false,
 		},
 		{
 			desc:          "equal cidv0 and cidV1",
-			a:             build("a", cidV0),
-			b:             build("a", cidV1),
+			a:             build("a", CidV0),
+			b:             build("a", CidV1),
 			wantEqual:     false,
 			wantEqualHash: true,
 		},
 		{
 			desc:          "unequal cidv0 and cidV1",
-			a:             build("a", cidV0),
-			b:             build("b", cidV1),
+			a:             build("a", CidV0),
+			b:             build("b", CidV1),
 			wantEqual:     false,
 			wantEqualHash: false,
 		},
