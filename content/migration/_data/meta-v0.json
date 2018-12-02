@@ -1,0 +1,126 @@
+{
+  "content_type": "jpg",
+  "size": 549322,
+  "inherent": {
+    "created": "2008-02-03T18:44:33Z",
+    "image": {
+      "width": 1064,
+      "height": 1600
+    },
+    "exif": {
+      "ApertureValue": {
+        "id": "0x9202",
+        "val": 1.4
+      },
+      "ColorSpace": {
+        "id": "0xa001",
+        "val": "Uncalibrated"
+      },
+      "CreateDate": {
+        "id": "0x9004",
+        "val": "2008:02:03 18:44:33"
+      },
+      "CustomRendered": {
+        "id": "0xa401",
+        "val": "Normal"
+      },
+      "DateTimeOriginal": {
+        "id": "0x9003",
+        "val": "2008:02:03 18:44:33"
+      },
+      "ExifImageHeight": {
+        "id": "0xa003",
+        "val": 1600
+      },
+      "ExifImageWidth": {
+        "id": "0xa002",
+        "val": 1064
+      },
+      "ExifVersion": {
+        "id": "0x9000",
+        "val": "0221"
+      },
+      "ExposureCompensation": {
+        "id": "0x9204",
+        "val": -2
+      },
+      "ExposureMode": {
+        "id": "0xa402",
+        "val": "Auto"
+      },
+      "ExposureProgram": {
+        "id": "0x8822",
+        "val": "Aperture-priority AE"
+      },
+      "ExposureTime": {
+        "id": "0x829a",
+        "val": "1/30"
+      },
+      "FNumber": {
+        "id": "0x829d",
+        "val": 1.4
+      },
+      "Flash": {
+        "id": "0x9209",
+        "val": "Off, Did not fire"
+      },
+      "FlashpixVersion": {
+        "id": "0xa000",
+        "val": "0100"
+      },
+      "FocalLength": {
+        "id": "0x920a",
+        "val": "50.0 mm"
+      },
+      "FocalPlaneResolutionUnit": {
+        "id": "0xa210",
+        "val": "inches"
+      },
+      "FocalPlaneXResolution": {
+        "id": "0xa20e",
+        "val": 3959.322034
+      },
+      "FocalPlaneYResolution": {
+        "id": "0xa20f",
+        "val": 3959.322034
+      },
+      "ISO": {
+        "id": "0x8827",
+        "val": 400
+      },
+      "MeteringMode": {
+        "id": "0x9207",
+        "val": "Multi-segment"
+      },
+      "ModifyDate": {
+        "id": "0x0132",
+        "val": "2008:02:03 18:44:33"
+      },
+      "ResolutionUnit": {
+        "id": "0x0128",
+        "val": "inches"
+      },
+      "SceneCaptureType": {
+        "id": "0xa406",
+        "val": "Standard"
+      },
+      "ShutterSpeedValue": {
+        "id": "0x9201",
+        "val": "1/30"
+      },
+      "WhiteBalance": {
+        "id": "0xa403",
+        "val": "Manual"
+      },
+      "XResolution": {
+        "id": "0x011a",
+        "val": 72
+      },
+      "YResolution": {
+        "id": "0x011b",
+        "val": 72
+      }
+    }
+  }
+}
+
