@@ -1,4 +1,4 @@
-package content
+package meta
 
 import (
 	"reflect"
@@ -19,22 +19,22 @@ func TestMetaDateCreated(t *testing.T) {
 		{
 			desc: "inherent with date",
 			m: &Meta{
-				Inherent: MetaContent{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
+				Inherent: Content{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
 			},
 			want: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC),
 		},
 		{
 			desc: "sidecar with date",
 			m: &Meta{
-				Sidecar: MetaContent{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
+				Sidecar: Content{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
 			},
 			want: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC),
 		},
 		{
 			desc: "prefers sidecar to inherent",
 			m: &Meta{
-				Inherent: MetaContent{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
-				Sidecar:  MetaContent{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
+				Inherent: Content{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
+				Sidecar:  Content{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
 			},
 			want: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC),
 		},
@@ -50,7 +50,7 @@ func TestMetaImage(t *testing.T) {
 	tests := []struct {
 		desc string
 		m    *Meta
-		want MetaImage
+		want Image
 	}{
 		{
 			desc: "zero value",
@@ -59,9 +59,9 @@ func TestMetaImage(t *testing.T) {
 		{
 			desc: "inherent image",
 			m: &Meta{
-				Inherent: MetaContent{Image: MetaImage{Width: 100}},
+				Inherent: Content{Image: Image{Width: 100}},
 			},
-			want: MetaImage{Width: 100},
+			want: Image{Width: 100},
 		},
 	}
 	for _, tt := range tests {

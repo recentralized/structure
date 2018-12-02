@@ -1,16 +1,18 @@
-package content
+package meta
 
 import (
 	"encoding/json"
 	"time"
+
+	"github.com/recentralized/structure/content"
 )
 
 type metaJSON struct {
 	Version     string       `json:"version"`
-	ContentType Type         `json:"content_type"`
+	ContentType content.Type `json:"content_type"`
 	Size        int64        `json:"size"`
-	Inherent    *MetaContent `json:"inherent,omitempty"`
-	Sidecar     *MetaContent `json:"sidecar,omitempty"`
+	Inherent    *Content     `json:"inherent,omitempty"`
+	Sidecar     *Content     `json:"sidecar,omitempty"`
 	SrcSpecific              // Embedded fields.
 }
 
@@ -52,12 +54,12 @@ func (m *Meta) UnmarshalJSON(data []byte) error {
 
 type metaContentJSON struct {
 	Created *time.Time `json:"created,omitempty"`
-	Image   *MetaImage `json:"image,omitempty"`
+	Image   *Image     `json:"image,omitempty"`
 	Exif    Exif       `json:"exif,omitempty"`
 }
 
 // MarshalJSON converts MetaContent to JSON.
-func (m MetaContent) MarshalJSON() ([]byte, error) {
+func (m Content) MarshalJSON() ([]byte, error) {
 	j := metaContentJSON{}
 	if !m.Created.IsZero() {
 		j.Created = &m.Created
@@ -72,7 +74,7 @@ func (m MetaContent) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON converts JSON to MetaContent.
-func (m *MetaContent) UnmarshalJSON(data []byte) error {
+func (m *Content) UnmarshalJSON(data []byte) error {
 	var j metaContentJSON
 	if err := json.Unmarshal(data, &j); err != nil {
 		return err
