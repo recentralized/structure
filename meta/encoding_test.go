@@ -1,4 +1,4 @@
-package content
+package meta
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/recentralized/structure/content"
 )
 
 func TestMetaJSON(t *testing.T) {
@@ -24,11 +26,11 @@ func TestMetaJSON(t *testing.T) {
 			desc: "basic fields",
 			meta: Meta{
 				Version:     "v1",
-				ContentType: JPG,
+				ContentType: content.JPG,
 				Size:        100,
-				Inherent: MetaContent{
+				Inherent: Content{
 					Created: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
-					Image: MetaImage{
+					Image: Image{
 						Width:  100,
 						Height: 60,
 					},
@@ -39,7 +41,7 @@ func TestMetaJSON(t *testing.T) {
 						},
 					},
 				},
-				Sidecar: MetaContent{
+				Sidecar: Content{
 					Created: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
 				},
 			},

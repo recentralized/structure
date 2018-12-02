@@ -1,65 +1,66 @@
-package content
+package meta
 
 import (
 	"encoding/json"
 	"errors"
 	"io"
 	"time"
+
+	"github.com/recentralized/structure/content"
 )
 
 const (
-	// metaVersionV0 is the original implementation.
-	metaVersionV0 string = ""
+	// versionV0 is the original implementation.
+	versionV0 string = ""
 
-	// metaVersionV1 is the first `structure` implementation.
-	metaVersionV1 string = "v1"
+	// versionV1 is the first `structure` implementation.
+	versionV1 string = "v1"
 )
 
-// MetaVersion is the current version of the Meta document. A new version will
-// be introduced for backward-incompatible changes.
-const MetaVersion = metaVersionV1
+// Version is the current version of the Meta document. A new version will be
+// introduced for backward-incompatible changes.
+const Version = versionV1
 
-// ErrMetaWrongVersion means that the parsed meta is not at the current
+// ErrWrongVersion means that the parsed meta is not at the current
 // version, so its data may be incorrectly interpreted.
-var ErrMetaWrongVersion = errors.New("index is not at a compatible verison")
+var ErrWrongVersion = errors.New("meta is not at a compatible verison")
 
 // Meta is all of the potential metadata about content.
 type Meta struct {
 	Version     string
-	ContentType Type
+	ContentType content.Type
 	Size        int64
 
 	// Metadata that came from the content itself.
-	Inherent MetaContent
+	Inherent Content
 
 	// Metadata that came from nearby, such as an XMP sidecar file or other
 	// source of metadata.
-	Sidecar MetaContent
+	Sidecar Content
 
 	// Metadata that came from the source of the data.
 	Srcs SrcSpecific
 }
 
-// NewMeta initializes a new Meta at the current version.
-func NewMeta() *Meta {
-	return &Meta{Version: MetaVersion}
+// New initializes a new Meta at the current version.
+func New() *Meta {
+	return &Meta{Version: Version}
 }
 
-// ParseMetaJSON loads Meta from JSON. If the loaded data cannot be
-// transparently upgraded to the current version then ErrMetaWrongVersion is
-// returned.
-func ParseMetaJSON(r io.Reader) (*Meta, error) {
+// ParseJSON loads Meta from JSON. If the loaded data cannot be transparently
+// upgraded to the current version then ErrMetaWrongVersion is returned.
+func ParseJSON(r io.Reader) (*Meta, error) {
 	meta := &Meta{}
 	err := json.NewDecoder(r).Decode(meta)
 	if err != nil {
 		return nil, err
 	}
 	switch meta.Version {
-	case metaVersionV1:
-	case metaVersionV0:
-		meta.Version = metaVersionV1
+	case versionV1:
+	case versionV0:
+		meta.Version = versionV1
 	default:
-		return nil, ErrMetaWrongVersion
+		return nil, ErrWrongVersion
 	}
 	return meta, nil
 }
@@ -82,19 +83,19 @@ func (m *Meta) DateCreated() time.Time {
 }
 
 // Image returns the inherent image data.
-func (m *Meta) Image() MetaImage {
+func (m *Meta) Image() Image {
 	return m.Inherent.Image
 }
 
-// MetaContent contains all data that describes the content directly.
-type MetaContent struct {
+// Content contains all data that describes the content directly.
+type Content struct {
 	Created time.Time
-	Image   MetaImage
+	Image   Image
 	Exif    Exif
 }
 
-// MetaImage contains standard fields for all images.
-type MetaImage struct {
+// Image contains standard fields for all images.
+type Image struct {
 	Width  int `json:"width"`
 	Height int `json:"height"`
 }
@@ -104,12 +105,12 @@ type SrcSpecific struct {
 	//Flickr *flickr.FlickrActivity `json:"flickr,omitempty"`
 }
 
-func (m MetaContent) isZero() bool {
+func (m Content) isZero() bool {
 	return m.Created.IsZero() &&
 		m.Image.isZero() &&
 		len(m.Exif) == 0
 }
 
-func (m MetaImage) isZero() bool {
+func (m Image) isZero() bool {
 	return m.Width == 0 && m.Height == 0
 }

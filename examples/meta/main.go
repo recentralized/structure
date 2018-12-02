@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/meta"
 )
 
 func main() {
@@ -25,27 +26,27 @@ func main() {
 	fmt.Println(string(data))
 }
 
-func buildMeta() (*content.Meta, error) {
+func buildMeta() (*meta.Meta, error) {
 
-	meta := content.NewMeta()
-	meta.ContentType = content.JPG
-	meta.Size = 1024
+	doc := meta.New()
+	doc.ContentType = content.JPG
+	doc.Size = 1024
 
-	meta.Inherent = content.MetaContent{
+	doc.Inherent = meta.Content{
 		Created: time.Date(2018, 1, 1, 0, 0, 0, 0, time.UTC),
-		Image: content.MetaImage{
+		Image: meta.Image{
 			Width:  3000,
 			Height: 5000,
 		},
-		Exif: content.Exif{
-			"ExposureTime": content.ExifValue{ID: "ShutterSpeed", Val: "1/60"},
+		Exif: meta.Exif{
+			"ExposureTime": meta.ExifValue{ID: "ShutterSpeed", Val: "1/60"},
 		},
 	}
-	meta.Sidecar = content.MetaContent{
-		Exif: content.Exif{
-			"FNumber": content.ExifValue{ID: "0x829d", Val: 1.8},
+	doc.Sidecar = meta.Content{
+		Exif: meta.Exif{
+			"FNumber": meta.ExifValue{ID: "0x829d", Val: 1.8},
 		},
 	}
 
-	return meta, nil
+	return doc, nil
 }

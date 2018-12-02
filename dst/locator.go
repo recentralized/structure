@@ -6,6 +6,7 @@ import (
 
 	"github.com/recentralized/structure/cid"
 	"github.com/recentralized/structure/content"
+	"github.com/recentralized/structure/meta"
 	"github.com/recentralized/structure/uri"
 )
 
@@ -25,10 +26,10 @@ type Locator interface {
 	RefsURI(cid.ContentID) uri.URI
 
 	// DataURI returns the location that this data should be stored.
-	DataURI(cid.ContentID, *content.Meta) uri.URI
+	DataURI(cid.ContentID, *meta.Meta) uri.URI
 
 	// MetaURI returns the location that this meta should be stored.
-	MetaURI(cid.ContentID, *content.Meta) uri.URI
+	MetaURI(cid.ContentID, *meta.Meta) uri.URI
 }
 
 // NewFilesystemLocator initializes the standard locator for use on filesystems
@@ -66,7 +67,7 @@ func (l fsLocator) RefsURI(cid cid.ContentID) uri.URI {
 // media/2006/2006-01-02/<cid>.<ext>
 // media/Undated/hash(<cid>)/<cid>.<ext>
 // <category>/hash(<cid>)/<cid>.<ext>
-func (l fsLocator) DataURI(cid cid.ContentID, meta *content.Meta) uri.URI {
+func (l fsLocator) DataURI(cid cid.ContentID, meta *meta.Meta) uri.URI {
 	var (
 		key string
 		ext = meta.ContentType.Ext()
@@ -106,7 +107,7 @@ func (l fsLocator) DataURI(cid cid.ContentID, meta *content.Meta) uri.URI {
 }
 
 // meta/hash(<cid>)/<cid>.json
-func (l fsLocator) MetaURI(cid cid.ContentID, meta *content.Meta) uri.URI {
+func (l fsLocator) MetaURI(cid cid.ContentID, meta *meta.Meta) uri.URI {
 	key := fmt.Sprintf("meta/%s.%s", l.dirs(cid), "json")
 	return uri.TrustedNew(key)
 }

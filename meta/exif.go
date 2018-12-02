@@ -1,4 +1,4 @@
-package content
+package meta
 
 // Exif is all of the Exif data.
 type Exif map[string]ExifValue
