@@ -27,10 +27,9 @@ func main() {
 
 func buildMeta() (*content.Meta, error) {
 
-	meta := &content.Meta{
-		ContentType: content.JPG,
-		Size:        1024,
-	}
+	meta := content.NewMeta()
+	meta.ContentType = content.JPG
+	meta.Size = 1024
 
 	meta.Inherent = content.MetaContent{
 		Created: time.Date(2018, 1, 1, 0, 0, 0, 0, time.UTC),
