@@ -65,7 +65,7 @@ func addRefs(loc dst.Locator, idx *index.Index) error {
 	dst := idx.Dsts[0]
 
 	data := []byte("fictional image data")
-	cid, err := cid.New(bytes.NewReader(data))
+	cid, err := loc.NewHash(bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
