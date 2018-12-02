@@ -20,3 +20,16 @@ func TestNewHash(t *testing.T) {
 		t.Fatalf("got %s want %s", hash, want)
 	}
 }
+
+func TestHashEqual(t *testing.T) {
+	h1, _ := NewHash(bytes.NewBufferString("a"))
+	h2, _ := NewHash(bytes.NewBufferString("a"))
+	h3, _ := NewHash(bytes.NewBufferString("b"))
+
+	if !h1.Equal(h2) {
+		t.Errorf("same data must be equal")
+	}
+	if h1.Equal(h3) {
+		t.Errorf("different data must NOT be equal")
+	}
+}

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/recentralized/structure/cid"
 	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/meta"
 	"github.com/recentralized/structure/uri"
@@ -15,7 +14,7 @@ import (
 type Locator interface {
 
 	// NewHash generates the hash for data.
-	NewHash(io.Reader) (cid.ContentID, error)
+	NewHash(io.Reader) (data.Hash, error)
 
 	// IndexURI returns the document that stores the index.
 	IndexURI() uri.URI
@@ -23,13 +22,13 @@ type Locator interface {
 	// RefsURI returns the document that should store this ref. This is
 	// generally the same as IndexURI, but returning a different value
 	// would allow you to shard the refs.
-	RefsURI(cid.ContentID) uri.URI
+	RefsURI(data.Hash) uri.URI
 
 	// DataURI returns the location that this data should be stored.
-	DataURI(cid.ContentID, *meta.Meta) uri.URI
+	DataURI(data.Hash, *meta.Meta) uri.URI
 
 	// MetaURI returns the location that this meta should be stored.
-	MetaURI(cid.ContentID, *meta.Meta) uri.URI
+	MetaURI(data.Hash, *meta.Meta) uri.URI
 }
 
 // NewFilesystemLocator initializes the standard locator for use on filesystems
@@ -52,22 +51,22 @@ type fsLocator struct {
 	zeroDateDir     string
 }
 
-func (l fsLocator) NewHash(r io.Reader) (cid.ContentID, error) {
-	return cid.New(r)
+func (l fsLocator) NewHash(r io.Reader) (data.Hash, error) {
+	return data.NewHash(r)
 }
 
 func (l fsLocator) IndexURI() uri.URI {
 	return uri.TrustedNew(l.indexFile)
 }
 
-func (l fsLocator) RefsURI(cid cid.ContentID) uri.URI {
+func (l fsLocator) RefsURI(cid data.Hash) uri.URI {
 	return uri.TrustedNew(l.indexFile)
 }
 
 // media/2006/2006-01-02/<cid>.<ext>
 // media/Undated/hash(<cid>)/<cid>.<ext>
 // <category>/hash(<cid>)/<cid>.<ext>
-func (l fsLocator) DataURI(cid cid.ContentID, meta *meta.Meta) uri.URI {
+func (l fsLocator) DataURI(cid data.Hash, meta *meta.Meta) uri.URI {
 	var (
 		key string
 		ext = meta.Type.Ext()
@@ -107,12 +106,12 @@ func (l fsLocator) DataURI(cid cid.ContentID, meta *meta.Meta) uri.URI {
 }
 
 // meta/hash(<cid>)/<cid>.json
-func (l fsLocator) MetaURI(cid cid.ContentID, meta *meta.Meta) uri.URI {
+func (l fsLocator) MetaURI(cid data.Hash, meta *meta.Meta) uri.URI {
 	key := fmt.Sprintf("meta/%s.%s", l.dirs(cid), "json")
 	return uri.TrustedNew(key)
 }
 
-func (l fsLocator) dirs(cid cid.ContentID) string {
+func (l fsLocator) dirs(cid data.Hash) string {
 	s := cid.String()
 	if len(s) > 4 {
 		return fmt.Sprintf("%s/%s/%s", s[0:2], s[2:4], s[4:])

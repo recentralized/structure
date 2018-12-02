@@ -35,7 +35,10 @@ const (
 
 // Parse converts a string to a ContentID.
 func Parse(s string) (ContentID, error) {
-	if len(s) <= sha1Length {
+	if len(s) < sha1Length {
+		return ContentID{str: &s}, nil
+	}
+	if len(s) == sha1Length {
 		return ContentID{str: &s}, nil
 	}
 	decoded, err := cid.Decode(s)

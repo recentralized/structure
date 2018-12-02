@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/recentralized/structure/cid"
+	"github.com/recentralized/structure/data"
 )
 
 // Version identifies the version of the index structure. A new version will be
@@ -112,7 +112,7 @@ func (i *Index) GetDst(dstID DstID) (Dst, bool) {
 func (i *Index) AddRef(ref Ref) bool {
 	var uref *URef
 	for _, u := range i.Refs {
-		if u.Hash.EqualHash(ref.Hash) {
+		if u.Hash.Equal(ref.Hash) {
 			uref = u
 			break
 		}
@@ -129,9 +129,9 @@ func (i *Index) AddRef(ref Ref) bool {
 // GetRef retrieves a URef from the index. A URef is a hash with all sources
 // and destinations that have been added. If you're only interested in one
 // source or destination see GetSrcItem and GetDstItem.
-func (i *Index) GetRef(hash cid.ContentID) (*URef, bool) {
+func (i *Index) GetRef(hash data.Hash) (*URef, bool) {
 	for _, uref := range i.Refs {
-		if uref.Hash.EqualHash(hash) {
+		if uref.Hash.Equal(hash) {
 			return uref, true
 		}
 	}
@@ -140,7 +140,7 @@ func (i *Index) GetRef(hash cid.ContentID) (*URef, bool) {
 
 // GetSrcItem returns a SrcItem for content with hash and stored in srcID. If
 // no SrcItem is found, it returns false.
-func (i *Index) GetSrcItem(hash cid.ContentID, srcID SrcID) (SrcItem, bool) {
+func (i *Index) GetSrcItem(hash data.Hash, srcID SrcID) (SrcItem, bool) {
 	ref, ok := i.GetRef(hash)
 	if ok {
 		return ref.GetSrc(srcID)
@@ -150,7 +150,7 @@ func (i *Index) GetSrcItem(hash cid.ContentID, srcID SrcID) (SrcItem, bool) {
 
 // GetDstItem returns a DstItem for content with hash and stored in dstID. If
 // no DstItem is found, it returns false.
-func (i *Index) GetDstItem(hash cid.ContentID, dstID DstID) (DstItem, bool) {
+func (i *Index) GetDstItem(hash data.Hash, dstID DstID) (DstItem, bool) {
 	ref, ok := i.GetRef(hash)
 	if ok {
 		return ref.GetDst(dstID)

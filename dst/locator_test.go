@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/recentralized/structure/cid"
 	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/meta"
 )
@@ -12,14 +11,14 @@ import (
 func TestFilesystemLocator(t *testing.T) {
 	tests := []struct {
 		desc        string
-		hash        cid.ContentID
+		hash        data.Hash
 		meta        *meta.Meta
 		wantDataURI string
 		wantMetaURI string
 	}{
 		{
 			desc: "dated media",
-			hash: cid.NewLiteral("abcdefg"),
+			hash: data.LiteralHash("abcdefg"),
 			meta: &meta.Meta{
 				Type: data.JPG,
 				Inherent: meta.Content{
@@ -31,7 +30,7 @@ func TestFilesystemLocator(t *testing.T) {
 		},
 		{
 			desc: "undated media",
-			hash: cid.NewLiteral("abcdefg"),
+			hash: data.LiteralHash("abcdefg"),
 			meta: &meta.Meta{
 				Type: data.JPG,
 			},
@@ -40,7 +39,7 @@ func TestFilesystemLocator(t *testing.T) {
 		},
 		{
 			desc: "unknown class",
-			hash: cid.NewLiteral("abcdefg"),
+			hash: data.LiteralHash("abcdefg"),
 			meta: &meta.Meta{
 				Type: data.UnknownType,
 			},

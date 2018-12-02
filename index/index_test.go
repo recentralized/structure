@@ -3,7 +3,7 @@ package index
 import (
 	"testing"
 
-	"github.com/recentralized/structure/cid"
+	"github.com/recentralized/structure/data"
 )
 
 func TestIndexSrc(t *testing.T) {
@@ -167,7 +167,7 @@ func TestIndexRef(t *testing.T) {
 			desc: "empty index",
 			idx:  &Index{},
 			ref: Ref{
-				Hash: cid.NewLiteral("a"),
+				Hash: data.LiteralHash("a"),
 				Src:  SrcItem{SrcID: SrcID("a")},
 				Dst:  DstItem{DstID: DstID("a")},
 			},
@@ -180,14 +180,14 @@ func TestIndexRef(t *testing.T) {
 			idx: &Index{
 				Refs: []*URef{
 					{
-						Hash: cid.NewLiteral("b"),
+						Hash: data.LiteralHash("b"),
 						Srcs: []SrcItem{{SrcID: SrcID("a")}},
 						Dsts: []DstItem{{DstID: DstID("a")}},
 					},
 				},
 			},
 			ref: Ref{
-				Hash: cid.NewLiteral("a"),
+				Hash: data.LiteralHash("a"),
 				Src:  SrcItem{SrcID: SrcID("a")},
 				Dst:  DstItem{DstID: DstID("a")},
 			},
@@ -200,14 +200,14 @@ func TestIndexRef(t *testing.T) {
 			idx: &Index{
 				Refs: []*URef{
 					{
-						Hash: cid.NewLiteral("a"),
+						Hash: data.LiteralHash("a"),
 						Srcs: []SrcItem{{SrcID: SrcID("a")}},
 						Dsts: []DstItem{{DstID: DstID("b")}},
 					},
 				},
 			},
 			ref: Ref{
-				Hash: cid.NewLiteral("a"),
+				Hash: data.LiteralHash("a"),
 				Src:  SrcItem{SrcID: SrcID("a")},
 				Dst:  DstItem{DstID: DstID("a")},
 			},
@@ -220,14 +220,14 @@ func TestIndexRef(t *testing.T) {
 			idx: &Index{
 				Refs: []*URef{
 					{
-						Hash: cid.NewLiteral("a"),
+						Hash: data.LiteralHash("a"),
 						Srcs: []SrcItem{{SrcID: SrcID("b")}},
 						Dsts: []DstItem{{DstID: DstID("a")}},
 					},
 				},
 			},
 			ref: Ref{
-				Hash: cid.NewLiteral("a"),
+				Hash: data.LiteralHash("a"),
 				Src:  SrcItem{SrcID: SrcID("a")},
 				Dst:  DstItem{DstID: DstID("a")},
 			},
@@ -240,14 +240,14 @@ func TestIndexRef(t *testing.T) {
 			idx: &Index{
 				Refs: []*URef{
 					{
-						Hash: cid.NewLiteral("a"),
+						Hash: data.LiteralHash("a"),
 						Srcs: []SrcItem{{SrcID: SrcID("a")}},
 						Dsts: []DstItem{{DstID: DstID("a")}},
 					},
 				},
 			},
 			ref: Ref{
-				Hash: cid.NewLiteral("a"),
+				Hash: data.LiteralHash("a"),
 				Src:  SrcItem{SrcID: SrcID("a")},
 				Dst:  DstItem{DstID: DstID("a")},
 			},
