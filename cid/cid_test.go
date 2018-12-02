@@ -12,7 +12,7 @@ func TestParse(t *testing.T) {
 		cid  string
 	}{
 		{
-			desc: "hash format",
+			desc: "sha1",
 			cid:  "b8dfb080bc33fb564249e34252bf143d88fc018f",
 		},
 		{
