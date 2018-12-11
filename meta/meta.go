@@ -102,7 +102,7 @@ type Image struct {
 
 // SrcSpecific contains source-specific metadata.
 type SrcSpecific struct {
-	//Flickr *flickr.FlickrActivity `json:"flickr,omitempty"`
+	Flickr *FlickrActivity `json:"flickr,omitempty"`
 }
 
 func (m Content) isZero() bool {
