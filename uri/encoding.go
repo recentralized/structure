@@ -1,6 +1,10 @@
 package uri
 
-import "encoding/json"
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
+)
 
 // MarshalJSON implements json.Marshaler.
 func (u URI) MarshalJSON() ([]byte, error) {
@@ -16,6 +20,25 @@ func (u *URI) UnmarshalJSON(data []byte) error {
 	if s != "" {
 		// Ignore error, we'll get a rawStr uri back and that's fine.
 		newURI, _ := New(s)
+		*u = newURI
+	}
+	return nil
+}
+
+// Value implements database/sql
+func (u URI) Value() (driver.Value, error) {
+	return []byte(u.String()), nil
+}
+
+// Scan implements database/sql
+func (u *URI) Scan(data interface{}) error {
+	v, ok := data.([]byte)
+	if !ok {
+		return fmt.Errorf("URI did not get bytes: %#v", data)
+	}
+	if len(v) != 0 {
+		// Ignore error, we'll get a rawStr uri back and that's fine.
+		newURI, _ := New(string(v))
 		*u = newURI
 	}
 	return nil

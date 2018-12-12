@@ -68,3 +68,22 @@ func TestURIJSON(t *testing.T) {
 		}
 	}
 }
+
+func TestURIDatabase(t *testing.T) {
+	uriIn := TrustedNew("http://example.com/")
+	val, err := uriIn.Value()
+	if err != nil {
+		t.Fatalf("Value() failed: %s", err)
+	}
+	_, ok := val.([]byte)
+	if !ok {
+		t.Fatalf("Value() did not return bytes")
+	}
+	uriOut := &URI{}
+	if err := uriOut.Scan(val); err != nil {
+		t.Fatalf("Scan() failed: %s", err)
+	}
+	if !uriIn.Equal(*uriOut) {
+		t.Fatalf("Round-trip failed: got %s want %s", uriOut, uriIn)
+	}
+}
