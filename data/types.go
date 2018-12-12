@@ -1,6 +1,14 @@
 package data
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+var (
+	// ErrUnknownType is returned if the type cannot be determined.
+	ErrUnknownType = errors.New("data: unknown type")
+)
 
 // Type is a known type of file such as JPEG or PNG. Only known types of files
 // are copied from source to destination.

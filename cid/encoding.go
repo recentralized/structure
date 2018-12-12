@@ -1,7 +1,9 @@
 package cid
 
 import (
+	"database/sql/driver"
 	"encoding/json"
+	"fmt"
 	"strings"
 )
 
@@ -24,5 +26,24 @@ func (c *ContentID) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*c = cid
+	return nil
+}
+
+// Value implements database/sql
+func (c ContentID) Value() (driver.Value, error) {
+	return []byte(c.String()), nil
+}
+
+// Scan implements database/sql
+func (c *ContentID) Scan(data interface{}) error {
+	v, ok := data.([]byte)
+	if !ok {
+		return fmt.Errorf("ContentID did not get bytes: %#v", data)
+	}
+	o, err := Parse(string(v))
+	if err != nil {
+		return err
+	}
+	*c = o
 	return nil
 }
