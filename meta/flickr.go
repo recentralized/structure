@@ -81,13 +81,19 @@ type FlickrMediaPerson struct {
 // FlickrMediaNote is a note on a Flickr image.
 // https://www.flickr.com/services/api/flickr.photos.getInfo.html
 type FlickrMediaNote struct {
-	ID       string `json:"id"`
-	UserID   string `json:"user_id,omitempty"`
-	Username string `json:"username,omitempty"`
-	X        int    `json:"x,omitempty"`
-	Y        int    `json:"y,omitempty"`
-	W        int    `json:"w,omitempty"`
-	H        int    `json:"h,omitempty"`
+	ID       string           `json:"id"`
+	UserID   string           `json:"user_id,omitempty"`
+	Username string           `json:"username,omitempty"`
+	Coords   NormalizedCoords `json:"coords"`
+}
+
+// NormalizedCoords are normalized coordinates - 0-1. Flickr stores them as pixels
+// assuming 500px wide image.
+type NormalizedCoords struct {
+	X float64 `json:"x,omitempty"`
+	Y float64 `json:"y,omitempty"`
+	W float64 `json:"w,omitempty"`
+	H float64 `json:"h,omitempty"`
 }
 
 // FlickrMediaInSet is a set a Flickr image is part of.
