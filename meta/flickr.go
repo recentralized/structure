@@ -32,9 +32,9 @@ type FlickrMedia struct {
 // FlickrMediaFave is who favorited an image on Flickr.
 // https://www.flickr.com/services/api/flickr.photos.getFavorites.html
 type FlickrMediaFave struct {
-	UserID   string    `json:"user_id"`
-	Username string    `json:"username,omitempty"`
-	Date     time.Time `json:"date,omitempty"`
+	UserID   string     `json:"user_id"`
+	Username string     `json:"username,omitempty"`
+	Date     *time.Time `json:"date,omitempty"`
 }
 
 // FlickrMediaGeo is geo data on a Flickr image.
