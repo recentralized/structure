@@ -15,7 +15,7 @@ type FlickrMedia struct {
 	TakenAt      *time.Time           `json:"taken_at,omitempty"`
 	LastUpdateAt *time.Time           `json:"last_update_at,omitempty"`
 	URL          string               `json:"url,omitempty"`
-	Privacy      string               `json:"privacy,omitempty"`
+	Visibility   string               `json:"visibility,omitempty"`
 	License      string               `json:"license,omitempty"`
 	Geo          *FlickrMediaGeo      `json:"geo,omitempty"`
 	Views        int                  `json:"views,omitempty"`
