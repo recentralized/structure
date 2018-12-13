@@ -51,12 +51,66 @@ type FlickrMediaFave struct {
 	Date     *time.Time `json:"date,omitempty"`
 }
 
+// FlickrGeoContext describes context of the location.
+type FlickrGeoContext string
+
+// Values for FlickrMediaGeo.Context
+const (
+	FlickrGeoContextNone    FlickrGeoContext = ""
+	FlickrGeoContextInside                   = "inside"
+	FlickrGeoContextOutside                  = "outside"
+)
+
 // FlickrMediaGeo is geo data on a Flickr image.
-// https://www.flickr.com/services/api/flickr.photos.getExif.html
+// https://www.flickr.com/services/api/flickr.photos.geo.getLocation.html
+// https://www.flickr.com/services/api/flickr.photos.geo.setLocation.html
 type FlickrMediaGeo struct {
-	Latitude  int `json:"latitide,omitempty"`
-	Longitude int `json:"longitude,omitempty"`
-	Accuracy  int `json:"accuracy,omitempty"`
+	// The latitude whose valid range is -90 to 90.
+	Latitude float64 `json:"latitide,omitempty"`
+
+	// The longitude whose valid range is -180 to 180.
+	Longitude float64 `json:"longitude"`
+
+	// Recorded accuracy level of the location information. World level is
+	// 1, Country is ~3, Region ~6, City ~11, Street ~16. Current range is
+	// 1-16.
+	Accuracy int `json:"accuracy"`
+
+	// Context is a numeric value representing the photo's geotagginess
+	// beyond latitude and longitude. For example, you may wish to indicate
+	// that a photo was taken "inside" or "outside".
+	Context FlickrGeoContext `json:"context,omitempty"`
+
+	// Where On Earth ID
+	WoeID string `json:"woe_id,omitempty"`
+
+	// Details about the tagged places.
+	Places []FlickrPlace `json:"places,omitempty"`
+}
+
+// FlickrPlaceType describes the type of place.
+type FlickrPlaceType string
+
+// Values for FlickrMediaPlace.Type
+const (
+	FlickrPlaceNone         FlickrPlaceType = ""
+	FlickrPlaceNeighborhood                 = "neighborhood"
+	FlickrPlaceLocality                     = "locality"
+	FlickrPlaceCounty                       = "county"
+	FlickrPlaceRegion                       = "region"
+	FlickrPlaceCountry                      = "country"
+	FlickrPlaceContinent                    = "continent"
+)
+
+// FlickrPlace contains more information about the location information on
+// a Flickr photo.
+// https://www.flickr.com/services/api/flickr.places.getInfo.html
+type FlickrPlace struct {
+	WoeID     string          `json:"woe_id"`
+	Name      string          `json:"name"`
+	Type      FlickrPlaceType `json:"type"`
+	Latitude  float64         `json:"latitide"`
+	Longitude float64         `json:"longitude"`
 }
 
 // FlickrMediaTag is a tag applied to an image on Flickr.
