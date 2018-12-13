@@ -24,7 +24,7 @@ type FlickrMedia struct {
 // FlickrMediaFave is who favorited an image on Flickr.
 // https://www.flickr.com/services/api/flickr.photos.getFavorites.html
 type FlickrMediaFave struct {
-	NSID     string    `json:"nsid,omitempty"`
+	NSID     string    `json:"nsid"`
 	Username string    `json:"username,omitempty"`
 	Date     time.Time `json:"date,omitempty"`
 }
@@ -41,7 +41,7 @@ type FlickrMediaGeo struct {
 // https://www.flickr.com/services/api/flickr.tags.getListPhoto.html
 // https://www.flickr.com/services/api/flickr.photos.getInfo.html
 type FlickrMediaTag struct {
-	ID       string `json:"id,omitempty"`
+	ID       string `json:"id"`
 	NSID     string `json:"nsid,omitempty"`
 	Username string `json:"username,omitempty"`
 	Tag      string `json:"tag,omitempty"`
@@ -51,7 +51,7 @@ type FlickrMediaTag struct {
 // FlickrMediaPerson is a person tagged in a Flickr image.
 // https://www.flickr.com/services/api/flickr.photos.people.getList.html
 type FlickrMediaPerson struct {
-	NSID        string `json:"nsid,omitempty"`
+	NSID        string `json:"nsid"`
 	Username    string `json:"username,omitempty"`
 	X           int    `json:"x,omitempty"`
 	Y           int    `json:"y,omitempty"`
@@ -63,7 +63,7 @@ type FlickrMediaPerson struct {
 // FlickrMediaNote is a note on a Flickr image.
 // https://www.flickr.com/services/api/flickr.photos.getInfo.html
 type FlickrMediaNote struct {
-	ID       string `json:"id,omitempty"`
+	ID       string `json:"id"`
 	NSID     string `json:"nsid,omitempty"`
 	Username string `json:"username,omitempty"`
 	X        int    `json:"x,omitempty"`
@@ -76,7 +76,7 @@ type FlickrMediaNote struct {
 // https://www.flickr.com/services/api/flickr.photos.getAllContexts.html
 // order: https://www.flickr.com/services/api/flickr.photosets.getPhotos.html
 type FlickrMediaInSet struct {
-	ID    string `json:"id,omitempty"`
+	ID    string `json:"id"`
 	Name  string `json:"name,omitempty"`
 	Order int    `json:"order,omitempty"`
 }
@@ -84,7 +84,7 @@ type FlickrMediaInSet struct {
 // FlickrMediaInPool is a pool that a Flickr image is part of.
 // https://www.flickr.com/services/api/flickr.photos.getAllContexts.html
 type FlickrMediaInPool struct {
-	ID   string `json:"id,omitempty"`
+	ID   string `json:"id"`
 	Name string `json:"name,omitempty"`
 	URL  string `json:"url,omitempty"`
 }
@@ -92,7 +92,7 @@ type FlickrMediaInPool struct {
 // FlickrMediaComment is a comment on a Flickr image.
 // https://www.flickr.com/services/api/flickr.photos.comments.getList.html
 type FlickrMediaComment struct {
-	ID       string    `json:"id,omitempty"`
+	ID       string    `json:"id"`
 	NSID     string    `json:"nsid,omitempty"`
 	Username string    `json:"username,omitempty"`
 	Text     string    `json:"text,omitempty"`
