@@ -2,31 +2,45 @@ package meta
 
 import "time"
 
+type flickrVisibility string
+
+const (
+	// FlickrPublic means that the photo is visible to the public.
+	FlickrPublic flickrVisibility = "public"
+
+	// FlickrPrivate means that the photo is not visible to the public,
+	// It may also be visible to friends, family, or both.
+	FlickrPrivate = "private"
+)
+
 // FlickrMedia is the full set of data available for media on Flickr.
 // https://www.flickr.com/services/api/
 // https://www.flickr.com/services/api/flickr.photos.getInfo.html
 type FlickrMedia struct {
-	ID           string               `json:"id"`
-	UserID       string               `json:"user_id,omitempty"`
-	Username     string               `json:"username,omitempty"`
-	Title        string               `json:"title,omitempty"`
-	Description  string               `json:"description,omitempty"`
-	PostedAt     *time.Time           `json:"posted_at,omitempty"`
-	TakenAt      *time.Time           `json:"taken_at,omitempty"`
-	LastUpdateAt *time.Time           `json:"last_update_at,omitempty"`
-	URL          string               `json:"url,omitempty"`
-	Visibility   string               `json:"visibility,omitempty"`
-	License      string               `json:"license,omitempty"`
-	LicenseURL   string               `json:"license_url,omitempty"`
-	Geo          *FlickrMediaGeo      `json:"geo,omitempty"`
-	Views        int                  `json:"views,omitempty"`
-	Faves        []FlickrMediaFave    `json:"faves,omitempty"`
-	Tags         []FlickrMediaTag     `json:"tags,omitempty"`
-	People       []FlickrMediaPerson  `json:"people,omitempty"`
-	Notes        []FlickrMediaNote    `json:"notes,omitempty"`
-	Sets         []FlickrMediaInSet   `json:"sets,omitempty"`
-	Pools        []FlickrMediaInPool  `json:"pools,omitempty"`
-	Comments     []FlickrMediaComment `json:"comments,omitempty"`
+	ID            string               `json:"id"`
+	UserID        string               `json:"user_id,omitempty"`
+	Username      string               `json:"username,omitempty"`
+	Title         string               `json:"title,omitempty"`
+	Description   string               `json:"description,omitempty"`
+	PostedAt      *time.Time           `json:"posted_at,omitempty"`
+	TakenAt       *time.Time           `json:"taken_at,omitempty"`
+	LastUpdateAt  *time.Time           `json:"last_update_at,omitempty"`
+	URL           string               `json:"url,omitempty"`
+	Visibility    flickrVisibility     `json:"visibility,omitempty"`
+	IsPublic      bool                 `json:"is_public,omitempty"`
+	IsFriendsOnly bool                 `json:"is_friends_only,omitempty"`
+	IsFamilyOnly  bool                 `json:"is_family_only,omitempty"`
+	License       string               `json:"license,omitempty"`
+	LicenseURL    string               `json:"license_url,omitempty"`
+	Geo           *FlickrMediaGeo      `json:"geo,omitempty"`
+	Views         int                  `json:"views,omitempty"`
+	Faves         []FlickrMediaFave    `json:"faves,omitempty"`
+	Tags          []FlickrMediaTag     `json:"tags,omitempty"`
+	People        []FlickrMediaPerson  `json:"people,omitempty"`
+	Notes         []FlickrMediaNote    `json:"notes,omitempty"`
+	Sets          []FlickrMediaInSet   `json:"sets,omitempty"`
+	Pools         []FlickrMediaInPool  `json:"pools,omitempty"`
+	Comments      []FlickrMediaComment `json:"comments,omitempty"`
 }
 
 // FlickrMediaFave is who favorited an image on Flickr.
