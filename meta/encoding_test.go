@@ -52,12 +52,12 @@ func TestMetaJSON(t *testing.T) {
 			meta: Meta{
 				Version: "v1",
 				Srcs: SrcSpecific{
-					Flickr: &FlickrActivity{
-						Title: "my image",
+					Flickr: &FlickrMedia{
+						ID: "123",
 					},
 				},
 			},
-			json: `{"version":"v1","type":"","size":0,"flickr":{"title":"my image"}}`,
+			json: `{"version":"v1","type":"","size":0,"flickr":{"id":"123"}}`,
 		},
 	}
 	for _, tt := range tests {
