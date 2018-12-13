@@ -75,10 +75,6 @@ type FlickrMediaTag struct {
 type FlickrMediaPerson struct {
 	UserID        string `json:"user_id"`
 	Username      string `json:"username,omitempty"`
-	X             int    `json:"x,omitempty"`
-	Y             int    `json:"y,omitempty"`
-	W             int    `json:"w,omitempty"`
-	H             int    `json:"h,omitempty"`
 	AddedByUserID string `json:"added_by_user_id,omitempty"`
 }
 
