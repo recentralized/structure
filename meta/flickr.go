@@ -98,11 +98,11 @@ type NormalizedCoords struct {
 
 // FlickrMediaInSet is a set a Flickr image is part of.
 // https://www.flickr.com/services/api/flickr.photos.getAllContexts.html
-// order: https://www.flickr.com/services/api/flickr.photosets.getPhotos.html
+// position: https://www.flickr.com/services/api/flickr.photosets.getPhotos.html
 type FlickrMediaInSet struct {
-	ID    string `json:"id"`
-	Name  string `json:"name,omitempty"`
-	Order int    `json:"order,omitempty"`
+	ID       string `json:"id"`
+	Name     string `json:"name,omitempty"`
+	Position int    `json:"position,omitempty"`
 }
 
 // FlickrMediaInPool is a pool that a Flickr image is part of.
