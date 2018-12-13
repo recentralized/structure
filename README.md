@@ -106,7 +106,7 @@ The file `/tmp/dst/meta/f4/2a/59131aaf2e5c475f8a35126b034549c05bd5.json` contain
 ```json
 {
   "version": "v1",
-  "content_type": "jpg",
+  "type": "jpg",
   "size": 1024,
   "inherent": {
     "created": "2018-01-01T00:00:00Z",
