@@ -15,7 +15,7 @@ type FlickrMedia struct {
 	Faves       []FlickrMediaFave    `json:"faves,omitempty"`
 	Tags        []FlickrMediaTag     `json:"tags,omitempty"`
 	People      []FlickrMediaPerson  `json:"people,omitempty"`
-	Notes       []FlickrMediaNote    `json:"note,omitempty"`
+	Notes       []FlickrMediaNote    `json:"notes,omitempty"`
 	Sets        []FlickrMediaInSet   `json:"sets,omitempty"`
 	Pools       []FlickrMediaInPool  `json:"pools,omitempty"`
 	Comments    []FlickrMediaComment `json:"comments,omitempty"`
