@@ -50,13 +50,3 @@ func (h Hash) Equal(hh Hash) bool {
 func (h Hash) String() string {
 	return h.cid.String()
 }
-
-// MarshalJSON implements json.Marshaler.
-func (h Hash) MarshalJSON() ([]byte, error) {
-	return h.cid.MarshalJSON()
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (h *Hash) UnmarshalJSON(data []byte) error {
-	return h.cid.UnmarshalJSON(data)
-}

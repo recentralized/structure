@@ -69,3 +69,22 @@ func TestCIDJSON(t *testing.T) {
 		}
 	}
 }
+
+func TestCIDDatabase(t *testing.T) {
+	cidIn := NewLiteral("abc")
+	val, err := cidIn.Value()
+	if err != nil {
+		t.Fatalf("Value() failed: %s", err)
+	}
+	_, ok := val.([]byte)
+	if !ok {
+		t.Fatalf("Value() did not return bytes")
+	}
+	cidOut := &ContentID{}
+	if err := cidOut.Scan(val); err != nil {
+		t.Fatalf("Scan() failed: %s", err)
+	}
+	if !cidIn.Equal(*cidOut) {
+		t.Fatalf("Round-trip failed: got %s want %s", cidOut, cidIn)
+	}
+}
