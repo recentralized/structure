@@ -11,9 +11,9 @@ type FlickrMedia struct {
 	Username     string               `json:"username,omitempty"`
 	Title        string               `json:"title,omitempty"`
 	Description  string               `json:"description,omitempty"`
-	PostedAt     time.Time            `json:"posted_at,omitempty"`
-	TakenAt      time.Time            `json:"taken_at,omitempty"`
-	LastUpdateAt time.Time            `json:"last_update_at,omitempty"`
+	PostedAt     *time.Time           `json:"posted_at,omitempty"`
+	TakenAt      *time.Time           `json:"taken_at,omitempty"`
+	LastUpdateAt *time.Time           `json:"last_update_at,omitempty"`
 	URL          string               `json:"url,omitempty"`
 	Privacy      string               `json:"privacy,omitempty"`
 	License      string               `json:"license,omitempty"`
@@ -99,10 +99,10 @@ type FlickrMediaInPool struct {
 // FlickrMediaComment is a comment on a Flickr image.
 // https://www.flickr.com/services/api/flickr.photos.comments.getList.html
 type FlickrMediaComment struct {
-	ID       string    `json:"id"`
-	UserID   string    `json:"user_id,omitempty"`
-	Username string    `json:"username,omitempty"`
-	Text     string    `json:"text,omitempty"`
-	PostedAt time.Time `json:"posted_at,omitempty"`
-	URL      string    `json:"url,omitempty"`
+	ID       string     `json:"id"`
+	UserID   string     `json:"user_id,omitempty"`
+	Username string     `json:"username,omitempty"`
+	Text     string     `json:"text,omitempty"`
+	PostedAt *time.Time `json:"posted_at,omitempty"`
+	URL      string     `json:"url,omitempty"`
 }
