@@ -17,6 +17,7 @@ type FlickrMedia struct {
 	URL          string               `json:"url,omitempty"`
 	Visibility   string               `json:"visibility,omitempty"`
 	License      string               `json:"license,omitempty"`
+	LicenseURL   string               `json:"license_url,omitempty"`
 	Geo          *FlickrMediaGeo      `json:"geo,omitempty"`
 	Views        int                  `json:"views,omitempty"`
 	Faves        []FlickrMediaFave    `json:"faves,omitempty"`
