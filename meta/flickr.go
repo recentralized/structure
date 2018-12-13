@@ -104,6 +104,6 @@ type FlickrMediaComment struct {
 	UserID   string     `json:"user_id,omitempty"`
 	Username string     `json:"username,omitempty"`
 	Text     string     `json:"text,omitempty"`
-	PostedAt *time.Time `json:"posted_at,omitempty"`
+	Date     *time.Time `json:"date,omitempty"`
 	URL      string     `json:"url,omitempty"`
 }
