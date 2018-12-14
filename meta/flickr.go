@@ -138,6 +138,7 @@ type FlickrMediaNote struct {
 	ID       string           `json:"id"`
 	UserID   string           `json:"user_id,omitempty"`
 	Username string           `json:"username,omitempty"`
+	Text     string           `json:"text"`
 	Coords   NormalizedCoords `json:"coords"`
 }
 
@@ -173,7 +174,7 @@ type FlickrMediaComment struct {
 	ID       string     `json:"id"`
 	UserID   string     `json:"user_id,omitempty"`
 	Username string     `json:"username,omitempty"`
-	Text     string     `json:"text,omitempty"`
+	Text     string     `json:"text"`
 	Date     *time.Time `json:"date,omitempty"`
 	URL      string     `json:"url,omitempty"`
 }
