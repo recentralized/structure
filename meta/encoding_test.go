@@ -41,17 +41,24 @@ func TestMetaJSON(t *testing.T) {
 						},
 					},
 				},
-				Sidecar: Content{
+			},
+			json: `{"version":"v1","type":"jpg","size":100,"inherent":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}}}`,
+		},
+		{
+			desc: "v0 sidecar",
+			meta: Meta{
+				Version: "v1",
+				V0Sidecar: Content{
 					Created: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
 				},
 			},
-			json: `{"version":"v1","type":"jpg","size":100,"inherent":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}},"sidecar":{"created":"0002-02-03T04:05:06.000000007Z"}}`,
+			json: `{"version":"v1","type":"","size":0,"sidecar":{"created":"0002-02-03T04:05:06.000000007Z"}}`,
 		},
 		{
-			desc: "src-specific fields",
+			desc: "v0 src-specific",
 			meta: Meta{
 				Version: "v1",
-				Srcs:    SrcSpecific{
+				V0Srcs:  SrcSpecific{
 					//Flickr:
 				},
 			},

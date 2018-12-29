@@ -23,13 +23,13 @@ func (m Meta) MarshalJSON() ([]byte, error) {
 		Version:     m.Version,
 		Type:        m.Type,
 		Size:        m.Size,
-		SrcSpecific: m.Srcs,
+		SrcSpecific: m.V0Srcs,
 	}
 	if !m.Inherent.isZero() {
 		j.Inherent = &m.Inherent
 	}
-	if !m.Sidecar.isZero() {
-		j.Sidecar = &m.Sidecar
+	if !m.V0Sidecar.isZero() {
+		j.Sidecar = &m.V0Sidecar
 	}
 	return json.Marshal(j)
 }
@@ -50,9 +50,9 @@ func (m *Meta) UnmarshalJSON(data []byte) error {
 		m.Inherent = *j.Inherent
 	}
 	if j.Sidecar != nil {
-		m.Sidecar = *j.Sidecar
+		m.V0Sidecar = *j.Sidecar
 	}
-	m.Srcs = j.SrcSpecific
+	m.V0Srcs = j.SrcSpecific
 	return nil
 }
 

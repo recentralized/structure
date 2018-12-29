@@ -36,10 +36,10 @@ type Meta struct {
 
 	// Metadata that came from nearby, such as an XMP sidecar file or other
 	// source of metadata.
-	Sidecar Content
+	V0Sidecar Content
 
 	// Metadata that came from the source of the data.
-	Srcs SrcSpecific
+	V0Srcs SrcSpecific
 }
 
 // New initializes a new Meta at the current version.
@@ -70,7 +70,7 @@ func ParseJSON(r io.Reader) (*Meta, error) {
 // time available it returns time.Time's zero value.
 func (m *Meta) DateCreated() time.Time {
 	times := []time.Time{
-		m.Sidecar.Created,
+		m.V0Sidecar.Created,
 		m.Inherent.Created,
 	}
 	for _, t := range times {

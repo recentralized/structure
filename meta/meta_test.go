@@ -26,15 +26,15 @@ func TestMetaDateCreated(t *testing.T) {
 		{
 			desc: "sidecar with date",
 			m: &Meta{
-				Sidecar: Content{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
+				V0Sidecar: Content{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
 			},
 			want: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC),
 		},
 		{
 			desc: "prefers sidecar to inherent",
 			m: &Meta{
-				Inherent: Content{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
-				Sidecar:  Content{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
+				Inherent:  Content{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
+				V0Sidecar: Content{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
 			},
 			want: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC),
 		},
