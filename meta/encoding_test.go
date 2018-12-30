@@ -58,7 +58,7 @@ func TestMetaJSON(t *testing.T) {
 				Version: "v1",
 				Src: map[index.SrcID]SrcSpecific{
 					index.SrcID("s1"): SrcSpecific{
-						Content: Content{
+						Sidecar: &Content{
 							Created: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
 							Image: Image{
 								Width:  100,
@@ -74,7 +74,7 @@ func TestMetaJSON(t *testing.T) {
 					},
 				},
 			},
-			json: `{"version":"v1","type":"","size":0,"src":{"s1":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}}}}`,
+			json: `{"version":"v1","type":"","size":0,"src":{"s1":{"sidecar":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}}}}}`,
 		},
 		{
 			desc: "v0 sidecar",
