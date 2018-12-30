@@ -21,7 +21,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	locator := dst.NewFilesystemLocator()
+	locator := dst.NewFilesystemLayout()
 
 	err = addRefs(locator, index)
 	if err != nil {
@@ -59,7 +59,7 @@ func buildIndex() (*index.Index, error) {
 	return idx, nil
 }
 
-func addRefs(loc dst.Locator, idx *index.Index) error {
+func addRefs(loc dst.Layout, idx *index.Index) error {
 	src := idx.Srcs[0]
 	dst := idx.Dsts[0]
 
@@ -119,7 +119,7 @@ func buildSrcItem(src index.Src) (index.SrcItem, *meta.Meta, error) {
 	return item, doc, nil
 }
 
-func buildDstItem(loc dst.Locator, dst index.Dst, hash data.Hash, meta *meta.Meta) (index.DstItem, error) {
+func buildDstItem(loc dst.Layout, dst index.Dst, hash data.Hash, meta *meta.Meta) (index.DstItem, error) {
 	var item index.DstItem
 
 	dataURI := loc.DataURI(hash, meta)
