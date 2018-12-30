@@ -1,28 +1,9 @@
 package meta
 
 import (
-	"encoding/json"
-	"reflect"
 	"testing"
+	"time"
 )
-
-func assertJSONRoundtrip(t *testing.T, input interface{}, jsonString string, output interface{}) {
-	data, err := json.Marshal(input)
-	if err != nil {
-		t.Fatalf("Failed to marshal: %s", err)
-	}
-	if string(data) != jsonString {
-		t.Errorf("JSON\ngot  %s\nwant %s", data, jsonString)
-	}
-	got := output
-	err = json.Unmarshal(data, &got)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal: %s", err)
-	}
-	if !reflect.DeepEqual(input, got) {
-		t.Errorf("Roundtrip\ngot  %#v\nwant %#v", got, input)
-	}
-}
 
 func TestFlickrJSON(t *testing.T) {
 	tests := []struct {
@@ -186,6 +167,25 @@ func TestFlickrMediaCommentJSON(t *testing.T) {
 			desc: "zero value",
 			data: &FlickrMediaComment{},
 			json: `{"id":"","user_id":"","text":""}`,
+		},
+		{
+			desc: "all data",
+			data: &FlickrMediaComment{
+				ID:       "101630-3022774962-72157608889750784",
+				UserID:   "36521980389@N01",
+				Username: "Mike Monteiro",
+				Text:     "I love chess club reuntions!",
+				Date:     datePtr(2008, 11, 11, 19, 23, 38, 0, time.UTC),
+				URL:      "https://www.flickr.com/photos/fss/3022774962/#comment72157608889750784",
+			},
+			json: `{
+			  "id": "101630-3022774962-72157608889750784",
+			  "user_id": "36521980389@N01",
+			  "username": "Mike Monteiro",
+			  "text": "I love chess club reuntions!",
+			  "date": "2008-11-11T19:23:38Z",
+			  "url": "https://www.flickr.com/photos/fss/3022774962/#comment72157608889750784"
+			}`,
 		},
 	}
 	for _, tt := range tests {
