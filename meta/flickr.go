@@ -66,7 +66,7 @@ const (
 // https://www.flickr.com/services/api/flickr.photos.geo.setLocation.html
 type FlickrMediaGeo struct {
 	// The latitude whose valid range is -90 to 90.
-	Latitude float64 `json:"latitide,omitempty"`
+	Latitude float64 `json:"latitude"`
 
 	// The longitude whose valid range is -180 to 180.
 	Longitude float64 `json:"longitude"`
@@ -74,7 +74,7 @@ type FlickrMediaGeo struct {
 	// Recorded accuracy level of the location information. World level is
 	// 1, Country is ~3, Region ~6, City ~11, Street ~16. Current range is
 	// 1-16.
-	Accuracy int `json:"accuracy"`
+	Accuracy int `json:"accuracy,omitempty"`
 
 	// Context is a numeric value representing the photo's geotagginess
 	// beyond latitude and longitude. For example, you may wish to indicate
@@ -107,9 +107,9 @@ const (
 // https://www.flickr.com/services/api/flickr.places.getInfo.html
 type FlickrPlace struct {
 	WoeID     string          `json:"woe_id"`
-	Name      string          `json:"name"`
-	Type      FlickrPlaceType `json:"type"`
-	Latitude  float64         `json:"latitide"`
+	Name      string          `json:"name,omitempty"`
+	Type      FlickrPlaceType `json:"type,omitempty"`
+	Latitude  float64         `json:"latitude"`
 	Longitude float64         `json:"longitude"`
 }
 
@@ -145,10 +145,10 @@ type FlickrMediaNote struct {
 // NormalizedCoords are normalized coordinates - 0-1. Flickr stores them as pixels
 // assuming 500px wide image.
 type NormalizedCoords struct {
-	X float64 `json:"x,omitempty"`
-	Y float64 `json:"y,omitempty"`
-	W float64 `json:"w,omitempty"`
-	H float64 `json:"h,omitempty"`
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	W float64 `json:"w"`
+	H float64 `json:"h"`
 }
 
 // FlickrMediaInSet is a set a Flickr image is part of.
@@ -172,7 +172,7 @@ type FlickrMediaInPool struct {
 // https://www.flickr.com/services/api/flickr.photos.comments.getList.html
 type FlickrMediaComment struct {
 	ID       string     `json:"id"`
-	UserID   string     `json:"user_id,omitempty"`
+	UserID   string     `json:"user_id"`
 	Username string     `json:"username,omitempty"`
 	Text     string     `json:"text"`
 	Date     *time.Time `json:"date,omitempty"`
