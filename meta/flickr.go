@@ -22,8 +22,8 @@ type FlickrMedia struct {
 	Username      string               `json:"username,omitempty"`
 	Title         string               `json:"title,omitempty"`
 	Description   string               `json:"description,omitempty"`
-	PostedAt      *time.Time           `json:"posted_at,omitempty"`
 	TakenAt       *time.Time           `json:"taken_at,omitempty"`
+	PostedAt      *time.Time           `json:"posted_at,omitempty"`
 	LastUpdateAt  *time.Time           `json:"last_update_at,omitempty"`
 	URL           string               `json:"url,omitempty"`
 	Visibility    flickrVisibility     `json:"visibility,omitempty"`
@@ -65,6 +65,9 @@ const (
 // https://www.flickr.com/services/api/flickr.photos.geo.getLocation.html
 // https://www.flickr.com/services/api/flickr.photos.geo.setLocation.html
 type FlickrMediaGeo struct {
+	// Where On Earth ID
+	WoeID string `json:"woe_id,omitempty"`
+
 	// The latitude whose valid range is -90 to 90.
 	Latitude float64 `json:"latitude"`
 
@@ -80,9 +83,6 @@ type FlickrMediaGeo struct {
 	// beyond latitude and longitude. For example, you may wish to indicate
 	// that a photo was taken "inside" or "outside".
 	Context FlickrGeoContext `json:"context,omitempty"`
-
-	// Where On Earth ID
-	WoeID string `json:"woe_id,omitempty"`
 
 	// Details about the tagged places.
 	Places []FlickrPlace `json:"places,omitempty"`
