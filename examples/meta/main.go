@@ -46,7 +46,7 @@ func buildMeta() (*meta.Meta, error) {
 		},
 	}
 	doc.Src = map[index.SrcID]meta.SrcSpecific{
-		srcID: meta.SrcSpecific{
+		srcID: {
 			Sidecar: &meta.Content{
 				Exif: meta.Exif{
 					"FNumber": meta.ExifValue{ID: "0x829d", Val: 1.8},

@@ -57,7 +57,7 @@ func TestMetaJSON(t *testing.T) {
 			meta: Meta{
 				Version: "v1",
 				Src: map[index.SrcID]SrcSpecific{
-					index.SrcID("s1"): SrcSpecific{
+					index.SrcID("s1"): {
 						Sidecar: &Content{
 							Created: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
 							Image: Image{
@@ -81,7 +81,7 @@ func TestMetaJSON(t *testing.T) {
 			meta: Meta{
 				Version: "v1",
 				Src: map[index.SrcID]SrcSpecific{
-					index.SrcID("s1"): SrcSpecific{
+					index.SrcID("s1"): {
 						Flickr: &FlickrMedia{
 							ID: "123",
 						},
