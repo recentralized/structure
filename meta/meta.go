@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/recentralized/structure/data"
+	"github.com/recentralized/structure/index"
 )
 
 const (
@@ -34,12 +35,17 @@ type Meta struct {
 	// Metadata that came from the content itself.
 	Inherent Content
 
+	// Metadata that came from elsewhere on the source.
+	Src map[index.SrcID]SrcSpecific
+
 	// Metadata that came from nearby, such as an XMP sidecar file or other
 	// source of metadata.
+	// Deprecated: Read from V0 only. Use Src[srcID] instead.
 	V0Sidecar Content
 
 	// Metadata that came from the source of the data.
-	V0Srcs SrcSpecific
+	// Deprecated: Read from V0 only. Use Src[srcID] instead.
+	V0Srcs V0SrcSpecific
 }
 
 // New initializes a new Meta at the current version.
@@ -102,7 +108,13 @@ type Image struct {
 
 // SrcSpecific contains source-specific metadata.
 type SrcSpecific struct {
+	Content
 	//Flickr *flickr.FlickrActivity `json:"flickr,omitempty"`
+}
+
+// V0SrcSpecific contains source-specific metadata.
+type V0SrcSpecific struct {
+	// TODO: port v0 sources
 }
 
 func (m Content) isZero() bool {
