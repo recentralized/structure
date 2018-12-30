@@ -48,14 +48,16 @@ func TestMetaJSON(t *testing.T) {
 			json: `{"version":"v1","type":"jpg","size":100,"inherent":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}},"sidecar":{"created":"0002-02-03T04:05:06.000000007Z"}}`,
 		},
 		{
-			desc: "src-specific fields",
+			desc: "src-specific fields: flickr",
 			meta: Meta{
 				Version: "v1",
-				Srcs:    SrcSpecific{
-					//Flickr:
+				Srcs: SrcSpecific{
+					Flickr: &FlickrMedia{
+						ID: "123",
+					},
 				},
 			},
-			json: `{"version":"v1","type":"","size":0}`,
+			json: `{"version":"v1","type":"","size":0,"flickr":{"id":"123"}}`,
 		},
 	}
 	for _, tt := range tests {
