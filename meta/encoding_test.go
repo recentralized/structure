@@ -53,7 +53,7 @@ func TestMetaJSON(t *testing.T) {
 			json: `{"version":"v1","type":"","size":0,"inherent":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}}}`,
 		},
 		{
-			desc: "src-specific",
+			desc: "src-specific: sidecar",
 			meta: Meta{
 				Version: "v1",
 				Src: map[index.SrcID]SrcSpecific{
