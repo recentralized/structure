@@ -129,6 +129,7 @@ func buildDstItem(layout dst.Layout, dst index.Dst, hash data.Hash, meta *meta.M
 		DstID:    dst.DstID,
 		DataURI:  dataURI,
 		MetaURI:  metaURI,
+		Size:     1024,
 		StoredAt: time.Date(2018, 11, 13, 0, 0, 0, 0, time.UTC),
 	}
 	return item, nil

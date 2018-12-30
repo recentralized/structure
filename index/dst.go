@@ -90,6 +90,9 @@ type DstItem struct {
 	// content.MetaReader.
 	MetaURI uri.URI `json:"meta_uri"`
 
+	// Size is the size of the data in bytes.
+	Size uint64 `json:"size"`
+
 	// StoredAt is the time that the item was stored.
 	StoredAt time.Time `json:"stored_at"`
 }
