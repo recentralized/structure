@@ -9,9 +9,9 @@ import (
 	"github.com/recentralized/structure/uri"
 )
 
-// Layout is the interface for defining the locations of data in a
-// destination. Layouts always return relative URLs, which can be resolved
-// with the destination's base URIs when needed.
+// Layout is the interface for defining the way data is strored on a
+// destination. Layouts always return relative URLs, which can be resolved with
+// the destination's base URIs when needed.
 type Layout interface {
 
 	// NewHash generates the hash for data.
@@ -32,7 +32,7 @@ type Layout interface {
 	MetaURI(data.Hash, *meta.Meta) uri.URI
 }
 
-// NewFilesystemLayout initializes the standard locator for use on filesystems
+// NewFilesystemLayout initializes the standard layout for use on filesystems
 // and filesystem-like storage media such as AWS S3.
 func NewFilesystemLayout() Layout {
 	return fsLayout{

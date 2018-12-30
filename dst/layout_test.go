@@ -48,12 +48,12 @@ func TestFilesystemLayout(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		locator := NewFilesystemLayout()
-		got := locator.DataURI(tt.hash, tt.meta)
+		layout := NewFilesystemLayout()
+		got := layout.DataURI(tt.hash, tt.meta)
 		if got, want := got.String(), tt.wantDataURI; got != want {
 			t.Errorf("%q DataURI()\ngot  %s\nwant %s", tt.desc, got, want)
 		}
-		got = locator.MetaURI(tt.hash, tt.meta)
+		got = layout.MetaURI(tt.hash, tt.meta)
 		if got, want := got.String(), tt.wantMetaURI; got != want {
 			t.Errorf("%q MetaURI()\ngot  %s\nwant %s", tt.desc, got, want)
 		}

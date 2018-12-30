@@ -21,9 +21,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	locator := dst.NewFilesystemLayout()
+	layout := dst.NewFilesystemLayout()
 
-	err = addRefs(locator, index)
+	err = addRefs(layout, index)
 	if err != nil {
 		fmt.Printf("Failed to add refs: %s", err)
 		os.Exit(1)
@@ -59,12 +59,12 @@ func buildIndex() (*index.Index, error) {
 	return idx, nil
 }
 
-func addRefs(loc dst.Layout, idx *index.Index) error {
+func addRefs(layout dst.Layout, idx *index.Index) error {
 	src := idx.Srcs[0]
 	dst := idx.Dsts[0]
 
 	data := []byte("fictional image data")
-	hash, err := loc.NewHash(bytes.NewReader(data))
+	hash, err := layout.NewHash(bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func addRefs(loc dst.Layout, idx *index.Index) error {
 		return err
 	}
 
-	dstItem, err := buildDstItem(loc, dst, hash, meta)
+	dstItem, err := buildDstItem(layout, dst, hash, meta)
 	if err != nil {
 		return err
 	}
@@ -119,11 +119,11 @@ func buildSrcItem(src index.Src) (index.SrcItem, *meta.Meta, error) {
 	return item, doc, nil
 }
 
-func buildDstItem(loc dst.Layout, dst index.Dst, hash data.Hash, meta *meta.Meta) (index.DstItem, error) {
+func buildDstItem(layout dst.Layout, dst index.Dst, hash data.Hash, meta *meta.Meta) (index.DstItem, error) {
 	var item index.DstItem
 
-	dataURI := loc.DataURI(hash, meta)
-	metaURI := loc.MetaURI(hash, meta)
+	dataURI := layout.DataURI(hash, meta)
+	metaURI := layout.MetaURI(hash, meta)
 
 	item = index.DstItem{
 		DstID:    dst.DstID,
