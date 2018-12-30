@@ -9,14 +9,15 @@ import (
 )
 
 type metaJSON struct {
-	Version     string                      `json:"version"`
-	Type        data.Type                   `json:"type"`
-	ContentType data.Type                   `json:"content_type,omitempty"`
-	Size        int64                       `json:"size"`
-	Src         map[index.SrcID]SrcSpecific `json:"src,omitempty"`
+	Version     string    `json:"version"`
+	Type        data.Type `json:"type"`
+	ContentType data.Type `json:"content_type,omitempty"`
+	Size        int64     `json:"size"`
+
+	Inherent *Content                    `json:"inherent,omitempty"`
+	Src      map[index.SrcID]SrcSpecific `json:"src,omitempty"`
 
 	// V0 Fields
-	Inherent      *Content `json:"inherent,omitempty"`
 	Sidecar       *Content `json:"sidecar,omitempty"`
 	V0SrcSpecific          // Embedded fields.
 }

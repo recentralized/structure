@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/recentralized/structure/data"
+	"github.com/recentralized/structure/index"
 	"github.com/recentralized/structure/meta"
 )
 
@@ -28,6 +29,8 @@ func main() {
 
 func buildMeta() (*meta.Meta, error) {
 
+	srcID := index.SrcID("e8400c72-f7d0-53f9-98ca-ee23238231fe")
+
 	doc := meta.New()
 	doc.Type = data.JPG
 	doc.Size = 1024
@@ -42,9 +45,13 @@ func buildMeta() (*meta.Meta, error) {
 			"ExposureTime": meta.ExifValue{ID: "ShutterSpeed", Val: "1/60"},
 		},
 	}
-	doc.Sidecar = meta.Content{
-		Exif: meta.Exif{
-			"FNumber": meta.ExifValue{ID: "0x829d", Val: 1.8},
+	doc.Src = map[index.SrcID]meta.SrcSpecific{
+		srcID: meta.SrcSpecific{
+			Sidecar: &meta.Content{
+				Exif: meta.Exif{
+					"FNumber": meta.ExifValue{ID: "0x829d", Val: 1.8},
+				},
+			},
 		},
 	}
 
