@@ -77,6 +77,20 @@ func TestMetaJSON(t *testing.T) {
 			json: `{"version":"v1","type":"","size":0,"src":{"s1":{"sidecar":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}}}}}`,
 		},
 		{
+			desc: "src-specific: flickr",
+			meta: Meta{
+				Version: "v1",
+				Src: map[index.SrcID]SrcSpecific{
+					index.SrcID("s1"): SrcSpecific{
+						Flickr: &FlickrMedia{
+							ID: "123",
+						},
+					},
+				},
+			},
+			json: `{"version":"v1","type":"","size":0,"src":{"s1":{"flickr":{"id":"123"}}}}`,
+		},
+		{
 			desc: "v0 sidecar",
 			meta: Meta{
 				Version: "v1",

@@ -108,8 +108,8 @@ type Image struct {
 
 // SrcSpecific contains source-specific metadata.
 type SrcSpecific struct {
-	Sidecar *Content `json:"sidecar,omitempty"`
-	//Flickr *flickr.FlickrActivity `json:"flickr,omitempty"`
+	Sidecar *Content     `json:"sidecar,omitempty"`
+	Flickr  *FlickrMedia `json:"flickr,omitempty"`
 }
 
 // V0SrcSpecific contains source-specific metadata.

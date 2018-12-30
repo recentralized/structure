@@ -9,10 +9,10 @@ import (
 	"github.com/recentralized/structure/uri"
 )
 
-// Locator is the interface for defining the locations of data in a
-// destination. Locators always return relative URLs, which can be resolved
-// with the destination's base URIs when needed.
-type Locator interface {
+// Layout is the interface for defining the way data is strored on a
+// destination. Layouts always return relative URLs, which can be resolved with
+// the destination's base URIs when needed.
+type Layout interface {
 
 	// NewHash generates the hash for data.
 	NewHash(io.Reader) (data.Hash, error)
@@ -32,10 +32,10 @@ type Locator interface {
 	MetaURI(data.Hash, *meta.Meta) uri.URI
 }
 
-// NewFilesystemLocator initializes the standard locator for use on filesystems
+// NewFilesystemLayout initializes the standard layout for use on filesystems
 // and filesystem-like storage media such as AWS S3.
-func NewFilesystemLocator() Locator {
-	return fsLocator{
+func NewFilesystemLayout() Layout {
+	return fsLayout{
 		indexFile: "index.json",
 		classToCategory: map[data.Class]string{
 			data.Image: "media",
@@ -45,29 +45,29 @@ func NewFilesystemLocator() Locator {
 	}
 }
 
-type fsLocator struct {
+type fsLayout struct {
 	indexFile       string
 	classToCategory map[data.Class]string
 	unknownCategory string
 	zeroDateDir     string
 }
 
-func (l fsLocator) NewHash(r io.Reader) (data.Hash, error) {
+func (l fsLayout) NewHash(r io.Reader) (data.Hash, error) {
 	return data.NewHash(r)
 }
 
-func (l fsLocator) IndexURI() uri.URI {
+func (l fsLayout) IndexURI() uri.URI {
 	return uri.TrustedNew(l.indexFile)
 }
 
-func (l fsLocator) RefsURI(hash data.Hash) uri.URI {
+func (l fsLayout) RefsURI(hash data.Hash) uri.URI {
 	return l.IndexURI()
 }
 
 // media/2006/2006-01-02/<hash>.<ext>
 // media/Undated/hash(<hash>)/<hash>.<ext>
 // <category>/hash(<hash>)/<hash>.<ext>
-func (l fsLocator) DataURI(hash data.Hash, meta *meta.Meta) uri.URI {
+func (l fsLayout) DataURI(hash data.Hash, meta *meta.Meta) uri.URI {
 	var (
 		key string
 		ext = meta.Type.Ext()
@@ -107,12 +107,12 @@ func (l fsLocator) DataURI(hash data.Hash, meta *meta.Meta) uri.URI {
 }
 
 // meta/hash(<hash>)/<hash>.json
-func (l fsLocator) MetaURI(hash data.Hash, meta *meta.Meta) uri.URI {
+func (l fsLayout) MetaURI(hash data.Hash, meta *meta.Meta) uri.URI {
 	key := fmt.Sprintf("meta/%s.%s", l.dirs(hash), "json")
 	return uri.TrustedNew(key)
 }
 
-func (l fsLocator) dirs(hash data.Hash) string {
+func (l fsLayout) dirs(hash data.Hash) string {
 	s := hash.String()
 	if len(s) > 4 {
 		return fmt.Sprintf("%s/%s/%s", s[0:2], s[2:4], s[4:])
