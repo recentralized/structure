@@ -79,16 +79,55 @@ func (s *SrcItem) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type itemCopy DstItem
+type dstJSON struct {
+	DstID    DstID   `json:"dst_id"`
+	IndexURI uri.URI `json:"index_uri"`
+	DataURI  uri.URI `json:"data_uri"`
+	MetaURI  uri.URI `json:"meta_uri"`
+}
+
+// MarshalJSON implements json.Marshaler.
+func (s Dst) MarshalJSON() ([]byte, error) {
+	sj := dstJSON{
+		DstID:    s.DstID,
+		IndexURI: s.IndexURI,
+		DataURI:  s.DataURI,
+		MetaURI:  s.MetaURI,
+	}
+	return json.Marshal(sj)
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (s *Dst) UnmarshalJSON(data []byte) error {
+	var dj dstJSON
+	if err := json.Unmarshal(data, &dj); err != nil {
+		return nil
+	}
+	s.DstID = dj.DstID
+	s.IndexURI = dj.IndexURI
+	s.DataURI = dj.DataURI
+	s.MetaURI = dj.MetaURI
+	return nil
+}
 
 type dstItemJSON struct {
-	itemCopy
+	DstID    DstID      `json:"dst_id"`
+	DataURI  uri.URI    `json:"data_uri"`
+	MetaURI  uri.URI    `json:"meta_uri"`
+	DataSize int64      `json:"data_size"`
+	MetaSize int64      `json:"meta_size"`
 	StoredAt *time.Time `json:"stored_at"`
 }
 
 // MarshalJSON converts DstItem to JSON.
 func (d DstItem) MarshalJSON() ([]byte, error) {
-	j := dstItemJSON{itemCopy: itemCopy(d)}
+	j := dstItemJSON{
+		DstID:    d.DstID,
+		DataURI:  d.DataURI,
+		MetaURI:  d.MetaURI,
+		DataSize: d.DataSize,
+		MetaSize: d.MetaSize,
+	}
 	if !d.StoredAt.IsZero() {
 		j.StoredAt = &d.StoredAt
 	}
@@ -97,13 +136,17 @@ func (d DstItem) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON converts DstItem from JSON.
 func (d *DstItem) UnmarshalJSON(b []byte) error {
-	j := dstItemJSON{}
-	if err := json.Unmarshal(b, &j); err != nil {
+	dj := dstItemJSON{}
+	if err := json.Unmarshal(b, &dj); err != nil {
 		return err
 	}
-	*d = DstItem(j.itemCopy)
-	if j.StoredAt != nil {
-		d.StoredAt = *j.StoredAt
+	d.DstID = dj.DstID
+	d.DataURI = dj.DataURI
+	d.MetaURI = dj.MetaURI
+	d.DataSize = dj.DataSize
+	d.MetaSize = dj.MetaSize
+	if dj.StoredAt != nil {
+		d.StoredAt = *dj.StoredAt
 	}
 	return nil
 }
