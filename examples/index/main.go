@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/recentralized/structure/data"
@@ -72,7 +73,7 @@ func addRefs(layout dst.Layout, idx *index.Index) error {
 	}
 
 	// Get data from the source.
-	data := []byte("fictional image data")
+	data := []byte(strings.Repeat("fictional image data", 100))
 
 	// Calculate fingerprint of data.
 	hash, err := layout.NewHash(bytes.NewReader(data))
@@ -91,7 +92,14 @@ func addRefs(layout dst.Layout, idx *index.Index) error {
 	if err != nil {
 		return err
 	}
-	dstItem.Size = c
+	dstItem.DataSize = c
+
+	// Calculate size of meta to be stored.
+	metaJSON, err := json.Marshal(meta)
+	if err != nil {
+		return err
+	}
+	dstItem.MetaSize = int64(len(metaJSON))
 
 	// Here you would store data and metadata on the destination.
 
@@ -146,7 +154,8 @@ func buildDstItem(layout dst.Layout, dst index.Dst, hash data.Hash, meta *meta.M
 		DstID:    dst.DstID,
 		DataURI:  dataURI,
 		MetaURI:  metaURI,
-		Size:     0, // updated with data size
+		DataSize: 0, // updated with actual data size
+		MetaSize: 0, // updated with actual meta size
 		StoredAt: time.Date(2018, 11, 13, 0, 0, 0, 0, time.UTC),
 	}
 	return item, nil
