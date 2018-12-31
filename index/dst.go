@@ -121,6 +121,22 @@ func (d DstItem) EqualKey(dd DstItem) bool {
 	return false
 }
 
+// Equal determines if two DstItem are completely identical.
+func (d DstItem) Equal(dd DstItem) bool {
+	switch {
+	case d.DstID != dd.DstID:
+	case !d.DataURI.Equal(dd.DataURI):
+	case !d.MetaURI.Equal(dd.MetaURI):
+	case d.DataSize != dd.DataSize:
+	case d.MetaSize != dd.MetaSize:
+	case !d.StoredAt.Equal(dd.StoredAt):
+	case !d.UpdatedAt.Equal(dd.UpdatedAt):
+	default:
+		return true
+	}
+	return false
+}
+
 var uuidNamespaceDst = uuid.NewV5(uuid.Nil, "Storage Destination ID")
 
 // newDstIDFromURIs creates a DstID by generating a UUID from the URIs.  This
