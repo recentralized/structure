@@ -88,7 +88,7 @@ type DstItem struct {
 	// to calculate things like storage and transfer costs. It will
 	// normally equal the size of the content, but may differ if the
 	// content is compressed on storage, for example.
-	Size uint64 `json:"size"`
+	Size int64 `json:"size"`
 
 	// StoredAt is the time that the item was stored.
 	StoredAt time.Time `json:"stored_at"`

@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"os"
 	"time"
 
@@ -63,22 +65,37 @@ func addRefs(layout dst.Layout, idx *index.Index) error {
 	src := idx.Srcs[0]
 	dst := idx.Dsts[0]
 
-	data := []byte("fictional image data")
-	hash, err := layout.NewHash(bytes.NewReader(data))
-	if err != nil {
-		return err
-	}
-
+	// Find something on the source
 	srcItem, meta, err := buildSrcItem(src)
 	if err != nil {
 		return err
 	}
 
+	// Get data from the source.
+	data := []byte("fictional image data")
+
+	// Calculate fingerprint of data.
+	hash, err := layout.NewHash(bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+
+	// Decide how it will be stored on the destination.
 	dstItem, err := buildDstItem(layout, dst, hash, meta)
 	if err != nil {
 		return err
 	}
 
+	// Calculate size of data to be stored.
+	c, err := io.Copy(ioutil.Discard, bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	dstItem.Size = c
+
+	// Here you would store data and metadata on the destination.
+
+	// Add a ref to the index.
 	idx.AddRef(index.Ref{
 		Hash: hash,
 		Src:  srcItem,
@@ -129,7 +146,7 @@ func buildDstItem(layout dst.Layout, dst index.Dst, hash data.Hash, meta *meta.M
 		DstID:    dst.DstID,
 		DataURI:  dataURI,
 		MetaURI:  metaURI,
-		Size:     1024,
+		Size:     0, // updated with data size
 		StoredAt: time.Date(2018, 11, 13, 0, 0, 0, 0, time.UTC),
 	}
 	return item, nil
