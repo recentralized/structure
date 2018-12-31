@@ -62,7 +62,7 @@ func TestSrcItemJSON(t *testing.T) {
 		{
 			desc: "zero value",
 			item: SrcItem{},
-			json: `{"src_id":"","data_uri":"","meta_uri":"","modified_at":null}`,
+			json: `{"src_id":"","data_uri":"","meta_uri":""}`,
 		},
 		{
 			desc: "basic fields",
@@ -146,7 +146,7 @@ func TestDstItemJSON(t *testing.T) {
 		{
 			desc: "zero value",
 			item: DstItem{},
-			json: `{"dst_id":"","data_uri":"","meta_uri":"","data_size":0,"meta_size":0,"stored_at":null}`,
+			json: `{"dst_id":"","data_uri":"","meta_uri":""}`,
 		},
 		{
 			desc: "basic fields",
@@ -280,7 +280,7 @@ func TestIndexJSON(t *testing.T) {
 					},
 				},
 			},
-			json: `{"version":"v1","refs":[{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"","meta_uri":"","modified_at":null}],"dsts":[{"dst_id":"abc","data_uri":"","meta_uri":"","data_size":0,"meta_size":0,"stored_at":null}]}]}`,
+			json: `{"version":"v1","refs":[{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"","meta_uri":""}],"dsts":[{"dst_id":"abc","data_uri":"","meta_uri":""}]}]}`,
 		},
 	}
 	for _, tt := range tests {
