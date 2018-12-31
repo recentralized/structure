@@ -32,7 +32,8 @@
           "meta_uri": "meta/f6/cf/14423780c715b3812bed6295babef572ed56.json",
           "data_size": 2000,
           "meta_size": 84,
-          "stored_at": "2018-11-13T00:00:00Z"
+          "stored_at": "2018-11-13T00:00:00Z",
+          "updated_at": "2018-11-14T00:00:00Z"
         }
       ]
     }

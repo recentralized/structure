@@ -151,12 +151,13 @@ func buildDstItem(layout dst.Layout, dst index.Dst, hash data.Hash, meta *meta.M
 	metaURI := layout.MetaURI(hash, meta)
 
 	item = index.DstItem{
-		DstID:    dst.DstID,
-		DataURI:  dataURI,
-		MetaURI:  metaURI,
-		DataSize: 0, // updated with actual data size
-		MetaSize: 0, // updated with actual meta size
-		StoredAt: time.Date(2018, 11, 13, 0, 0, 0, 0, time.UTC),
+		DstID:     dst.DstID,
+		DataURI:   dataURI,
+		MetaURI:   metaURI,
+		DataSize:  0, // updated with actual data size
+		MetaSize:  0, // updated with actual meta size
+		StoredAt:  time.Date(2018, 11, 13, 0, 0, 0, 0, time.UTC),
+		UpdatedAt: time.Date(2018, 11, 14, 0, 0, 0, 0, time.UTC),
 	}
 	return item, nil
 }

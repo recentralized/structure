@@ -89,17 +89,24 @@ type DstItem struct {
 	// DataSize is the size of the stored data in bytes. This field is
 	// useful to calculate things like storage and transfer costs. It will
 	// normally equal the size of the content, but may differ if the
-	// content is compressed on storage, for example.
+	// content is compressed on storage, for example. This field should be
+	// considered immutable; not changed after the original value.
 	DataSize int64
 
 	// Metaize is the size of the stored data in bytes. This field is
 	// useful to calculate things like storage and transfer costs. It will
 	// normally equal the size of the content, but may differ if the
-	// content is compressed on storage, for example.
+	// content is compressed on storage, for example. This field should be
+	// updated each time the metadata changes.
 	MetaSize int64
 
-	// StoredAt is the time that the item was stored.
+	// StoredAt is the time that the item was originally stored. This field
+	// should be considered immutable; not changed after the original value.
 	StoredAt time.Time
+
+	// UpdatedAt is the time that the item was updated. This typically
+	// means metadata updates since data is immutable.
+	UpdatedAt time.Time
 }
 
 // EqualKey determines if two DstItem have the same primary key.
