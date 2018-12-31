@@ -55,7 +55,7 @@ func TestURefAddSrc(t *testing.T) {
 			update: false,
 		},
 		{
-			desc: "add duplicate key updates mutlable attributes",
+			desc: "add duplicate key updates mutable attributes",
 			start: &URef{
 				Srcs: []SrcItem{
 					{
