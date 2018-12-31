@@ -69,28 +69,25 @@ func (id DstID) String() string {
 	return string(id)
 }
 
-// DstItem is the storage location of an item in a destination.
+// DstItem is the storage location of an item in a destination. This record is
+// immutable in the index.
 type DstItem struct {
 	DstID DstID `json:"dst_id"`
 
 	// DataURI is a unique identifier for the data of this item. It is
 	// typically a URL pointing to the storage location of the raw data.
-	// The URI may be relative or absolute. If relative, it should resolve
-	// to absolute using Dst.DataURI.
+	// The URI is always relative, resolved to absolute using Dst.DataURI.
 	DataURI uri.URI `json:"data_uri"`
 
 	// MetaURI is a unique identifier for the metadata of this item. It is
 	// typically a URL pointing to the storage location of the metadata.
-	// The URI may be relative or absolute. If relative, it should resolve
-	// to absolute using Dst.MetaURI.
-	//
-	// Metadata can be versioned. For some destinations, this URI may point
-	// to a metadata index from which any version can be retrieved. For
-	// others, it may point to the current metadata. See
-	// content.MetaReader.
+	// The URI is always relative resolved to absolute using Dst.MetaURI.
 	MetaURI uri.URI `json:"meta_uri"`
 
-	// Size is the size of the data in bytes.
+	// Size is the size of the stored data in bytes. This field is useful
+	// to calculate things like storage and transfer costs. It will
+	// normally equal the size of the content, but may differ if the
+	// content is compressed on storage, for example.
 	Size uint64 `json:"size"`
 
 	// StoredAt is the time that the item was stored.

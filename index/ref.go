@@ -10,9 +10,16 @@ import (
 // (SrcItem) and where it was stored (DstItem). Refs are generally created
 // while searching a Src and copying to a Dst.
 type Ref struct {
+	// Hash is a fingerprint of the data. The fingerprint is of the data
+	// itself, and may differ from the data stored, for example if
+	// compressed for storage.
 	Hash data.Hash
-	Src  SrcItem
-	Dst  DstItem
+
+	// Src is details about where the content was found.
+	Src SrcItem
+
+	// Dst is details about whree the content was stored.
+	Dst DstItem
 }
 
 func (r Ref) String() string {
@@ -35,7 +42,7 @@ func (r Ref) String() string {
 //
 // The methods it provides are convenience, suitable for small in-memory
 // implementations. Since refs could be implemented in any number of ways, such
-// as a relational dataase, the methods here serve as documentation of the
+// as a relational database, the methods here serve as documentation of the
 // algorithms to add and retrieve data.
 type URef struct {
 	Hash data.Hash
