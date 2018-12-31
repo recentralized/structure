@@ -84,11 +84,17 @@ type DstItem struct {
 	// The URI is always relative resolved to absolute using Dst.MetaURI.
 	MetaURI uri.URI `json:"meta_uri"`
 
-	// Size is the size of the stored data in bytes. This field is useful
-	// to calculate things like storage and transfer costs. It will
+	// DataSize is the size of the stored data in bytes. This field is
+	// useful to calculate things like storage and transfer costs. It will
 	// normally equal the size of the content, but may differ if the
 	// content is compressed on storage, for example.
-	Size int64 `json:"size"`
+	DataSize int64 `json:"data_size"`
+
+	// Metaize is the size of the stored data in bytes. This field is
+	// useful to calculate things like storage and transfer costs. It will
+	// normally equal the size of the content, but may differ if the
+	// content is compressed on storage, for example.
+	MetaSize int64 `json:"meta_size"`
 
 	// StoredAt is the time that the item was stored.
 	StoredAt time.Time `json:"stored_at"`
