@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"sort"
 	"time"
 
 	"github.com/recentralized/structure/data"
@@ -78,6 +79,14 @@ func (m *Meta) DateCreated() time.Time {
 	times := []time.Time{
 		m.V0Sidecar.Created,
 		m.Inherent.Created,
+	}
+	if len(m.Src) > 0 {
+		for _, v := range m.Src {
+			if v.Sidecar != nil {
+				times = append(times, v.Sidecar.Created)
+			}
+		}
+		sort.Slice(times, func(i, j int) bool { return times[i].Before(times[j]) })
 	}
 	for _, t := range times {
 		if !t.IsZero() {
