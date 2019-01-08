@@ -55,7 +55,7 @@ func TestURefAddSrc(t *testing.T) {
 			update: false,
 		},
 		{
-			desc: "add duplicate key updates attrs",
+			desc: "add duplicate key updates mutable attributes",
 			start: &URef{
 				Srcs: []SrcItem{
 					{
@@ -149,34 +149,82 @@ func TestURefAddDst(t *testing.T) {
 			update: true,
 		},
 		{
-			desc: "add duplicate dst is idempotent",
+			desc: "add duplicate is idempotent",
 			start: &URef{
 				Dsts: []DstItem{
 					{
-						DstID:    DstID("a"),
-						DataURI:  uri.TrustedNew("a"),
-						MetaURI:  uri.TrustedNew("a"),
-						StoredAt: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+						DstID:     DstID("a"),
+						DataURI:   uri.TrustedNew("a"),
+						MetaURI:   uri.TrustedNew("a"),
+						DataSize:  100,
+						MetaSize:  10,
+						StoredAt:  time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+						UpdatedAt: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
 					},
 				},
 			},
 			add: DstItem{
-				DstID:    DstID("a"),
-				DataURI:  uri.TrustedNew("a"),
-				MetaURI:  uri.TrustedNew("a"),
-				StoredAt: time.Date(9, 2, 3, 4, 5, 6, 7, time.UTC),
+				DstID:     DstID("a"),
+				DataURI:   uri.TrustedNew("a"),
+				MetaURI:   uri.TrustedNew("a"),
+				DataSize:  100,
+				MetaSize:  10,
+				StoredAt:  time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+				UpdatedAt: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
 			},
 			want: &URef{
 				Dsts: []DstItem{
 					{
-						DstID:    DstID("a"),
-						DataURI:  uri.TrustedNew("a"),
-						MetaURI:  uri.TrustedNew("a"),
-						StoredAt: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+						DstID:     DstID("a"),
+						DataURI:   uri.TrustedNew("a"),
+						MetaURI:   uri.TrustedNew("a"),
+						DataSize:  100,
+						MetaSize:  10,
+						StoredAt:  time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+						UpdatedAt: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
 					},
 				},
 			},
 			update: false,
+		},
+		{
+			desc: "add duplicate key updates mutable attributes",
+			start: &URef{
+				Dsts: []DstItem{
+					{
+						DstID:     DstID("a"),
+						DataURI:   uri.TrustedNew("a"),
+						MetaURI:   uri.TrustedNew("a"),
+						DataSize:  100,
+						MetaSize:  10,
+						StoredAt:  time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+						UpdatedAt: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
+					},
+				},
+			},
+			add: DstItem{
+				DstID:     DstID("a"),
+				DataURI:   uri.TrustedNew("a"),
+				MetaURI:   uri.TrustedNew("a"),
+				DataSize:  102,
+				MetaSize:  12,
+				StoredAt:  time.Date(9, 2, 3, 4, 5, 6, 7, time.UTC),
+				UpdatedAt: time.Date(8, 2, 3, 4, 5, 6, 7, time.UTC),
+			},
+			want: &URef{
+				Dsts: []DstItem{
+					{
+						DstID:     DstID("a"),
+						DataURI:   uri.TrustedNew("a"),
+						MetaURI:   uri.TrustedNew("a"),
+						DataSize:  102,
+						MetaSize:  12,
+						StoredAt:  time.Date(9, 2, 3, 4, 5, 6, 7, time.UTC),
+						UpdatedAt: time.Date(8, 2, 3, 4, 5, 6, 7, time.UTC),
+					},
+				},
+			},
+			update: true,
 		},
 		{
 			desc: "add same DstID with different URIs appends a new entry",

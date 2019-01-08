@@ -16,7 +16,7 @@
   ],
   "refs": [
     {
-      "hash": "f42a59131aaf2e5c475f8a35126b034549c05bd5",
+      "hash": "f6cf14423780c715b3812bed6295babef572ed56",
       "srcs": [
         {
           "src_id": "e8400c72-f7d0-53f9-98ca-ee23238231fe",
@@ -28,9 +28,12 @@
       "dsts": [
         {
           "dst_id": "0e73b6c5-26dc-58a6-8fa9-edd5be9ad99d",
-          "data_uri": "media/2018/2018-11-10/f42a59131aaf2e5c475f8a35126b034549c05bd5.jpg",
-          "meta_uri": "meta/f4/2a/59131aaf2e5c475f8a35126b034549c05bd5.json",
-          "stored_at": "2018-11-13T00:00:00Z"
+          "data_uri": "media/2018/2018-11-10/f6cf14423780c715b3812bed6295babef572ed56.jpg",
+          "meta_uri": "meta/f6/cf/14423780c715b3812bed6295babef572ed56.json",
+          "data_size": 2000,
+          "meta_size": 84,
+          "stored_at": "2018-11-13T00:00:00Z",
+          "updated_at": "2018-11-14T00:00:00Z"
         }
       ]
     }

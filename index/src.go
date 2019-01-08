@@ -24,7 +24,8 @@ type Src struct {
 	SrcURI uri.URI
 }
 
-// SrcItem describes where content was originally found.
+// SrcItem describes where content was originally found. This record is mutable
+// in the index: ModifiedAt may be updated.
 type SrcItem struct {
 
 	// SrcID is the Src that this item was found in.

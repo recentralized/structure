@@ -10,9 +10,16 @@ import (
 // (SrcItem) and where it was stored (DstItem). Refs are generally created
 // while searching a Src and copying to a Dst.
 type Ref struct {
+	// Hash is a fingerprint of the data. The fingerprint is of the data
+	// itself, and may differ from the data stored, for example if
+	// compressed for storage.
 	Hash data.Hash
-	Src  SrcItem
-	Dst  DstItem
+
+	// Src is details about where the content was found.
+	Src SrcItem
+
+	// Dst is details about whree the content was stored.
+	Dst DstItem
 }
 
 func (r Ref) String() string {
@@ -35,7 +42,7 @@ func (r Ref) String() string {
 //
 // The methods it provides are convenience, suitable for small in-memory
 // implementations. Since refs could be implemented in any number of ways, such
-// as a relational dataase, the methods here serve as documentation of the
+// as a relational database, the methods here serve as documentation of the
 // algorithms to add and retrieve data.
 type URef struct {
 	Hash data.Hash
@@ -64,8 +71,7 @@ func (r *URef) AddSrc(src SrcItem) bool {
 			if s.Equal(src) {
 				return false
 			}
-			// Update non-key attributes.
-			// ModifiedAt can change over time.
+			// Update mutable attributes.
 			r.Srcs[i] = src
 			return true
 		}
@@ -74,15 +80,19 @@ func (r *URef) AddSrc(src SrcItem) bool {
 	return true
 }
 
-// AddDst adds a DstItem to the ref. DstItem has no mutable attributes.  The
-// method returns true if any changes occurred to the URef occurre.
+// AddDst adds a DstItem to the ref. If a matching DstItem exists, it's mutable
+// attributes will be updated. The method returns true if any changes to the
+// URef or existing DstItem occurred.
 func (r *URef) AddDst(dst DstItem) bool {
-	for _, d := range r.Dsts {
+	for i, d := range r.Dsts {
 		if d.EqualKey(dst) {
-			return false
+			if d.Equal(dst) {
+				return false
+			}
+			// Update mutable attributes.
+			r.Dsts[i] = dst
+			return true
 		}
-		// Do not update non-key attributes.
-		// StoredAt should be the first time it was stored.
 	}
 	r.Dsts = append(r.Dsts, dst)
 	return true

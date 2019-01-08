@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/recentralized/structure/data"
@@ -63,22 +66,44 @@ func addRefs(layout dst.Layout, idx *index.Index) error {
 	src := idx.Srcs[0]
 	dst := idx.Dsts[0]
 
-	data := []byte("fictional image data")
-	hash, err := layout.NewHash(bytes.NewReader(data))
-	if err != nil {
-		return err
-	}
-
+	// Find something on the source
 	srcItem, meta, err := buildSrcItem(src)
 	if err != nil {
 		return err
 	}
 
+	// Get data from the source.
+	data := []byte(strings.Repeat("fictional image data", 100))
+
+	// Calculate fingerprint of data.
+	hash, err := layout.NewHash(bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+
+	// Decide how it will be stored on the destination.
 	dstItem, err := buildDstItem(layout, dst, hash, meta)
 	if err != nil {
 		return err
 	}
 
+	// Calculate size of data to be stored.
+	c, err := io.Copy(ioutil.Discard, bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	dstItem.DataSize = c
+
+	// Calculate size of meta to be stored.
+	metaJSON, err := json.Marshal(meta)
+	if err != nil {
+		return err
+	}
+	dstItem.MetaSize = int64(len(metaJSON))
+
+	// Here you would store data and metadata on the destination.
+
+	// Add a ref to the index.
 	idx.AddRef(index.Ref{
 		Hash: hash,
 		Src:  srcItem,
@@ -126,10 +151,13 @@ func buildDstItem(layout dst.Layout, dst index.Dst, hash data.Hash, meta *meta.M
 	metaURI := layout.MetaURI(hash, meta)
 
 	item = index.DstItem{
-		DstID:    dst.DstID,
-		DataURI:  dataURI,
-		MetaURI:  metaURI,
-		StoredAt: time.Date(2018, 11, 13, 0, 0, 0, 0, time.UTC),
+		DstID:     dst.DstID,
+		DataURI:   dataURI,
+		MetaURI:   metaURI,
+		DataSize:  0, // updated with actual data size
+		MetaSize:  0, // updated with actual meta size
+		StoredAt:  time.Date(2018, 11, 13, 0, 0, 0, 0, time.UTC),
+		UpdatedAt: time.Date(2018, 11, 14, 0, 0, 0, 0, time.UTC),
 	}
 	return item, nil
 }

@@ -16,21 +16,21 @@ type DstID string
 type Dst struct {
 
 	// DstID is a unique identifier for this set of storage URIs.
-	DstID DstID `json:"dst_id"`
+	DstID DstID
 
 	// IndexURI is a unique identifier for the storage location of this
 	// destination's ref index.
-	IndexURI uri.URI `json:"index_uri"`
+	IndexURI uri.URI
 
 	// DataURI is a unique identifier for the storage location of this
 	// destination's data. If a DstItem's DataURI is relative, this URI can
 	// be used to resolve it.
-	DataURI uri.URI `json:"data_uri"`
+	DataURI uri.URI
 
 	// MetaURI is a unique identifier for the storage location of this
 	// destination's metadata. If a DstItem's MetaURI is relative, this URI
 	// can be used to resolve it.
-	MetaURI uri.URI `json:"meta_uri"`
+	MetaURI uri.URI
 }
 
 // NewDst initializes a storage destination. All destinations initialized with
@@ -69,29 +69,44 @@ func (id DstID) String() string {
 	return string(id)
 }
 
-// DstItem is the storage location of an item in a destination.
+// DstItem is the storage location of an item in a destination. This record is
+// immutable in the index.
 type DstItem struct {
-	DstID DstID `json:"dst_id"`
+
+	// DstID is the Dst that this item was stored in.
+	DstID DstID
 
 	// DataURI is a unique identifier for the data of this item. It is
 	// typically a URL pointing to the storage location of the raw data.
-	// The URI may be relative or absolute. If relative, it should resolve
-	// to absolute using Dst.DataURI.
-	DataURI uri.URI `json:"data_uri"`
+	// The URI is always relative, resolved to absolute using Dst.DataURI.
+	DataURI uri.URI
 
 	// MetaURI is a unique identifier for the metadata of this item. It is
 	// typically a URL pointing to the storage location of the metadata.
-	// The URI may be relative or absolute. If relative, it should resolve
-	// to absolute using Dst.MetaURI.
-	//
-	// Metadata can be versioned. For some destinations, this URI may point
-	// to a metadata index from which any version can be retrieved. For
-	// others, it may point to the current metadata. See
-	// content.MetaReader.
-	MetaURI uri.URI `json:"meta_uri"`
+	// The URI is always relative resolved to absolute using Dst.MetaURI.
+	MetaURI uri.URI
 
-	// StoredAt is the time that the item was stored.
-	StoredAt time.Time `json:"stored_at"`
+	// DataSize is the size of the stored data in bytes. This field is
+	// useful to calculate things like storage and transfer costs. It will
+	// normally equal the size of the content, but may differ if the
+	// content is compressed on storage, for example. This field should be
+	// considered immutable; not changed after the original value.
+	DataSize int64
+
+	// Metaize is the size of the stored data in bytes. This field is
+	// useful to calculate things like storage and transfer costs. It will
+	// normally equal the size of the content, but may differ if the
+	// content is compressed on storage, for example. This field should be
+	// updated each time the metadata changes.
+	MetaSize int64
+
+	// StoredAt is the time that the item was originally stored. This field
+	// should be considered immutable; not changed after the original value.
+	StoredAt time.Time
+
+	// UpdatedAt is the time that the item was updated. This typically
+	// means metadata updates since data is immutable.
+	UpdatedAt time.Time
 }
 
 // EqualKey determines if two DstItem have the same primary key.
@@ -100,6 +115,22 @@ func (d DstItem) EqualKey(dd DstItem) bool {
 	case d.DstID != dd.DstID:
 	case !d.DataURI.Equal(dd.DataURI):
 	case !d.MetaURI.Equal(dd.MetaURI):
+	default:
+		return true
+	}
+	return false
+}
+
+// Equal determines if two DstItem are completely identical.
+func (d DstItem) Equal(dd DstItem) bool {
+	switch {
+	case d.DstID != dd.DstID:
+	case !d.DataURI.Equal(dd.DataURI):
+	case !d.MetaURI.Equal(dd.MetaURI):
+	case d.DataSize != dd.DataSize:
+	case d.MetaSize != dd.MetaSize:
+	case !d.StoredAt.Equal(dd.StoredAt):
+	case !d.UpdatedAt.Equal(dd.UpdatedAt):
 	default:
 		return true
 	}

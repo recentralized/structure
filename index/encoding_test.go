@@ -62,7 +62,7 @@ func TestSrcItemJSON(t *testing.T) {
 		{
 			desc: "zero value",
 			item: SrcItem{},
-			json: `{"src_id":"","data_uri":"","meta_uri":"","modified_at":null}`,
+			json: `{"src_id":"","data_uri":"","meta_uri":""}`,
 		},
 		{
 			desc: "basic fields",
@@ -146,17 +146,20 @@ func TestDstItemJSON(t *testing.T) {
 		{
 			desc: "zero value",
 			item: DstItem{},
-			json: `{"dst_id":"","data_uri":"","meta_uri":"","stored_at":null}`,
+			json: `{"dst_id":"","data_uri":"","meta_uri":""}`,
 		},
 		{
 			desc: "basic fields",
 			item: DstItem{
-				DstID:    DstID("abc"),
-				DataURI:  uri.TrustedNew("http://example.com/data/abc.jpg"),
-				MetaURI:  uri.TrustedNew("http://example.com/meta/abc.json"),
-				StoredAt: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+				DstID:     DstID("abc"),
+				DataURI:   uri.TrustedNew("http://example.com/data/abc.jpg"),
+				MetaURI:   uri.TrustedNew("http://example.com/meta/abc.json"),
+				DataSize:  100,
+				MetaSize:  10,
+				StoredAt:  time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+				UpdatedAt: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
 			},
-			json: `{"dst_id":"abc","data_uri":"http://example.com/data/abc.jpg","meta_uri":"http://example.com/meta/abc.json","stored_at":"0001-02-03T04:05:06.000000007Z"}`,
+			json: `{"dst_id":"abc","data_uri":"http://example.com/data/abc.jpg","meta_uri":"http://example.com/meta/abc.json","data_size":100,"meta_size":10,"stored_at":"0001-02-03T04:05:06.000000007Z","updated_at":"0002-02-03T04:05:06.000000007Z"}`,
 		},
 	}
 	for _, tt := range tests {
@@ -208,11 +211,13 @@ func TestURefJSON(t *testing.T) {
 						DstID:    DstID("abc"),
 						DataURI:  uri.TrustedNew("http://example.com/data/abc.jpg"),
 						MetaURI:  uri.TrustedNew("http://example.com/meta/abc.json"),
+						DataSize: 100,
+						MetaSize: 10,
 						StoredAt: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
 					},
 				},
 			},
-			json: `{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"http://example.com/data.jpg","meta_uri":"http://example.com/meta.json","modified_at":"2015-02-03T04:05:06.000000007Z"}],"dsts":[{"dst_id":"abc","data_uri":"http://example.com/data/abc.jpg","meta_uri":"http://example.com/meta/abc.json","stored_at":"0001-02-03T04:05:06.000000007Z"}]}`,
+			json: `{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"http://example.com/data.jpg","meta_uri":"http://example.com/meta.json","modified_at":"2015-02-03T04:05:06.000000007Z"}],"dsts":[{"dst_id":"abc","data_uri":"http://example.com/data/abc.jpg","meta_uri":"http://example.com/meta/abc.json","data_size":100,"meta_size":10,"stored_at":"0001-02-03T04:05:06.000000007Z"}]}`,
 		},
 	}
 	for _, tt := range tests {
@@ -276,7 +281,7 @@ func TestIndexJSON(t *testing.T) {
 					},
 				},
 			},
-			json: `{"version":"v1","refs":[{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"","meta_uri":"","modified_at":null}],"dsts":[{"dst_id":"abc","data_uri":"","meta_uri":"","stored_at":null}]}]}`,
+			json: `{"version":"v1","refs":[{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"","meta_uri":""}],"dsts":[{"dst_id":"abc","data_uri":"","meta_uri":""}]}]}`,
 		},
 	}
 	for _, tt := range tests {
