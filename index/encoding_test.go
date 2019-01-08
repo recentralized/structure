@@ -208,16 +208,17 @@ func TestURefJSON(t *testing.T) {
 				},
 				Dsts: []DstItem{
 					{
-						DstID:    DstID("abc"),
-						DataURI:  uri.TrustedNew("http://example.com/data/abc.jpg"),
-						MetaURI:  uri.TrustedNew("http://example.com/meta/abc.json"),
-						DataSize: 100,
-						MetaSize: 10,
-						StoredAt: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+						DstID:     DstID("abc"),
+						DataURI:   uri.TrustedNew("http://example.com/data/abc.jpg"),
+						MetaURI:   uri.TrustedNew("http://example.com/meta/abc.json"),
+						DataSize:  100,
+						MetaSize:  10,
+						StoredAt:  time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+						UpdatedAt: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
 					},
 				},
 			},
-			json: `{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"http://example.com/data.jpg","meta_uri":"http://example.com/meta.json","modified_at":"2015-02-03T04:05:06.000000007Z"}],"dsts":[{"dst_id":"abc","data_uri":"http://example.com/data/abc.jpg","meta_uri":"http://example.com/meta/abc.json","data_size":100,"meta_size":10,"stored_at":"0001-02-03T04:05:06.000000007Z"}]}`,
+			json: `{"hash":"xyz","srcs":[{"src_id":"a","data_uri":"http://example.com/data.jpg","meta_uri":"http://example.com/meta.json","modified_at":"2015-02-03T04:05:06.000000007Z"}],"dsts":[{"dst_id":"abc","data_uri":"http://example.com/data/abc.jpg","meta_uri":"http://example.com/meta/abc.json","data_size":100,"meta_size":10,"stored_at":"0001-02-03T04:05:06.000000007Z","updated_at":"0002-02-03T04:05:06.000000007Z"}]}`,
 		},
 	}
 	for _, tt := range tests {
