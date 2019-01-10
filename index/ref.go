@@ -62,6 +62,21 @@ func (r URef) String() string {
 	return fmt.Sprintf("<URef %s srcs:%d dsts:%d>", r.Hash, len(r.Srcs), len(r.Dsts))
 }
 
+// DecomposeRefs returns an array of individual Refs.
+func (r URef) DecomposeRefs() []Ref {
+	refs := make([]Ref, 0, len(r.Srcs)*len(r.Dsts))
+	for _, s := range r.Srcs {
+		for _, d := range r.Dsts {
+			refs = append(refs, Ref{
+				Hash: r.Hash,
+				Src:  s,
+				Dst:  d,
+			})
+		}
+	}
+	return refs
+}
+
 // AddSrc adds a SrcItem to the ref. If a matching SrcItem exists, it's mutable
 // attributes will be updated. The method returns true if any changes to the
 // URef or existing SrcItem occurred.
