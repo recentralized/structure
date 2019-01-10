@@ -1,6 +1,7 @@
 package index
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/recentralized/structure/data"
@@ -285,5 +286,71 @@ func TestIndexRef(t *testing.T) {
 		if !ok {
 			t.Errorf("%q GetRef must be ok after adding", tt.desc)
 		}
+	}
+}
+
+func TestURefDecomposeRefs(t *testing.T) {
+	tests := []struct {
+		desc string
+		uref *URef
+		want []Ref
+	}{
+		{
+			desc: "zero value",
+			uref: &URef{},
+			want: []Ref{},
+		},
+		{
+			desc: "srcs only",
+			uref: &URef{
+				Hash: data.LiteralHash("123"),
+				Srcs: []SrcItem{
+					{SrcID: SrcID("s1")},
+				},
+			},
+			want: []Ref{},
+		},
+		{
+			desc: "dsts only",
+			uref: &URef{
+				Hash: data.LiteralHash("123"),
+				Dsts: []DstItem{
+					{DstID: DstID("d1")},
+				},
+			},
+			want: []Ref{},
+		},
+		{
+			desc: "srcs and dsts",
+			uref: &URef{
+				Hash: data.LiteralHash("123"),
+				Srcs: []SrcItem{
+					{SrcID: SrcID("s1")},
+					{SrcID: SrcID("s2")},
+					{SrcID: SrcID("s3")},
+				},
+				Dsts: []DstItem{
+					{DstID: DstID("d1")},
+					{DstID: DstID("d2")},
+				},
+			},
+			want: []Ref{
+				{Hash: data.LiteralHash("123"), Src: SrcItem{SrcID: SrcID("s1")}, Dst: DstItem{DstID: DstID("d1")}},
+				{Hash: data.LiteralHash("123"), Src: SrcItem{SrcID: SrcID("s1")}, Dst: DstItem{DstID: DstID("d2")}},
+				{Hash: data.LiteralHash("123"), Src: SrcItem{SrcID: SrcID("s2")}, Dst: DstItem{DstID: DstID("d1")}},
+				{Hash: data.LiteralHash("123"), Src: SrcItem{SrcID: SrcID("s2")}, Dst: DstItem{DstID: DstID("d2")}},
+				{Hash: data.LiteralHash("123"), Src: SrcItem{SrcID: SrcID("s3")}, Dst: DstItem{DstID: DstID("d1")}},
+				{Hash: data.LiteralHash("123"), Src: SrcItem{SrcID: SrcID("s3")}, Dst: DstItem{DstID: DstID("d2")}},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			got := tt.uref.DecomposeRefs()
+			if got, want := got, tt.want; !reflect.DeepEqual(got, want) {
+				t.Errorf("URef.DecomposeRefs()\ngot  %#v\nwant %#v", got, want)
+			}
+		})
+
 	}
 }
