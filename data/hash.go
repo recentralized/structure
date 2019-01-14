@@ -47,6 +47,12 @@ func (h Hash) Equal(hh Hash) bool {
 	return h.cid.Equal(hh.cid)
 
 }
+
+// IsZero returns true if the Hash is its zero value.
+func (h Hash) IsZero() bool {
+	return h == undefHash
+}
+
 func (h Hash) String() string {
 	return h.cid.String()
 }

@@ -123,6 +123,45 @@ func TestNewFromURL(t *testing.T) {
 		}
 	}
 }
+func TestIsZero(t *testing.T) {
+	newURL := func(str string) *url.URL {
+		u, err := url.Parse(str)
+		if err != nil {
+			t.Fatalf("failed to parse URL: %s", err)
+		}
+		return u
+	}
+	tests := []struct {
+		desc     string
+		uri      URI
+		wantZero bool
+	}{
+		{
+			desc:     "zero is zero",
+			wantZero: true,
+		},
+		{
+			desc:     "Empty is zero",
+			uri:      Empty,
+			wantZero: true,
+		},
+		{
+			desc:     "any url is non-zero",
+			uri:      URI{url: newURL("ok")},
+			wantZero: false,
+		},
+		{
+			desc:     "any rawStr is non-zero",
+			uri:      URI{rawStr: "ok"},
+			wantZero: false,
+		},
+	}
+	for _, tt := range tests {
+		if got, want := tt.uri.IsZero(), tt.wantZero; got != want {
+			t.Errorf("%q IsZero() got %t want %t", tt.desc, got, want)
+		}
+	}
+}
 func TestString(t *testing.T) {
 	newURL := func(str string) *url.URL {
 		u, err := url.Parse(str)

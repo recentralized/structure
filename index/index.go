@@ -137,23 +137,3 @@ func (i *Index) GetRef(hash data.Hash) (*URef, bool) {
 	}
 	return nil, false
 }
-
-// GetSrcItem returns a SrcItem for content with hash and stored in srcID. If
-// no SrcItem is found, it returns false.
-func (i *Index) GetSrcItem(hash data.Hash, srcID SrcID) (SrcItem, bool) {
-	ref, ok := i.GetRef(hash)
-	if ok {
-		return ref.GetSrc(srcID)
-	}
-	return SrcItem{}, false
-}
-
-// GetDstItem returns a DstItem for content with hash and stored in dstID. If
-// no DstItem is found, it returns false.
-func (i *Index) GetDstItem(hash data.Hash, dstID DstID) (DstItem, bool) {
-	ref, ok := i.GetRef(hash)
-	if ok {
-		return ref.GetDst(dstID)
-	}
-	return DstItem{}, false
-}
