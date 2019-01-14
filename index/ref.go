@@ -112,25 +112,3 @@ func (r *URef) AddDst(dst DstItem) bool {
 	r.Dsts = append(r.Dsts, dst)
 	return true
 }
-
-// GetSrc returns the source item matching srcID. It return false if no source
-// item was found.
-func (r *URef) GetSrc(srcID SrcID) (SrcItem, bool) {
-	for _, item := range r.Srcs {
-		if item.SrcID == srcID {
-			return item, true
-		}
-	}
-	return SrcItem{}, false
-}
-
-// GetDst returns the destination item matching dstID. It return false if no
-// destination item was found.
-func (r *URef) GetDst(dstID DstID) (DstItem, bool) {
-	for _, item := range r.Dsts {
-		if item.DstID == dstID {
-			return item, true
-		}
-	}
-	return DstItem{}, false
-}
