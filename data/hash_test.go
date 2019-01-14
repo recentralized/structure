@@ -2,6 +2,7 @@ package data
 
 import (
 	"bytes"
+	"reflect"
 	"testing"
 
 	"github.com/recentralized/structure/cid"
@@ -31,5 +32,32 @@ func TestHashEqual(t *testing.T) {
 	}
 	if h1.Equal(h3) {
 		t.Errorf("different data must NOT be equal")
+	}
+}
+func TestHashIsZero(t *testing.T) {
+	tests := []struct {
+		desc     string
+		hash     Hash
+		wantZero bool
+	}{
+		{
+			desc:     "unspecified is zero",
+			wantZero: true,
+		},
+		{
+			desc:     "undef is zero",
+			hash:     undefHash,
+			wantZero: true,
+		},
+		{
+			desc:     "value is not zero",
+			hash:     LiteralHash("ok"),
+			wantZero: false,
+		},
+	}
+	for _, tt := range tests {
+		if got, want := tt.hash.IsZero(), tt.wantZero; !reflect.DeepEqual(got, want) {
+			t.Errorf("%q IsZero got %t want %t", tt.desc, got, want)
+		}
 	}
 }
