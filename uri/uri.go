@@ -84,6 +84,11 @@ func (u URI) uriString() string {
 	return u.String()
 }
 
+// IsZero returns true if this URI is its zero value.
+func (u URI) IsZero() bool {
+	return u == Empty
+}
+
 // Equal compares the string representation of another URI.
 func (u URI) Equal(ref uriStringer) bool {
 	return u.uriString() == ref.uriString()
