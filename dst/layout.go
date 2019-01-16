@@ -3,10 +3,9 @@ package dst
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
-	"os"
 
 	"github.com/recentralized/structure/data"
+	"github.com/recentralized/structure/dst/files"
 	"github.com/recentralized/structure/meta"
 	"github.com/recentralized/structure/uri"
 )
@@ -125,13 +124,9 @@ func (l fsLayout) MetaURI(hash data.Hash, meta *meta.Meta) uri.URI {
 }
 
 func (l fsLayout) Files() []File {
-	f, err := os.Open("_files/fslayout_readme.txt")
+	data, err := files.Read("fslayout_readme.txt")
 	if err != nil {
-		panic("opening readme")
-	}
-	data, err := ioutil.ReadAll(f)
-	if err != nil {
-		panic("opening readme")
+		panic(fmt.Sprintf("opening readme: %s", err))
 	}
 	return []File{{uri.TrustedNew("README.txt"), data}}
 }
