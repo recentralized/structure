@@ -21,7 +21,7 @@ How to view photos and metadata
 Recentralized provides free tools to browse and manage this set of files, but
 we also strive to make them accessible by hand and with common unix tools.
 
-    Visit www.recentralized.org for options.
+    Visit www.recentralized.org/info/archive.html for more information.
 
 
 If you'd like to view them by hand, here's a quick overview:
@@ -47,8 +47,8 @@ For example:
 
     meta/f3/83/c624d283bf1c81e4e89c60cf3bfc00c6bf57.json
 
-A metadata file contains information inherent to the photo-such as embedded
-EXIF data-as well as information gathered from the place it was found. You can
+A metadata file contains information inherent to the photo--such as embedded
+EXIF data--as well as information gathered from the place it was found. You can
 use the tool `jq` to explore it [1].
 
 ---
