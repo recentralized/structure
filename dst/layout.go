@@ -3,6 +3,8 @@ package dst
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
+	"os"
 
 	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/meta"
@@ -30,6 +32,16 @@ type Layout interface {
 
 	// MetaURI returns the location that this meta should be stored.
 	MetaURI(data.Hash, *meta.Meta) uri.URI
+
+	// Files returns a list of supporting files to store on the
+	// destination, generally a README.txt.
+	Files() []File
+}
+
+// File is data to store on the destination.
+type File struct {
+	uri.URI
+	Data []byte
 }
 
 // NewFilesystemLayout initializes the standard layout for use on filesystems
@@ -110,6 +122,18 @@ func (l fsLayout) DataURI(hash data.Hash, meta *meta.Meta) uri.URI {
 func (l fsLayout) MetaURI(hash data.Hash, meta *meta.Meta) uri.URI {
 	key := fmt.Sprintf("meta/%s.%s", l.dirs(hash), "json")
 	return uri.TrustedNew(key)
+}
+
+func (l fsLayout) Files() []File {
+	f, err := os.Open("_files/fslayout_readme.txt")
+	if err != nil {
+		panic("opening readme")
+	}
+	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		panic("opening readme")
+	}
+	return []File{{uri.TrustedNew("README.txt"), data}}
 }
 
 func (l fsLayout) dirs(hash data.Hash) string {
