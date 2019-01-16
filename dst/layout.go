@@ -37,9 +37,9 @@ type Layout interface {
 	Files() []File
 }
 
-// File is data to store on the destination.
+// File is a supporting file to store on the destination.
 type File struct {
-	uri.URI
+	URI  uri.URI
 	Data []byte
 }
 
@@ -123,6 +123,7 @@ func (l fsLayout) MetaURI(hash data.Hash, meta *meta.Meta) uri.URI {
 	return uri.TrustedNew(key)
 }
 
+// README.txt
 func (l fsLayout) Files() []File {
 	data, err := files.Read("fslayout_readme.txt")
 	if err != nil {
