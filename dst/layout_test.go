@@ -6,6 +6,7 @@ import (
 
 	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/meta"
+	"github.com/recentralized/structure/uri"
 )
 
 func TestFilesystemLayout(t *testing.T) {
@@ -57,5 +58,20 @@ func TestFilesystemLayout(t *testing.T) {
 		if got, want := got.String(), tt.wantMetaURI; got != want {
 			t.Errorf("%q MetaURI()\ngot  %s\nwant %s", tt.desc, got, want)
 		}
+	}
+}
+
+func TestFilesystemLayoutFiles(t *testing.T) {
+	layout := NewFilesystemLayout()
+	files := layout.Files()
+	if len(files) == 0 {
+		t.Fatalf("expect files")
+	}
+	file := files[0]
+	if got, want := file.URI, uri.TrustedNew("README.txt"); !got.Equal(want) {
+		t.Errorf("URI got %s want %s", got, want)
+	}
+	if len(file.Data) == 0 {
+		t.Errorf("File has no data")
 	}
 }
