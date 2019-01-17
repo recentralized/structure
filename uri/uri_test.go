@@ -2,10 +2,12 @@ package uri
 
 import (
 	"net/url"
+	"reflect"
 	"testing"
 )
 
 func TestNew(t *testing.T) {
+	_, parseErr := url.Parse("%")
 	tests := []struct {
 		str        string
 		wantStr    string
@@ -18,14 +20,14 @@ func TestNew(t *testing.T) {
 			str:      "",
 			wantStr:  "",
 			wantZero: true,
-			wantErr:  ErrEmptyInput,
+			wantErr:  errEmpty,
 		},
 		{
 			// Blank string is an error.
 			str:      "  ",
 			wantStr:  "",
 			wantZero: true,
-			wantErr:  ErrEmptyInput,
+			wantErr:  errEmpty,
 		},
 		{
 			// Path only.
@@ -56,7 +58,7 @@ func TestNew(t *testing.T) {
 			// Parse error.
 			str:        "%",
 			wantStr:    "%",
-			wantErr:    ErrBadInput,
+			wantErr:    Error{Err: parseErr, invalid: true},
 			wantNilURL: true,
 		},
 		{
@@ -77,8 +79,8 @@ func TestNew(t *testing.T) {
 	}
 	for _, tt := range tests {
 		got, err := New(tt.str)
-		if err != tt.wantErr {
-			t.Errorf("%q New() want %s, got %s", tt.str, err, tt.wantErr)
+		if !reflect.DeepEqual(err, tt.wantErr) {
+			t.Errorf("%q New() want %q, got %q", tt.str, err, tt.wantErr)
 		}
 		if gotStr := got.String(); gotStr != tt.wantStr {
 			t.Errorf("%q New() String() got %#v, want %#v", tt.str, gotStr, tt.wantStr)
@@ -386,25 +388,25 @@ func TestResolveReference(t *testing.T) {
 			desc:    "append valid url to invalid url",
 			base:    URI{rawStr: "/something"},
 			ref:     URI{url: newURL("/path")},
-			wantErr: ErrBadInput,
+			wantErr: errInvalid,
 		},
 		{
 			desc:    "append invalid url to valid url",
 			base:    URI{url: newURL("/path")},
 			ref:     URI{rawStr: "/something"},
-			wantErr: ErrBadInput,
+			wantErr: errInvalid,
 		},
 		{
 			desc:    "append invalid url to invalid url",
 			base:    URI{rawStr: "/a"},
 			ref:     URI{rawStr: "/b"},
-			wantErr: ErrBadInput,
+			wantErr: errInvalid,
 		},
 		{
 			desc:    "append empty to empty",
 			base:    zero,
 			ref:     zero,
-			wantErr: ErrBadInput,
+			wantErr: errInvalid,
 		},
 	}
 	for _, tt := range tests {

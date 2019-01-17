@@ -23,40 +23,55 @@ type URI struct {
 
 // Error is the type of error returned by URI operations.
 type Error struct {
-	Msg string
-	Err error
+	Err     error
+	empty   bool
+	invalid bool
+}
+
+// IsEmpty means that the input was empty. If a URI is returned along with this
+// error, the URI is functional, but probably not what you want.
+func (e Error) IsEmpty() bool {
+	return e.empty
+}
+
+// IsInvalid means that the input was invalid. If a URI is returned along with
+// this error, the URI is functional but cannot be converted to a url.URL.
+func (e Error) IsInvalid() bool {
+	return e.invalid
 }
 
 func (e Error) Error() string {
-	if e.Err == nil {
-		return fmt.Sprintf("uri: %s", e.Msg)
+	var msg string
+	if e.empty {
+		msg = "input is empty"
 	}
-	return fmt.Sprintf("uri: %s (%s)", e.Msg, e.Err)
+	if e.invalid {
+		msg = "input is invalid"
+	}
+	if e.Err == nil {
+		return fmt.Sprintf("uri: %s", msg)
+	}
+	return fmt.Sprintf("uri: %s (%s)", msg, e.Err)
 }
 
-// ErrEmptyInput is returned if the input is empty. If a URI is returned along
-// with this error, the URI is functional, but probably not what you want.
-var ErrEmptyInput = Error{Msg: "input is empty"}
+var errEmpty = Error{empty: true}
 
-// ErrBadInput is returned if the input is invalid. If a URI is returned along
-// with this error, the URI is functional but cannot be converted to a url.URL.
-var ErrBadInput = Error{Msg: "input is invalid"}
+var errInvalid = Error{invalid: true}
 
-// New parses str and returns a URI. If the input is an empty or blank string,
-// it returns ErrEmptyInput. If any other problem occurs while parsing str it
-// returns ErrBadInput. You may choose to ignore these errors, see the comments
-// on the error values.
+// New parses str and returns a URI. If the input is an empty, a blank string,
+// or cannot be parsed then uri.Error is returned. You may choose to ignore to
+// inspect the error and decide to proceed.
 //
 // uri, err := uri.New("http://www.example.com")
 //
 func New(str string) (URI, error) {
 	str = strings.TrimSpace(str)
 	if str == "" {
-		return URI{url: &url.URL{}}, ErrEmptyInput
+		return URI{url: &url.URL{}}, errEmpty
 	}
 	u, err := url.Parse(str)
 	if err != nil {
-		return URI{rawStr: str}, ErrBadInput
+		return URI{rawStr: str}, Error{Err: err, invalid: true}
 	}
 	return URI{url: u}, nil
 }
@@ -134,7 +149,7 @@ func (u URI) ResolveReference(ref URI) (URI, error) {
 	a := u.URL()
 	b := ref.URL()
 	if a == nil || b == nil {
-		return zero, ErrBadInput
+		return zero, errInvalid
 	}
 	return URI{url: a.ResolveReference(b)}, nil
 }
