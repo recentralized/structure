@@ -2,32 +2,32 @@ package uri
 
 import (
 	"net/url"
+	"reflect"
 	"testing"
 )
 
 func TestNew(t *testing.T) {
-	empty1, _ := New("")
-	empty2, _ := New("   ")
-	if empty1 != Empty {
-		t.Errorf("empty URI must equal the constant")
-	}
-	if empty2 != Empty {
-		t.Errorf("blank URI must equal the constant")
-	}
+	_, parseErr := url.Parse("%")
 	tests := []struct {
-		str     string
-		wantStr string
-		wantErr bool
+		str        string
+		wantStr    string
+		wantErr    error
+		wantZero   bool
+		wantNilURL bool
 	}{
 		{
-			// Empty string is ok.
-			str:     "",
-			wantStr: "",
+			// Empty string is an error.
+			str:      "",
+			wantStr:  "",
+			wantZero: true,
+			wantErr:  errEmpty,
 		},
 		{
-			// Blank string is ok.
-			str:     "  ",
-			wantStr: "",
+			// Blank string is an error.
+			str:      "  ",
+			wantStr:  "",
+			wantZero: true,
+			wantErr:  errEmpty,
 		},
 		{
 			// Path only.
@@ -56,9 +56,10 @@ func TestNew(t *testing.T) {
 		},
 		{
 			// Parse error.
-			str:     "%",
-			wantStr: "%",
-			wantErr: true,
+			str:        "%",
+			wantStr:    "%",
+			wantErr:    Error{Err: parseErr, invalid: true},
+			wantNilURL: true,
 		},
 		{
 			// AWS
@@ -78,17 +79,29 @@ func TestNew(t *testing.T) {
 	}
 	for _, tt := range tests {
 		got, err := New(tt.str)
-		if tt.wantErr {
-			if err == nil {
-				t.Errorf("%q New() want error, got none", tt.str)
-			}
-		} else {
-			if err != nil {
-				t.Errorf("%q New() got Err, want none: %s", tt.str, err)
-			}
+		if !reflect.DeepEqual(err, tt.wantErr) {
+			t.Errorf("%q New() want %q, got %q", tt.str, err, tt.wantErr)
 		}
 		if gotStr := got.String(); gotStr != tt.wantStr {
 			t.Errorf("%q New() String() got %#v, want %#v", tt.str, gotStr, tt.wantStr)
+		}
+		if tt.wantZero {
+			if !got.IsZero() {
+				t.Errorf("%q IsZero() got %t, want %t", tt.str, got.IsZero(), tt.wantZero)
+			}
+		} else {
+			if got.IsZero() {
+				t.Errorf("%q IsZero() got %t, want %t", tt.str, got.IsZero(), tt.wantZero)
+			}
+		}
+		if tt.wantNilURL {
+			if got.URL() != nil {
+				t.Errorf("%q URL() must be nil", tt.str)
+			}
+		} else {
+			if got.URL() == nil {
+				t.Errorf("%q URL() must not be nil", tt.str)
+			}
 		}
 	}
 }
@@ -113,7 +126,7 @@ func TestNewFromURL(t *testing.T) {
 		{
 			desc: "nil url",
 			url:  nil,
-			uri:  Empty,
+			uri:  zero,
 		},
 	}
 	for _, tt := range tests {
@@ -141,12 +154,17 @@ func TestIsZero(t *testing.T) {
 			wantZero: true,
 		},
 		{
-			desc:     "Empty is zero",
-			uri:      Empty,
+			desc:     "zero var is zero",
+			uri:      zero,
 			wantZero: true,
 		},
 		{
-			desc:     "any url is non-zero",
+			desc:     "empty url is zero",
+			uri:      URI{url: newURL("")},
+			wantZero: true,
+		},
+		{
+			desc:     "non-empty url is non-zero",
 			uri:      URI{url: newURL("ok")},
 			wantZero: false,
 		},
@@ -323,17 +341,12 @@ func TestResolveReference(t *testing.T) {
 		}
 		return u
 	}
-	e := URI{url: newURL("")}
-	re, _ := e.ResolveReference(e)
-	if re != Empty {
-		t.Errorf("Resolving to Empty must == Empty")
-	}
 	tests := []struct {
 		desc    string
 		base    URI
 		ref     URI
 		want    URI
-		wantErr bool
+		wantErr error
 	}{
 		{
 			desc: "append url path",
@@ -375,42 +388,34 @@ func TestResolveReference(t *testing.T) {
 			desc:    "append valid url to invalid url",
 			base:    URI{rawStr: "/something"},
 			ref:     URI{url: newURL("/path")},
-			wantErr: true,
+			wantErr: errInvalid,
 		},
 		{
 			desc:    "append invalid url to valid url",
 			base:    URI{url: newURL("/path")},
 			ref:     URI{rawStr: "/something"},
-			wantErr: true,
+			wantErr: errInvalid,
 		},
 		{
 			desc:    "append invalid url to invalid url",
 			base:    URI{rawStr: "/a"},
 			ref:     URI{rawStr: "/b"},
-			wantErr: true,
+			wantErr: errInvalid,
 		},
 		{
-			desc: "append empty to empty",
-			base: Empty,
-			ref:  Empty,
-			want: Empty,
+			desc:    "append empty to empty",
+			base:    zero,
+			ref:     zero,
+			wantErr: errInvalid,
 		},
 	}
 	for _, tt := range tests {
 		got, err := tt.base.ResolveReference(tt.ref)
-		if tt.wantErr {
-			if err == nil {
-				t.Errorf("%q wants error, got none", tt.desc)
-			}
-		} else {
-			if err != nil {
-				t.Errorf("%q wants error no error, got: %s", tt.desc, err)
-			}
+		if err != tt.wantErr {
+			t.Errorf("%q ResolveReference got err %q want %q", tt.desc, err, tt.wantErr)
 		}
-		if err == nil {
-			if !got.Equal(tt.want) {
-				t.Errorf("%q ResolveReference() got %#v, want %#v", tt.desc, got, tt.want)
-			}
+		if !got.Equal(tt.want) {
+			t.Errorf("%q ResolveReference() got %#v, want %#v", tt.desc, got, tt.want)
 		}
 	}
 }

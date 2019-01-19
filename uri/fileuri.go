@@ -16,7 +16,7 @@ import (
 func NewFilePath(path string) (FilePath, error) {
 	var err error
 	if path, err = cleanPath(path); err != nil {
-		return FilePath{Empty}, err
+		return FilePath{zero}, err
 	}
 	url := &url.URL{Scheme: "file", Path: path}
 	return FilePath{NewFromURL(url)}, nil
@@ -29,7 +29,7 @@ func NewFilePath(path string) (FilePath, error) {
 func NewDirPath(path string) (FilePath, error) {
 	var err error
 	if path, err = cleanPath(path); err != nil {
-		return FilePath{Empty}, err
+		return FilePath{zero}, err
 	}
 	// NOTE: ASCII-Only. Is that ok?
 	if path[len(path)-1:] != "/" {

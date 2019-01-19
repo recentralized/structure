@@ -10,8 +10,8 @@ import (
 // immutable, but can be modified using ResolveReference.
 //
 // The implementation is a light wrapper around url.URL. If the URI cannot be
-// represented by url.URL, it can be represented by rawStr but not all methods
-// will work.
+// represented by url.URL, it can be represented by uri.URI but cannot be
+// converted to a url.URL.
 type URI struct {
 
 	// url represents the URI for most cases.
@@ -21,27 +21,62 @@ type URI struct {
 	rawStr string
 }
 
-// Empty is an empty URI. A good default when an empty URI is ok.
-var Empty = URI{}
-
-// New parses str and returns a URI. If the input is an empty string or blank,
-// the package variable url.Empty is returned, which you can do an equality
-// test against. If there is a problem parsing the input, the error is
-// returned, but so is a URI. You may choose whether you wish to proceed.
+// New parses str and returns a URI. If the input is an empty, a blank string,
+// or cannot be parsed then uri.Error is returned. You may choose to to inspect
+// the error and decide to proceed.
 //
 // uri, err := uri.New("http://www.example.com")
 //
 func New(str string) (URI, error) {
 	str = strings.TrimSpace(str)
 	if str == "" {
-		return Empty, nil
+		return URI{url: &url.URL{}}, errEmpty
 	}
-	url, err := url.Parse(str)
+	u, err := url.Parse(str)
 	if err != nil {
-		return URI{rawStr: str}, err
+		return URI{rawStr: str}, Error{Err: err, invalid: true}
 	}
-	return URI{url: url}, nil
+	return URI{url: u}, nil
 }
+
+// Error is the type of error returned by URI operations.
+type Error struct {
+	Err     error
+	empty   bool
+	invalid bool
+}
+
+// IsEmpty means that the input was empty. If a URI is returned along with this
+// error, the URI is fully functional, but probably not what you want.
+func (e Error) IsEmpty() bool {
+	return e.empty
+}
+
+// IsInvalid means that the input was invalid. If a URI is returned along with
+// this error, the URI cannot be converted to a url.URL.
+func (e Error) IsInvalid() bool {
+	return e.invalid
+}
+
+func (e Error) Error() string {
+	var msg string
+	if e.empty {
+		msg = "input is empty"
+	}
+	if e.invalid {
+		msg = "input is invalid"
+	}
+	if e.Err == nil {
+		return fmt.Sprintf("uri: %s", msg)
+	}
+	return fmt.Sprintf("uri: %s (%s)", msg, e.Err)
+}
+
+var errEmpty = Error{empty: true}
+
+var errInvalid = Error{invalid: true}
+
+var zero = URI{}
 
 // TrustedNew calls New and ignores any error. ONLY use this if you trust the
 // input.
@@ -52,7 +87,7 @@ func TrustedNew(str string) URI {
 
 // NewFromURL converts the URL to a URI. You can use this in tandem with
 // URI.URL() to modify the URL and then create a new URI. Passing a nil URL
-// will result in uri.Empty.
+// will result in the zero value.
 //
 // uri, _ := uri.New("http://www.example.com")
 // url := uri.URL()
@@ -61,7 +96,7 @@ func TrustedNew(str string) URI {
 //
 func NewFromURL(url *url.URL) URI {
 	if url == nil {
-		return Empty
+		return zero
 	}
 	// Ignore error, assuming url.URL is always round-trippable.
 	uri, _ := New(url.String())
@@ -86,7 +121,10 @@ func (u URI) uriString() string {
 
 // IsZero returns true if this URI is its zero value.
 func (u URI) IsZero() bool {
-	return u == Empty
+	if u.url != nil {
+		return u.url.String() == ""
+	}
+	return u.rawStr == ""
 }
 
 // Equal compares the string representation of another URI.
@@ -94,9 +132,8 @@ func (u URI) Equal(ref uriStringer) bool {
 	return u.uriString() == ref.uriString()
 }
 
-// URL returns a url.URL representation. It may be nil if the URI
-// cannot be handled by url.URL. Modifying the returned URL will *not*
-// alter this URI.
+// URL returns a url.URL representation. It may be nil if the URI could not be
+// parsed. Modifying the returned URL will *not* alter this URI.
 func (u URI) URL() *url.URL {
 	if u.url == nil {
 		return nil
@@ -109,16 +146,10 @@ func (u URI) URL() *url.URL {
 // Resolving uri.Empty with uri.Empty results in uri.Empty. Resolving
 // any non-valid URI results in an error.
 func (u URI) ResolveReference(ref URI) (URI, error) {
-	refURL := ref.URL()
-	if u == Empty && ref == Empty {
-		return Empty, nil
+	a := u.URL()
+	b := ref.URL()
+	if a == nil || b == nil {
+		return zero, errInvalid
 	}
-	if u.url != nil && refURL != nil {
-		url := u.url.ResolveReference(refURL)
-		if url.String() == "" {
-			return Empty, nil
-		}
-		return URI{url: url}, nil
-	}
-	return Empty, fmt.Errorf("cannot resolve %q and %q", u, ref)
+	return URI{url: a.ResolveReference(b)}, nil
 }
