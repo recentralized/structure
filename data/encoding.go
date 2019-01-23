@@ -26,10 +26,12 @@ func (h *Hash) Scan(data interface{}) error {
 	if !ok {
 		return fmt.Errorf("Hash did not get bytes: %#v", data)
 	}
-	o, err := ParseHash(string(v))
-	if err != nil {
-		return err
+	if len(v) > 0 {
+		o, err := ParseHash(string(v))
+		if err != nil {
+			return err
+		}
+		*h = o
 	}
-	*h = o
 	return nil
 }
