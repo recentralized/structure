@@ -2,7 +2,6 @@ package data
 
 import (
 	"encoding/json"
-	"log"
 	"reflect"
 	"testing"
 )
@@ -13,13 +12,32 @@ func TestHashJSON(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Marshal() failed: %s", err)
 	}
-	log.Printf("DATA %v", data)
 	hashOut := &Hash{}
 	if err := json.Unmarshal(data, hashOut); err != nil {
 		t.Fatalf("Unmarshal() failed: %s", err)
 	}
 	if !hashIn.Equal(*hashOut) {
 		t.Fatalf("Round-trip failed: got %s want %s", hashOut, hashIn)
+	}
+	if !reflect.DeepEqual(hashIn, *hashOut) {
+		t.Fatalf("Round-trip DeepEqual failed: got %#v want %#v", hashOut, hashIn)
+	}
+}
+func TestHashJSONEmpty(t *testing.T) {
+	var hashIn Hash
+	data, err := json.Marshal(hashIn)
+	if err != nil {
+		t.Fatalf("Marshal() failed: %s", err)
+	}
+	hashOut := &Hash{}
+	if err := json.Unmarshal(data, hashOut); err != nil {
+		t.Fatalf("Unmarshal() failed: %s", err)
+	}
+	if !hashIn.Equal(*hashOut) {
+		t.Fatalf("Round-trip failed: got %s want %s", hashOut, hashIn)
+	}
+	if !reflect.DeepEqual(hashIn, *hashOut) {
+		t.Fatalf("Round-trip DeepEqual failed: got %#v want %#v", hashOut, hashIn)
 	}
 }
 func TestHashDatabase(t *testing.T) {
