@@ -96,7 +96,7 @@ func (l fsLayout) DataURI(hash data.Hash, meta *meta.Meta) uri.URI {
 
 	// "media" category names files by hash and organized by date.
 	case "media":
-		t := meta.DateCreated()
+		t := meta.Inherent.Created
 		if t.IsZero() {
 			key = fmt.Sprintf("%s/%s/%s.%s", category, l.zeroDateDir, l.dirs(hash), ext)
 			return uri.TrustedNew(key)

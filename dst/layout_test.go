@@ -25,6 +25,9 @@ func TestFilesystemLayout(t *testing.T) {
 				Inherent: meta.Content{
 					Created: time.Date(2015, 1, 2, 9, 9, 9, 9, time.UTC),
 				},
+				Sidecar: meta.Content{
+					Created: time.Date(2011, 1, 2, 9, 9, 9, 9, time.UTC),
+				},
 			},
 			wantDataURI: "media/2015/2015-01-02/abcdefg.jpg",
 			wantMetaURI: "meta/ab/cd/efg.json",
