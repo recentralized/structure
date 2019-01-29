@@ -45,6 +45,7 @@ const (
 	// Image formats.
 	JPG = "jpg" // Standard JPG file.
 	PNG = "png" // Standard PNG file.
+	GIF = "gif" // Standard GIF file.
 )
 
 // Encoding is the encoding done to the content for storage. Most types are
