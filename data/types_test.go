@@ -176,12 +176,19 @@ func TestStored(t *testing.T) {
 				t.Errorf("Ext got %q want %q", got, want)
 			}
 			ext := tt.stored.Ext()
-			got, err := ParseExt(ext)
-			if err != nil {
-				t.Errorf("ParseExt round trip: %s", err)
-			}
-			if got != tt.stored {
-				t.Errorf("ParseExt got %v want %v", got, tt.stored)
+			if tt.wantOk {
+				got, err := ParseExt(ext)
+				if err != nil {
+					t.Errorf("ParseExt round trip: %s", err)
+				}
+				if got != tt.stored {
+					t.Errorf("ParseExt got %v want %v", got, tt.stored)
+				}
+			} else if ext != "" {
+				_, err := ParseExt(ext)
+				if err == nil {
+					t.Errorf("ParseExt must fail if not empty and not ok: %s", ext)
+				}
 			}
 		})
 	}
@@ -195,14 +202,20 @@ func TestParseExt(t *testing.T) {
 		wantErr error
 	}{
 		{
+			desc: "empty string",
+			ext:  "",
+			want: Stored{},
+		},
+		{
 			desc: "just type",
 			ext:  "jpg",
 			want: Stored{Type: JPG},
 		},
 		{
-			desc: "just encoding",
-			ext:  "gz",
-			want: Stored{Encoding: GZip},
+			desc:    "just encoding",
+			ext:     "gz",
+			want:    Stored{Encoding: GZip},
+			wantErr: errors.New("data: unknown type: \"gz\""),
 		},
 		{
 			desc: "type and encoding",

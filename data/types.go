@@ -73,9 +73,11 @@ func ParseExt(str string) (Stored, error) {
 		return Stored{}, fmt.Errorf("data: too many parts in extension %q", str)
 	}
 	if len(parts) == 1 {
-		if e := Encoding(parts[0]); e.Ok() {
-			return Stored{Encoding: e}, nil
+		if t := Type(parts[0]); t.Ok() {
+			return Stored{Type: t}, nil
 		}
+		e := Encoding(parts[0])
+		return Stored{Encoding: e}, fmt.Errorf("data: unknown type: %q", str)
 	}
 	t := Type(parts[0])
 	e := Native
