@@ -195,10 +195,14 @@ func TestParseExt(t *testing.T) {
 		wantErr error
 	}{
 		{
-
 			desc: "just type",
 			ext:  "jpg",
-			want: Stored{JPG, Native},
+			want: Stored{Type: JPG},
+		},
+		{
+			desc: "just encoding",
+			ext:  "gz",
+			want: Stored{Encoding: GZip},
 		},
 		{
 			desc: "type and encoding",
