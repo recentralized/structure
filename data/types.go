@@ -3,6 +3,7 @@ package data
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
 var (
@@ -51,6 +52,20 @@ func (t Type) Class() Class {
 	return classOfType[t]
 }
 
+// ParseExt parses an extension, returning the Stored format.
+func ParseExt(str string) (Stored, error) {
+	parts := strings.Split(str, ".")
+	if len(parts) > 2 {
+		return Stored{}, fmt.Errorf("data: too many parts in extension %q", str)
+	}
+	t := Type(parts[0])
+	e := Native
+	if len(parts) == 2 {
+		e = Encoding(parts[1])
+	}
+	return Stored{t, e}, nil
+}
+
 // Stored is how a type is formatted for storage.
 type Stored struct {
 	Type     Type
@@ -75,6 +90,9 @@ func (s Stored) Ext() string {
 type Encoding string
 
 func (e Encoding) String() string {
+	if e == "" {
+		return "<native>"
+	}
 	return string(e)
 }
 
