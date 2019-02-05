@@ -49,7 +49,10 @@ func (t Type) String() string {
 
 // Ext returns the type's standard file extension.
 func (t Type) Ext() string {
-	return string(t)
+	if t == "" {
+		return ""
+	}
+	return fmt.Sprintf(".%s", t)
 }
 
 // Class returns the type's class: image, catalog, etc.
@@ -65,6 +68,7 @@ func (t Type) Ok() bool {
 
 // ParseExt parses an extension, returning the Stored format.
 func ParseExt(str string) (Stored, error) {
+	str = strings.TrimPrefix(str, ".")
 	if str == "" {
 		return Stored{}, nil
 	}
@@ -101,7 +105,7 @@ type Stored struct {
 }
 
 func (s Stored) String() string {
-	e := s.Ext()
+	e := strings.TrimPrefix(s.Ext(), ".")
 	if e == "" {
 		return "data:unknown"
 	}
@@ -114,11 +118,11 @@ func (s Stored) Ext() string {
 	case s.Type == UnknownType && s.Encoding == Native:
 		return ""
 	case s.Type == UnknownType:
-		return fmt.Sprintf("%s", s.Encoding.Ext())
+		return s.Encoding.Ext()
 	case s.Encoding == Native:
-		return fmt.Sprintf("%s", s.Type.Ext())
+		return s.Type.Ext()
 	default:
-		return fmt.Sprintf("%s.%s", s.Type.Ext(), s.Encoding.Ext())
+		return fmt.Sprintf("%s%s", s.Type.Ext(), s.Encoding.Ext())
 	}
 }
 
@@ -156,7 +160,10 @@ func (e Encoding) String() string {
 
 // Ext returns the encoding's standard file extension.
 func (e Encoding) Ext() string {
-	return string(e)
+	if e == "" {
+		return ""
+	}
+	return fmt.Sprintf(".%s", e)
 }
 
 // Ok return true if the encoding is defined.

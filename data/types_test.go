@@ -28,7 +28,7 @@ func TestType(t *testing.T) {
 			typ:       "foo",
 			wantOk:    false,
 			wantStr:   "foo",
-			wantExt:   "foo",
+			wantExt:   ".foo",
 			wantClass: Unclassified,
 		},
 		{
@@ -36,7 +36,7 @@ func TestType(t *testing.T) {
 			typ:       JPG,
 			wantOk:    true,
 			wantStr:   "jpg",
-			wantExt:   "jpg",
+			wantExt:   ".jpg",
 			wantClass: Image,
 		},
 		{
@@ -44,7 +44,7 @@ func TestType(t *testing.T) {
 			typ:       PNG,
 			wantOk:    true,
 			wantStr:   "png",
-			wantExt:   "png",
+			wantExt:   ".png",
 			wantClass: Image,
 		},
 		{
@@ -52,7 +52,7 @@ func TestType(t *testing.T) {
 			typ:       GIF,
 			wantOk:    true,
 			wantStr:   "gif",
-			wantExt:   "gif",
+			wantExt:   ".gif",
 			wantClass: Image,
 		},
 	}
@@ -94,21 +94,21 @@ func TestEncoding(t *testing.T) {
 			enc:     "foo",
 			wantOk:  false,
 			wantStr: "foo",
-			wantExt: "foo",
+			wantExt: ".foo",
 		},
 		{
 			desc:    "tar",
 			enc:     Tar,
 			wantOk:  true,
 			wantStr: "tar",
-			wantExt: "tar",
+			wantExt: ".tar",
 		},
 		{
 			desc:    "gzip",
 			enc:     GZip,
 			wantOk:  true,
 			wantStr: "gz",
-			wantExt: "gz",
+			wantExt: ".gz",
 		},
 	}
 	for _, tt := range tests {
@@ -147,21 +147,21 @@ func TestStored(t *testing.T) {
 			stored:  Stored{Encoding: GZip},
 			wantOk:  false,
 			wantStr: "gz",
-			wantExt: "gz",
+			wantExt: ".gz",
 		},
 		{
 			desc:    "type with native encoding",
 			stored:  Stored{Type: JPG},
 			wantOk:  true,
 			wantStr: "jpg",
-			wantExt: "jpg",
+			wantExt: ".jpg",
 		},
 		{
 			desc:    "type with encoding",
 			stored:  Stored{PNG, GZip},
 			wantOk:  true,
 			wantStr: "png.gz",
-			wantExt: "png.gz",
+			wantExt: ".png.gz",
 		},
 	}
 	for _, tt := range tests {
@@ -207,36 +207,41 @@ func TestParseExt(t *testing.T) {
 			want: Stored{},
 		},
 		{
+			desc: "dot",
+			ext:  ".",
+			want: Stored{},
+		},
+		{
 			desc: "just type",
-			ext:  "jpg",
+			ext:  ".jpg",
 			want: Stored{Type: JPG},
 		},
 		{
 			desc:    "just encoding",
-			ext:     "gz",
+			ext:     ".gz",
 			want:    Stored{Encoding: GZip},
 			wantErr: errors.New("data: unknown type: \"gz\""),
 		},
 		{
 			desc: "type and encoding",
-			ext:  "jpg.gz",
+			ext:  ".jpg.gz",
 			want: Stored{JPG, GZip},
 		},
 		{
 			desc:    "unknown type",
-			ext:     "foo.gz",
+			ext:     ".foo.gz",
 			want:    Stored{"foo", GZip},
 			wantErr: errors.New("data: unknown type: \"foo\""),
 		},
 		{
 			desc:    "unknown encoding",
-			ext:     "jpg.foo",
+			ext:     ".jpg.foo",
 			want:    Stored{JPG, "foo"},
 			wantErr: errors.New("data: unknown encoding: \"foo\""),
 		},
 		{
 			desc:    "too many parts (will support this later)",
-			ext:     "jpg.tar.gz",
+			ext:     ".jpg.tar.gz",
 			wantErr: errors.New("data: too many parts in extension \"jpg.tar.gz\""),
 		},
 	}
