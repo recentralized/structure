@@ -42,7 +42,7 @@ type Type string
 
 func (t Type) String() string {
 	if t == "" {
-		return "data:unknown"
+		return ""
 	}
 	return string(t)
 }
@@ -66,8 +66,23 @@ func (t Type) Ok() bool {
 	return ok
 }
 
-// ParseExt parses an extension, returning the Stored format.
-func ParseExt(str string) (Stored, error) {
+// Format implements fmt.Formatter.
+func (t Type) Format(f fmt.State, c rune) {
+	switch c {
+	case 's':
+		f.Write([]byte(t.String()))
+	case 'v':
+		s := t.String()
+		if s == "" {
+			f.Write([]byte("unknown"))
+		} else {
+			f.Write([]byte(s))
+		}
+	}
+}
+
+// ParseType parses a type or extension, returning the Stored format.
+func ParseType(str string) (Stored, error) {
 	str = strings.TrimPrefix(str, ".")
 	if str == "" {
 		return Stored{}, nil
@@ -77,11 +92,12 @@ func ParseExt(str string) (Stored, error) {
 		return Stored{}, fmt.Errorf("data: too many parts in extension %q", str)
 	}
 	if len(parts) == 1 {
-		if t := Type(parts[0]); t.Ok() {
+		t := Type(parts[0])
+		if t.Ok() {
 			return Stored{Type: t}, nil
 		}
 		e := Encoding(parts[0])
-		return Stored{Encoding: e}, fmt.Errorf("data: unknown type: %q", str)
+		return Stored{Encoding: e}, fmt.Errorf("data: unknown type: %v", t)
 	}
 	t := Type(parts[0])
 	e := Native
@@ -90,10 +106,10 @@ func ParseExt(str string) (Stored, error) {
 	}
 	s := Stored{t, e}
 	if !t.Ok() {
-		return s, fmt.Errorf("data: unknown type: %q", t)
+		return s, fmt.Errorf("data: unknown type: %v", t)
 	}
 	if !e.Ok() {
-		return s, fmt.Errorf("data: unknown encoding: %q", e)
+		return s, fmt.Errorf("data: unknown encoding: %v", e)
 	}
 	return s, nil
 }
@@ -107,7 +123,7 @@ type Stored struct {
 func (s Stored) String() string {
 	e := strings.TrimPrefix(s.Ext(), ".")
 	if e == "" {
-		return "data:unknown"
+		return ""
 	}
 	return e
 }
@@ -139,9 +155,9 @@ func (s Stored) Format(f fmt.State, c rune) {
 	case 'v':
 		f.Write([]byte("Stored["))
 		f.Write([]byte("type: "))
-		f.Write([]byte(s.Type.String()))
+		s.Type.Format(f, c)
 		f.Write([]byte(", encoding: "))
-		f.Write([]byte(s.Encoding.String()))
+		s.Encoding.Format(f, c)
 		f.Write([]byte("]"))
 	}
 }
@@ -153,7 +169,7 @@ type Encoding string
 
 func (e Encoding) String() string {
 	if e == "" {
-		return "data:native"
+		return ""
 	}
 	return string(e)
 }
@@ -170,6 +186,21 @@ func (e Encoding) Ext() string {
 func (e Encoding) Ok() bool {
 	_, ok := encodings[e]
 	return ok
+}
+
+// Format implements fmt.Formatter.
+func (e Encoding) Format(f fmt.State, c rune) {
+	switch c {
+	case 's':
+		f.Write([]byte(e.String()))
+	case 'v':
+		s := e.String()
+		if s == "" {
+			f.Write([]byte("native"))
+		} else {
+			f.Write([]byte(s))
+		}
+	}
 }
 
 // Class is the category of data that a type belongs to. JPG, PNG, GIF are all

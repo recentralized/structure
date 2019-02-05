@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -13,14 +14,16 @@ func TestType(t *testing.T) {
 		wantOk    bool
 		wantStr   string
 		wantExt   string
+		wantFmtV  string
 		wantClass Class
 	}{
 		{
 			desc:      "Unknown",
 			typ:       UnknownType,
 			wantOk:    false,
-			wantStr:   "data:unknown",
+			wantStr:   "",
 			wantExt:   "",
+			wantFmtV:  "unknown",
 			wantClass: Unclassified,
 		},
 		{
@@ -29,6 +32,7 @@ func TestType(t *testing.T) {
 			wantOk:    false,
 			wantStr:   "foo",
 			wantExt:   ".foo",
+			wantFmtV:  "foo",
 			wantClass: Unclassified,
 		},
 		{
@@ -37,6 +41,7 @@ func TestType(t *testing.T) {
 			wantOk:    true,
 			wantStr:   "jpg",
 			wantExt:   ".jpg",
+			wantFmtV:  "jpg",
 			wantClass: Image,
 		},
 		{
@@ -45,6 +50,7 @@ func TestType(t *testing.T) {
 			wantOk:    true,
 			wantStr:   "png",
 			wantExt:   ".png",
+			wantFmtV:  "png",
 			wantClass: Image,
 		},
 		{
@@ -53,6 +59,7 @@ func TestType(t *testing.T) {
 			wantOk:    true,
 			wantStr:   "gif",
 			wantExt:   ".gif",
+			wantFmtV:  "gif",
 			wantClass: Image,
 		},
 	}
@@ -70,45 +77,53 @@ func TestType(t *testing.T) {
 			if got, want := tt.typ.Class(), tt.wantClass; got != want {
 				t.Errorf("Class got %q want %q", got, want)
 			}
+			if got, want := fmt.Sprintf("%v", tt.typ), tt.wantFmtV; got != want {
+				t.Errorf("%%v got %q want %q", got, want)
+			}
 		})
 	}
 }
 
 func TestEncoding(t *testing.T) {
 	tests := []struct {
-		desc    string
-		enc     Encoding
-		wantOk  bool
-		wantStr string
-		wantExt string
+		desc     string
+		enc      Encoding
+		wantOk   bool
+		wantStr  string
+		wantExt  string
+		wantFmtV string
 	}{
 		{
-			desc:    "native",
-			enc:     Native,
-			wantOk:  true,
-			wantStr: "data:native",
-			wantExt: "",
+			desc:     "native",
+			enc:      Native,
+			wantOk:   true,
+			wantStr:  "",
+			wantExt:  "",
+			wantFmtV: "native",
 		},
 		{
-			desc:    "undefined",
-			enc:     "foo",
-			wantOk:  false,
-			wantStr: "foo",
-			wantExt: ".foo",
+			desc:     "undefined",
+			enc:      "foo",
+			wantOk:   false,
+			wantStr:  "foo",
+			wantExt:  ".foo",
+			wantFmtV: "foo",
 		},
 		{
-			desc:    "tar",
-			enc:     Tar,
-			wantOk:  true,
-			wantStr: "tar",
-			wantExt: ".tar",
+			desc:     "tar",
+			enc:      Tar,
+			wantOk:   true,
+			wantStr:  "tar",
+			wantExt:  ".tar",
+			wantFmtV: "tar",
 		},
 		{
-			desc:    "gzip",
-			enc:     GZip,
-			wantOk:  true,
-			wantStr: "gz",
-			wantExt: ".gz",
+			desc:     "gzip",
+			enc:      GZip,
+			wantOk:   true,
+			wantStr:  "gz",
+			wantExt:  ".gz",
+			wantFmtV: "gz",
 		},
 	}
 	for _, tt := range tests {
@@ -122,46 +137,53 @@ func TestEncoding(t *testing.T) {
 			if got, want := tt.enc.Ext(), tt.wantExt; got != want {
 				t.Errorf("Ext got %q want %q", got, want)
 			}
+			if got, want := fmt.Sprintf("%v", tt.enc), tt.wantFmtV; got != want {
+				t.Errorf("%%v got %q want %q", got, want)
+			}
 		})
 	}
 }
 
 func TestStored(t *testing.T) {
 	tests := []struct {
-		desc      string
-		stored    Stored
-		wantOk    bool
-		wantStr   string
-		wantExt   string
-		wantClass Class
+		desc     string
+		stored   Stored
+		wantOk   bool
+		wantStr  string
+		wantExt  string
+		wantFmtV string
 	}{
 		{
-			desc:    "zero value",
-			stored:  Stored{},
-			wantOk:  false,
-			wantStr: "data:unknown",
-			wantExt: "",
+			desc:     "zero value",
+			stored:   Stored{},
+			wantOk:   false,
+			wantStr:  "",
+			wantExt:  "",
+			wantFmtV: "Stored[type: unknown, encoding: native]",
 		},
 		{
-			desc:    "unknown type",
-			stored:  Stored{Encoding: GZip},
-			wantOk:  false,
-			wantStr: "gz",
-			wantExt: ".gz",
+			desc:     "unknown type",
+			stored:   Stored{Encoding: GZip},
+			wantOk:   false,
+			wantStr:  "gz",
+			wantExt:  ".gz",
+			wantFmtV: "Stored[type: unknown, encoding: gz]",
 		},
 		{
-			desc:    "type with native encoding",
-			stored:  Stored{Type: JPG},
-			wantOk:  true,
-			wantStr: "jpg",
-			wantExt: ".jpg",
+			desc:     "type with native encoding",
+			stored:   Stored{Type: JPG},
+			wantOk:   true,
+			wantStr:  "jpg",
+			wantExt:  ".jpg",
+			wantFmtV: "Stored[type: jpg, encoding: native]",
 		},
 		{
-			desc:    "type with encoding",
-			stored:  Stored{PNG, GZip},
-			wantOk:  true,
-			wantStr: "png.gz",
-			wantExt: ".png.gz",
+			desc:     "type with encoding",
+			stored:   Stored{PNG, GZip},
+			wantOk:   true,
+			wantStr:  "png.gz",
+			wantExt:  ".png.gz",
+			wantFmtV: "Stored[type: png, encoding: gz]",
 		},
 	}
 	for _, tt := range tests {
@@ -175,26 +197,29 @@ func TestStored(t *testing.T) {
 			if got, want := tt.stored.Ext(), tt.wantExt; got != want {
 				t.Errorf("Ext got %q want %q", got, want)
 			}
+			if got, want := fmt.Sprintf("%v", tt.stored), tt.wantFmtV; got != want {
+				t.Errorf("%%v got %q want %q", got, want)
+			}
 			ext := tt.stored.Ext()
 			if tt.wantOk {
-				got, err := ParseExt(ext)
+				got, err := ParseType(ext)
 				if err != nil {
-					t.Errorf("ParseExt round trip: %s", err)
+					t.Errorf("ParseType round trip: %s", err)
 				}
 				if got != tt.stored {
-					t.Errorf("ParseExt got %v want %v", got, tt.stored)
+					t.Errorf("ParseType got %v want %v", got, tt.stored)
 				}
 			} else if ext != "" {
-				_, err := ParseExt(ext)
+				_, err := ParseType(ext)
 				if err == nil {
-					t.Errorf("ParseExt must fail if not empty and not ok: %s", ext)
+					t.Errorf("ParseType must fail if not empty and not ok: %s", ext)
 				}
 			}
 		})
 	}
 }
 
-func TestParseExt(t *testing.T) {
+func TestParseType(t *testing.T) {
 	tests := []struct {
 		desc    string
 		ext     string
@@ -212,47 +237,58 @@ func TestParseExt(t *testing.T) {
 			want: Stored{},
 		},
 		{
-			desc: "just type",
+			desc: "type",
+			ext:  "jpg",
+			want: Stored{Type: JPG},
+		},
+		{
+			desc: "type extension",
 			ext:  ".jpg",
 			want: Stored{Type: JPG},
 		},
 		{
-			desc:    "just encoding",
+			desc:    "encoding",
+			ext:     "gz",
+			want:    Stored{Encoding: GZip},
+			wantErr: errors.New("data: unknown type: gz"),
+		},
+		{
+			desc:    "encoding extension",
 			ext:     ".gz",
 			want:    Stored{Encoding: GZip},
-			wantErr: errors.New("data: unknown type: \"gz\""),
+			wantErr: errors.New("data: unknown type: gz"),
 		},
 		{
 			desc: "type and encoding",
-			ext:  ".jpg.gz",
+			ext:  "jpg.gz",
 			want: Stored{JPG, GZip},
 		},
 		{
 			desc:    "unknown type",
-			ext:     ".foo.gz",
+			ext:     "foo.gz",
 			want:    Stored{"foo", GZip},
-			wantErr: errors.New("data: unknown type: \"foo\""),
+			wantErr: errors.New("data: unknown type: foo"),
 		},
 		{
 			desc:    "unknown encoding",
-			ext:     ".jpg.foo",
+			ext:     "jpg.foo",
 			want:    Stored{JPG, "foo"},
-			wantErr: errors.New("data: unknown encoding: \"foo\""),
+			wantErr: errors.New("data: unknown encoding: foo"),
 		},
 		{
 			desc:    "too many parts (will support this later)",
-			ext:     ".jpg.tar.gz",
+			ext:     "jpg.tar.gz",
 			wantErr: errors.New("data: too many parts in extension \"jpg.tar.gz\""),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
-			got, err := ParseExt(tt.ext)
+			got, err := ParseType(tt.ext)
 			if !reflect.DeepEqual(err, tt.wantErr) {
-				t.Fatalf("ParseExt got err %q want %q", err, tt.wantErr)
+				t.Fatalf("ParseType got err %q want %q", err, tt.wantErr)
 			}
 			if got != tt.want {
-				t.Fatalf("ParseExt got %v want %v", got, tt.want)
+				t.Fatalf("ParseType got %v want %v", got, tt.want)
 			}
 		})
 	}
