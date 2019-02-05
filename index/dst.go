@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/recentralized/structure/data"
 	"github.com/recentralized/structure/uri"
 	"github.com/satori/go.uuid"
 )
@@ -85,6 +86,12 @@ type DstItem struct {
 	// typically a URL pointing to the storage location of the metadata.
 	// The URI is always relative resolved to absolute using Dst.MetaURI.
 	MetaURI uri.URI
+
+	// DataType is the type of data that's stored. This field is useful to
+	// filter on a type of data without accessing the meta. It is normally
+	// the type of the original data but could be otherwise if the data has
+	// been compressed on storage, for example.
+	DataType data.Stored
 
 	// DataSize is the size of the stored data in bytes. This field is
 	// useful to calculate things like storage and transfer costs. It will
