@@ -98,12 +98,12 @@ func (l fsLayout) DataURI(hash data.Hash, meta *meta.Meta) uri.URI {
 	case "media":
 		t := meta.Inherent.Created
 		if t.IsZero() {
-			key = fmt.Sprintf("%s/%s/%s.%s", category, l.zeroDateDir, l.dirs(hash), ext)
+			key = fmt.Sprintf("%s/%s/%s%s", category, l.zeroDateDir, l.dirs(hash), ext)
 			return uri.TrustedNew(key)
 		}
 		year := t.Format("2006")
 		date := t.Format("2006-01-02")
-		key = fmt.Sprintf("%s/%s/%s/%s.%s", category, year, date, hash.String(), ext)
+		key = fmt.Sprintf("%s/%s/%s/%s%s", category, year, date, hash.String(), ext)
 		return uri.TrustedNew(key)
 
 	// Otherwise organize by breaking down the hash.
@@ -111,7 +111,7 @@ func (l fsLayout) DataURI(hash data.Hash, meta *meta.Meta) uri.URI {
 		if ext == "" {
 			key = fmt.Sprintf("%s/%s", category, l.dirs(hash))
 		} else {
-			key = fmt.Sprintf("%s/%s.%s", category, l.dirs(hash), ext)
+			key = fmt.Sprintf("%s/%s%s", category, l.dirs(hash), ext)
 		}
 		return uri.TrustedNew(key)
 	}
