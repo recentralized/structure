@@ -138,11 +138,11 @@ func (s Stored) String() string {
 // Ext returns the stored data's standard file extension.
 func (s Stored) Ext() string {
 	switch {
-	case s.Type == UnknownType && s.Encoding == Native:
+	case s.Type == "" && s.Encoding == "":
 		return ""
-	case s.Type == UnknownType:
+	case s.Type == "":
 		return s.Encoding.Ext()
-	case s.Encoding == Native:
+	case s.Encoding == "":
 		return s.Type.Ext()
 	default:
 		return fmt.Sprintf("%s%s", s.Type.Ext(), s.Encoding.Ext())
