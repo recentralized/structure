@@ -112,7 +112,7 @@ func TestStoredDatabase(t *testing.T) {
 	if !ok {
 		t.Fatalf("Value() did not return bytes")
 	}
-	if string(b) != `"jpg.gz"` {
+	if string(b) != `jpg.gz` {
 		t.Fatalf("want stringified representation got: %s", b)
 	}
 	storedOut := &Stored{}
