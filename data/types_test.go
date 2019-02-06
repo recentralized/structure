@@ -148,6 +148,7 @@ func TestStored(t *testing.T) {
 	tests := []struct {
 		desc     string
 		stored   Stored
+		wantZero bool
 		wantOk   bool
 		wantStr  string
 		wantExt  string
@@ -157,6 +158,7 @@ func TestStored(t *testing.T) {
 			desc:     "zero value",
 			stored:   Stored{},
 			wantOk:   false,
+			wantZero: true,
 			wantStr:  "",
 			wantExt:  "",
 			wantFmtV: "Stored[type: unknown, encoding: native]",
@@ -188,6 +190,9 @@ func TestStored(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
+			if got, want := tt.stored.IsZero(), tt.wantZero; got != want {
+				t.Errorf("IsZero() got %t want %t", got, want)
+			}
 			if got, want := tt.stored.Ok(), tt.wantOk; got != want {
 				t.Errorf("Ok() got %t want %t", got, want)
 			}

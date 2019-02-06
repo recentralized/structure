@@ -120,6 +120,13 @@ type Stored struct {
 	Encoding Encoding
 }
 
+var zeroStored = Stored{}
+
+// IsZero returns true if it's the zero value.
+func (s Stored) IsZero() bool {
+	return s == zeroStored
+}
+
 func (s Stored) String() string {
 	e := strings.TrimPrefix(s.Ext(), ".")
 	if e == "" {
