@@ -114,6 +114,7 @@ type dstItemJSON struct {
 	DstID     DstID      `json:"dst_id"`
 	DataURI   uri.URI    `json:"data_uri"`
 	MetaURI   uri.URI    `json:"meta_uri"`
+	DataType  string     `json:"data_type,omitempty"`
 	DataSize  int64      `json:"data_size,omitempty"`
 	MetaSize  int64      `json:"meta_size,omitempty"`
 	StoredAt  *time.Time `json:"stored_at,omitempty"`
@@ -126,6 +127,7 @@ func (d DstItem) MarshalJSON() ([]byte, error) {
 		DstID:    d.DstID,
 		DataURI:  d.DataURI,
 		MetaURI:  d.MetaURI,
+		DataType: d.DataType.String(),
 		DataSize: d.DataSize,
 		MetaSize: d.MetaSize,
 	}
@@ -147,6 +149,11 @@ func (d *DstItem) UnmarshalJSON(b []byte) error {
 	d.DstID = dj.DstID
 	d.DataURI = dj.DataURI
 	d.MetaURI = dj.MetaURI
+	typ, err := data.ParseType(dj.DataType)
+	if err != nil {
+		return err
+	}
+	d.DataType = typ
 	d.DataSize = dj.DataSize
 	d.MetaSize = dj.MetaSize
 	if dj.StoredAt != nil {

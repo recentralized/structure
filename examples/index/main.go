@@ -154,6 +154,7 @@ func buildDstItem(layout dst.Layout, dst index.Dst, hash data.Hash, meta *meta.M
 		DstID:     dst.DstID,
 		DataURI:   dataURI,
 		MetaURI:   metaURI,
+		DataType:  data.Stored{Type: meta.Type},
 		DataSize:  0, // updated with actual data size
 		MetaSize:  0, // updated with actual meta size
 		StoredAt:  time.Date(2018, 11, 13, 0, 0, 0, 0, time.UTC),
