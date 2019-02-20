@@ -5,15 +5,15 @@ import (
 	"time"
 )
 
-func TestInstagramMediaJSON(t *testing.T) {
+func TestInstagramPostJSON(t *testing.T) {
 	tests := []struct {
 		desc string
-		data *InstagramMedia
+		data *InstagramPost
 		json string
 	}{
 		{
 			desc: "zero value",
-			data: &InstagramMedia{},
+			data: &InstagramPost{},
 			json: `{"id":""}`,
 		},
 		{
@@ -87,16 +87,18 @@ func TestInstagramMediaJSON(t *testing.T) {
 			//     }
 			//   ]
 			// }
-			data: &InstagramMedia{
+			data: &InstagramPost{
 				ID:           "1979320569926821011_11073382793",
+				Type:         InstagramImagePost,
 				URL:          "https://www.instagram.com/p/Bt39ZJLHKSTFwXShw402xx8W9loUPHTyH5BsqY0/",
 				Multiple:     true,
 				Position:     1,
+				MediaType:    InstagramImageMedia,
 				UserID:       "11073382793",
 				Username:     "go_ig_test_0219",
 				UserFullName: "Golang Client",
 				Caption:      "Photo post #0219test",
-				CreatedAt:    datePtr(2019, 2, 14, 7, 3, 32, 0, time.UTC),
+				PostedAt:     datePtr(2019, 2, 14, 7, 3, 32, 0, time.UTC),
 				Filter:       "Crema",
 				Tags:         []string{"0219test"},
 				Location: &InstagramLocation{
@@ -117,14 +119,16 @@ func TestInstagramMediaJSON(t *testing.T) {
 			},
 			json: `{
 			  "id": "1979320569926821011_11073382793",
+			  "type": "image",
 			  "url": "https://www.instagram.com/p/Bt39ZJLHKSTFwXShw402xx8W9loUPHTyH5BsqY0/",
-			  "multiple": true,
-			  "position": 1,
+			  "media_multiple": true,
+			  "media_position": 1,
+			  "media_type": "image",
 			  "user_id": "11073382793",
 			  "username": "go_ig_test_0219",
 			  "user_full_name": "Golang Client",
 			  "caption": "Photo post #0219test",
-			  "created_at": "2019-02-14T07:03:32Z",
+			  "posted_at": "2019-02-14T07:03:32Z",
 			  "filter": "Crema",
 			  "tags": [
 			      "0219test"
@@ -149,7 +153,7 @@ func TestInstagramMediaJSON(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
-			assertJSONRoundtrip(t, tt.data, tt.json, &InstagramMedia{})
+			assertJSONRoundtrip(t, tt.data, tt.json, &InstagramPost{})
 		})
 	}
 }

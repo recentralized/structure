@@ -2,17 +2,38 @@ package meta
 
 import "time"
 
-// InstagramMedia is the full set of data available for media on Instagram.
+// InstagramPostType defines the type of post.
+type InstagramPostType string
+
+// InstagramMediaType defines the type of media in the post.
+type InstagramMediaType string
+
+// Types of Instagram posts.
+const (
+	InstagramImagePost    InstagramPostType = "image"
+	InstagramVideoPost                      = "video"
+	InstagramCarouselPost                   = "carousel"
+)
+
+// Types of Instagram media.
+const (
+	InstagramImageMedia InstagramMediaType = "image"
+	InstagramVideoMedia                    = "video"
+)
+
+// InstagramPost is the full set of data available for media on Instagram.
 // https://www.instagram.com/developer/
-type InstagramMedia struct {
+type InstagramPost struct {
 
 	// Media ID
-	ID string `json:"id"`
+	ID   string            `json:"id"`
+	Type InstagramPostType `json:"type,omitempty"`
 
 	// If the media is part of a multi-media post like a carousel, this is
-	// the position of this individual piece of media.
-	Multiple bool `json:"multiple,omitempty"`
-	Position int  `json:"position,omitempty"`
+	// the position and type of this individual piece of media.
+	Multiple  bool               `json:"media_multiple,omitempty"`
+	Position  int                `json:"media_position,omitempty"`
+	MediaType InstagramMediaType `json:"media_type,omitempty"`
 
 	// Public URL
 	URL string `json:"url,omitempty"`
@@ -23,8 +44,8 @@ type InstagramMedia struct {
 	UserFullName string `json:"user_full_name,omitempty"`
 
 	// Basic information when posted.
-	Caption   string     `json:"caption,omitempty"`
-	CreatedAt *time.Time `json:"created_at,omitempty"`
+	Caption  string     `json:"caption,omitempty"`
+	PostedAt *time.Time `json:"posted_at,omitempty"`
 
 	// Additional information when posted.
 	Filter      string                `json:"filter,omitempty"`
