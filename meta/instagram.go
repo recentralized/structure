@@ -29,14 +29,13 @@ type InstagramPost struct {
 	ID   string            `json:"id"`
 	Type InstagramPostType `json:"type,omitempty"`
 
-	// If the media is part of a multi-media post like a carousel, this is
-	// the position and type of this individual piece of media.
-	Multiple  bool               `json:"media_multiple,omitempty"`
-	Position  int                `json:"media_position,omitempty"`
-	MediaType InstagramMediaType `json:"media_type,omitempty"`
-
 	// Public URL
 	URL string `json:"url,omitempty"`
+
+	// Describe an individual piece of media within a multi-media post.
+	Multiple  bool               `json:"multiple,omitempty"`
+	MediaType InstagramMediaType `json:"media_type,omitempty"`
+	Position  int                `json:"position"`
 
 	// User that posted it.
 	UserID       string `json:"user_id,omitempty"`

@@ -14,7 +14,7 @@ func TestInstagramPostJSON(t *testing.T) {
 		{
 			desc: "zero value",
 			data: &InstagramPost{},
-			json: `{"id":""}`,
+			json: `{"id":"","position":0}`,
 		},
 		{
 			desc: "all data",
@@ -92,8 +92,8 @@ func TestInstagramPostJSON(t *testing.T) {
 				Type:         InstagramImagePost,
 				URL:          "https://www.instagram.com/p/Bt39ZJLHKSTFwXShw402xx8W9loUPHTyH5BsqY0/",
 				Multiple:     true,
-				Position:     1,
 				MediaType:    InstagramImageMedia,
+				Position:     0,
 				UserID:       "11073382793",
 				Username:     "go_ig_test_0219",
 				UserFullName: "Golang Client",
@@ -121,15 +121,15 @@ func TestInstagramPostJSON(t *testing.T) {
 			  "id": "1979320569926821011_11073382793",
 			  "type": "image",
 			  "url": "https://www.instagram.com/p/Bt39ZJLHKSTFwXShw402xx8W9loUPHTyH5BsqY0/",
-			  "media_multiple": true,
-			  "media_position": 1,
+			  "multiple": true,
 			  "media_type": "image",
+			  "position": 0,
 			  "user_id": "11073382793",
 			  "username": "go_ig_test_0219",
 			  "user_full_name": "Golang Client",
 			  "caption": "Photo post #0219test",
-			  "posted_at": "2019-02-14T07:03:32Z",
 			  "filter": "Crema",
+			  "posted_at": "2019-02-14T07:03:32Z",
 			  "tags": [
 			      "0219test"
 			  ],
