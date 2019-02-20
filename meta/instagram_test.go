@@ -90,6 +90,8 @@ func TestInstagramMediaJSON(t *testing.T) {
 			data: &InstagramMedia{
 				ID:           "1979320569926821011_11073382793",
 				URL:          "https://www.instagram.com/p/Bt39ZJLHKSTFwXShw402xx8W9loUPHTyH5BsqY0/",
+				Multiple:     true,
+				Position:     1,
 				UserID:       "11073382793",
 				Username:     "go_ig_test_0219",
 				UserFullName: "Golang Client",
@@ -116,6 +118,8 @@ func TestInstagramMediaJSON(t *testing.T) {
 			json: `{
 			  "id": "1979320569926821011_11073382793",
 			  "url": "https://www.instagram.com/p/Bt39ZJLHKSTFwXShw402xx8W9loUPHTyH5BsqY0/",
+			  "multiple": true,
+			  "position": 1,
 			  "user_id": "11073382793",
 			  "username": "go_ig_test_0219",
 			  "user_full_name": "Golang Client",

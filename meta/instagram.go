@@ -54,7 +54,7 @@ type InstagramComment struct {
 	Date     *time.Time `json:"date,omitempty"`
 }
 
-//InstagramTaggedUser is a user tagged in media.
+// InstagramTaggedUser is a user tagged in media.
 type InstagramTaggedUser struct {
 	Username string  `json:"username"`
 	X        float64 `json:"x"`
