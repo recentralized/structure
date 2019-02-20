@@ -15,29 +15,26 @@ type InstagramMedia struct {
 	Position int  `json:"position,omitempty"`
 
 	// Public URL
-	Link string `json:"link"`
+	URL string `json:"url,omitempty"`
+
+	// User that posted it.
+	UserID       string `json:"user_id,omitempty"`
+	Username     string `json:"username,omitempty"`
+	UserFullName string `json:"user_full_name,omitempty"`
 
 	// Basic information when posted.
-	User      *InstagramUser     `json:"user,omitempty"`
-	Location  *InstagramLocation `json:"location,omitempty"`
-	Caption   string             `json:"caption,omitempty"`
-	CreatedAt time.Time          `json:"created_at"`
+	Caption   string     `json:"caption,omitempty"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
 
 	// Additional information when posted.
 	Filter      string                `json:"filter,omitempty"`
 	Tags        []string              `json:"tags,omitempty"`
 	TaggedUsers []InstagramTaggedUser `json:"tagged_users,omitempty"`
+	Location    *InstagramLocation    `json:"location,omitempty"`
 
 	// User activity.
-	Likes    int                `json:"likes"`
+	Likes    int                `json:"likes,omitempty"`
 	Comments []InstagramComment `json:"comments,omitempty"`
-}
-
-// InstagramUser describes a user on Instagram.
-type InstagramUser struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-	FullName string `json:"full_name,omitempty"`
 }
 
 // InstagramLocation describes geo location of an Instagram post.
