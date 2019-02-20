@@ -47,10 +47,10 @@ type InstagramLocation struct {
 
 // InstagramComment is a comment on an Instagram post.
 type InstagramComment struct {
-	ID       string    `json:"id"`
-	Text     string    `json:"text"`
-	Username string    `json:"username"`
-	Date     time.Time `json:"date"`
+	ID       string     `json:"id"`
+	Text     string     `json:"text"`
+	Username string     `json:"username,omitempty"`
+	Date     *time.Time `json:"date,omitempty"`
 }
 
 //InstagramTaggedUser is a user tagged in media.

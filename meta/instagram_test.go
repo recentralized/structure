@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func TestInstagramJSON(t *testing.T) {
+func TestInstagramMediaJSON(t *testing.T) {
 	tests := []struct {
 		desc string
 		data *InstagramMedia
@@ -144,6 +144,48 @@ func TestInstagramJSON(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
 			assertJSONRoundtrip(t, tt.data, tt.json, &InstagramMedia{})
+		})
+	}
+}
+
+func TestInstagramCommentJSON(t *testing.T) {
+	tests := []struct {
+		desc string
+		data *InstagramComment
+		json string
+	}{
+		{
+			desc: "zero value",
+			data: &InstagramComment{},
+			json: `{"id":"","text":""}`,
+		},
+		{
+			desc: "all data",
+			// {
+			//   "id": "18034730665003447",
+			//   "from": {
+			//     "username": "rcarver"
+			//   },
+			//   "text": "That’s about right.",
+			//   "created_time": "1550177777"
+			// },
+			data: &InstagramComment{
+				ID:       "18034730665003447",
+				Username: "rcarver",
+				Text:     "That’s about right.",
+				Date:     datePtr(2019, 2, 14, 20, 56, 17, 0, time.UTC),
+			},
+			json: `{
+			  "id": "18034730665003447",
+			  "username": "rcarver",
+			  "text": "That’s about right.",
+			  "date": "2019-02-14T20:56:17Z"
+			}`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			assertJSONRoundtrip(t, tt.data, tt.json, &InstagramComment{})
 		})
 	}
 }
