@@ -103,7 +103,6 @@ func TestInstagramMediaJSON(t *testing.T) {
 					Latitude:  37.8029,
 					Longitude: -122.2721,
 				},
-				Likes: 1,
 				TaggedUsers: []InstagramTaggedUser{
 					{
 						Username: "rcarver",
@@ -111,6 +110,8 @@ func TestInstagramMediaJSON(t *testing.T) {
 						Y:        0.7938808374,
 					},
 				},
+				LikesCount:    1,
+				CommentsCount: 3,
 			},
 			json: `{
 			  "id": "1979320569926821011_11073382793",
@@ -130,14 +131,15 @@ func TestInstagramMediaJSON(t *testing.T) {
 			    "latitude": 37.8029,
 			    "longitude": -122.2721
 			  },
-			  "likes": 1,
 			  "tagged_users": [
 			    {
 			      "username": "rcarver",
 			      "x": 0.57568438,
 			      "y": 0.7938808374
 			    }
-			  ]
+			  ],
+			  "likes_count": 1,
+			  "comments_count": 3
 			}`,
 		},
 	}

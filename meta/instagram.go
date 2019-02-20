@@ -33,8 +33,9 @@ type InstagramMedia struct {
 	Location    *InstagramLocation    `json:"location,omitempty"`
 
 	// User activity.
-	Likes    int                `json:"likes,omitempty"`
-	Comments []InstagramComment `json:"comments,omitempty"`
+	LikesCount    int                `json:"likes_count,omitempty"`
+	CommentsCount int                `json:"comments_count,omitempty"`
+	Comments      []InstagramComment `json:"comments,omitempty"`
 }
 
 // InstagramLocation describes geo location of an Instagram post.
