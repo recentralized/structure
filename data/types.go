@@ -236,16 +236,16 @@ type td struct {
 
 var types = map[Type]td{
 	// keep alphabetized
-	CR2: td{Image},
-	DNG: td{Image},
-	GIF: td{Image},
-	IIQ: td{Image},
-	JPG: td{Image},
-	NEF: td{Image},
-	PNG: td{Image},
-	PSD: td{Image},
-	RAF: td{Image},
-	TIF: td{Image},
+	CR2: {Image},
+	DNG: {Image},
+	GIF: {Image},
+	IIQ: {Image},
+	JPG: {Image},
+	NEF: {Image},
+	PNG: {Image},
+	PSD: {Image},
+	RAF: {Image},
+	TIF: {Image},
 }
 
 var encodings = map[Encoding]bool{
