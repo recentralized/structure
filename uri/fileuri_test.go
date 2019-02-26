@@ -204,9 +204,9 @@ func TestFilepath(t *testing.T) {
 			want: "/path",
 		},
 		{
-			desc:    "relative path",
-			path:    Path{TrustedNew("file://path")},
-			wantErr: true,
+			desc: "relative path",
+			path: Path{URI{url: &url.URL{Scheme: "file", Path: "path/to"}}},
+			want: "path/to",
 		},
 		{
 			desc:    "wrong scheme",

@@ -68,9 +68,6 @@ var encodePlus = regexp.MustCompile(`\+`)
 // is not absolute or the URI is not a "file" scheme" an error is returned.
 // The resulting path is normalized via filepath.Clean.
 func (u Path) Filepath() (string, error) {
-	if !u.IsAbs() {
-		return "", fmt.Errorf("URI is not absolute")
-	}
 	url := u.URL()
 	if url == nil {
 		return "", fmt.Errorf("missing url")
