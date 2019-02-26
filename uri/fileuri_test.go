@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestNewFileFromPath(t *testing.T) {
+func TestParseFile(t *testing.T) {
 	tests := []struct {
 		desc    string
 		path    string
@@ -81,7 +81,7 @@ func TestNewFileFromPath(t *testing.T) {
 	}
 }
 
-func TestNewDirFromPath(t *testing.T) {
+func TestParseDir(t *testing.T) {
 	tests := []struct {
 		desc    string
 		path    string
@@ -158,110 +158,94 @@ func TestNewDirFromPath(t *testing.T) {
 	}
 }
 func TestIsAbs(t *testing.T) {
-	newURL := func(str string) *url.URL {
-		u, err := url.Parse(str)
-		if err != nil {
-			t.Fatalf("failed to parse URL: %s", err)
-		}
-		return u
-	}
 	tests := []struct {
 		desc string
-		url  *url.URL
+		path Path
 		want bool
 	}{
 		{
 			desc: "absolute path",
-			url:  newURL("file:///path"),
+			path: Path{TrustedNew("file:///path")},
 			want: true,
 		},
 		{
 			desc: "relative path",
-			url:  newURL("file://path"),
+			path: Path{TrustedNew("file://path")},
 			want: false,
 		},
 		{
 			desc: "no url",
-			url:  nil,
+			path: Path{URI{}},
 			want: false,
 		},
 	}
 	for _, tt := range tests {
-		path := Path{URI{url: tt.url}}
-		got := path.IsAbs()
+		got := tt.path.IsAbs()
 		if got, want := got, tt.want; got != want {
 			t.Errorf("%q IsAbs() got %t want %t", tt.desc, got, want)
 		}
 	}
 }
 func TestFilepath(t *testing.T) {
-	newURL := func(str string) *url.URL {
-		u, err := url.Parse(str)
-		if err != nil {
-			t.Fatalf("failed to parse URL: %s", err)
-		}
-		return u
-	}
 	tests := []struct {
 		desc    string
-		url     *url.URL
+		path    Path
 		want    string
 		wantErr bool
 	}{
 		{
 			desc: "absolute file",
-			url:  newURL("file:///path"),
+			path: Path{TrustedNew("file:///path")},
 			want: "/path",
 		},
 		{
 			desc: "absolute dir",
-			url:  newURL("file:///path/"),
+			path: Path{TrustedNew("file:///path/")},
 			want: "/path",
 		},
 		{
 			desc:    "relative path",
-			url:     newURL("file://path"),
+			path:    Path{TrustedNew("file://path")},
 			wantErr: true,
 		},
 		{
 			desc:    "wrong scheme",
-			url:     newURL("http://path"),
+			path:    Path{TrustedNew("http://path")},
 			wantErr: true,
 		},
 		{
 			desc:    "no url",
-			url:     nil,
+			path:    Path{URI{}},
 			wantErr: true,
 		},
 		{
 			desc: "path has spaces",
-			url:  newURL("file:///path with space"),
+			path: Path{TrustedNew("file:///path with space")},
 			want: "/path with space",
 		},
 		{
 			desc: "path is encoded with spaces",
-			url:  newURL("file:///path%20with%20space"),
+			path: Path{TrustedNew("file:///path%20with%20space")},
 			want: "/path with space",
 		},
 		{
 			desc:    "path has invalid encoding",
-			url:     &url.URL{Scheme: "file", Path: "file:///path%2with%20invalid"},
+			path:    Path{URI{url: &url.URL{Scheme: "file", Path: "file:///path%2with%20invalid"}}},
 			wantErr: true,
 		},
 		{
 			desc: "path has funky references",
-			url:  newURL("file:///a/b/../c//d/./e"),
+			path: Path{TrustedNew("file:///a/b/../c//d/./e")},
 			want: "/a/c/d/e",
 		},
 		{
 			desc: "path is complex with invalid encoding",
-			url:  &url.URL{Scheme: "file", Path: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg"},
+			path: Path{URI{url: &url.URL{Scheme: "file", Path: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg"}}},
 			want: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
 		},
 	}
 	for _, tt := range tests {
-		path := Path{URI{url: tt.url}}
-		got, err := path.Filepath()
+		got, err := tt.path.Filepath()
 		if tt.wantErr {
 			if err == nil {
 				t.Errorf("%q Filepath() want error, got none", tt.desc)
