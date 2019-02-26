@@ -1,15 +1,17 @@
 package uri
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 // ParseFile parses raw as a filesystem file.
 func ParseFile(raw string) (Path, error) {
-	path, err := cleanPath(raw)
+	path, err := cleanAbsPath(raw)
 	if err != nil {
 		return Path{"", false}, err
 	}
@@ -18,11 +20,22 @@ func ParseFile(raw string) (Path, error) {
 
 // ParseDir parses raw as a filesystem directory.
 func ParseDir(raw string) (Path, error) {
-	path, err := cleanPath(raw)
+	path, err := cleanAbsPath(raw)
 	if err != nil {
 		return Path{"", true}, err
 	}
 	return Path{path, true}, nil
+}
+
+func cleanAbsPath(raw string) (string, error) {
+	raw = strings.TrimSpace(raw)
+	if strings.Contains(raw, "://") {
+		return "", errors.New("must not include scheme")
+	}
+	if !path.IsAbs(raw) {
+		return "", errors.New("must be absolute")
+	}
+	return filepath.Clean(raw), nil
 }
 
 // Path is a filesystem path.
@@ -32,7 +45,7 @@ type Path struct {
 }
 
 // IsAbs returns true if the path starts at root.
-func (p Path) IsAbs() bool {
+func (p Path) isAbs() bool {
 	return path.IsAbs(p.RawPath)
 }
 
@@ -55,7 +68,7 @@ func (p Path) URL() *url.URL {
 
 // Filepath returns a clean, absolute path on the filesystem.
 func (p Path) Filepath() (string, error) {
-	if !p.IsAbs() {
+	if !p.isAbs() {
 		return "", fmt.Errorf("path is not absolute: %s", p.RawPath)
 	}
 	return filepath.Clean(p.RawPath), nil

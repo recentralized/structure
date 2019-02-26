@@ -56,11 +56,10 @@ func TestParseFile(t *testing.T) {
 			wantErr: errors.New("must not include scheme"),
 		},
 		{
-			desc: "relative path",
-			raw:  "tmp/foo",
-			want: Path{
-				RawPath: "tmp/foo",
-			},
+			desc:    "relative path",
+			raw:     "tmp/foo",
+			want:    Path{},
+			wantErr: errors.New("must be absolute"),
 		},
 	}
 	for _, tt := range tests {
@@ -127,9 +126,9 @@ func TestParseDir(t *testing.T) {
 			desc: "relative path",
 			raw:  "tmp/foo",
 			want: Path{
-				RawPath: "tmp/foo",
-				IsDir:   true,
+				IsDir: true,
 			},
+			wantErr: errors.New("must be absolute"),
 		},
 	}
 	for _, tt := range tests {
