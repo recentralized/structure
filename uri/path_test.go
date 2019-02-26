@@ -2,6 +2,8 @@ package uri
 
 import (
 	"errors"
+	"net/url"
+	"reflect"
 	"testing"
 )
 
@@ -139,6 +141,130 @@ func TestParseDir(t *testing.T) {
 			}
 			if got != tt.want {
 				t.Errorf("Got %#v want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPathURI(t *testing.T) {
+	tests := []struct {
+		desc          string
+		path          Path
+		wantURI       URI
+		wantErr       error
+		wantURIString string
+	}{
+		{
+			desc: "file path",
+			path: Path{
+				RawPath: "/tmp/file",
+			},
+			wantURI: URI{
+				url: &url.URL{
+					Scheme: "file",
+					Path:   "/tmp/file",
+				},
+			},
+			wantURIString: "file:///tmp/file",
+		},
+		{
+			desc: "dir path",
+			path: Path{
+				RawPath: "/tmp/file",
+				IsDir:   true,
+			},
+			wantURI: URI{
+				url: &url.URL{
+					Scheme: "file",
+					Path:   "/tmp/file/",
+				},
+			},
+			wantURIString: "file:///tmp/file/",
+		},
+		{
+			desc: "encoded path",
+			path: Path{
+				RawPath: "/tmp/file%20with%20space",
+			},
+			wantURI: URI{
+				url: &url.URL{
+					Scheme: "file",
+					Path:   "/tmp/file with space",
+				},
+			},
+			wantURIString: "file:///tmp/file%20with%20space",
+		},
+		{
+			desc: "badly encoded path",
+			path: Path{
+				RawPath: "/tmp/file%2with%20space",
+			},
+			wantURI: URI{
+				rawStr: "file:///tmp/file%2with%20space",
+			},
+			wantURIString: "file:///tmp/file%2with%20space",
+		},
+		{
+			desc: "path is complex with invalid encoding",
+			path: Path{
+				RawPath: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
+			},
+			wantURI: URI{
+				rawStr: "file:///Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
+			},
+			wantURIString: "file:///Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			got, err := tt.path.URI()
+			if !errEqual(err, tt.wantErr) {
+				t.Fatalf("Err got %v want %v", err, tt.wantErr)
+			}
+			if !reflect.DeepEqual(got, tt.wantURI) {
+				t.Errorf("URL\ngot  %#v\nwant %#v", got, tt.wantURI)
+			}
+			if got, want := got.String(), tt.wantURIString; got != want {
+				t.Errorf("URL String\ngot  %q\nwant %q", got, want)
+			}
+		})
+	}
+}
+
+func TestPathFilepath(t *testing.T) {
+	tests := []struct {
+		desc string
+		path Path
+		want string
+	}{
+		{
+			desc: "file path",
+			path: Path{
+				RawPath: "/tmp/file",
+			},
+			want: "/tmp/file",
+		},
+		{
+			desc: "dir path",
+			path: Path{
+				RawPath: "/tmp/dir",
+				IsDir:   true,
+			},
+			want: "/tmp/dir",
+		},
+		{
+			desc: "path is complex with invalid encoding",
+			path: Path{
+				RawPath: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
+			},
+			want: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			got := tt.path.Filepath()
+			if got, want := got, tt.want; got != want {
+				t.Errorf("Filepath\ngot  %q\nwant %q", got, want)
 			}
 		})
 	}

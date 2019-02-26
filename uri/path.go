@@ -44,18 +44,13 @@ type Path struct {
 	IsDir   bool
 }
 
-// IsAbs returns true if the path starts at root.
-func (p Path) isAbs() bool {
-	return path.IsAbs(p.RawPath)
+func (p Path) String() string {
+	u, _ := p.URI()
+	return u.String()
 }
 
-// URI returns the path as a URI.
-func (p Path) URI() URI {
-	return URI{url: p.URL()}
-}
-
-// URL returns the path as a url.URL. A directory path will have "/" appended.
-func (p Path) URL() *url.URL {
+// URI returns the path as a URI. A directory path will have "/" appended.
+func (p Path) URI() (URI, error) {
 	path := p.RawPath
 	if p.IsDir {
 		// NOTE: ASCII-Only. Is that ok?
@@ -63,13 +58,25 @@ func (p Path) URL() *url.URL {
 			path = path + "/"
 		}
 	}
-	return &url.URL{Scheme: "file", Path: path}
+	sc := fmt.Sprintf("file://%s", path)
+	uri, err := New(sc)
+	if ee, ok := err.(Error); ok {
+		if ee.IsInvalid() {
+			return uri, nil
+		}
+		return uri, err
+	}
+	return uri, nil
+}
+
+// URL returns the path as a url.URL. It might be nil if the path cannot be
+// represented by url.URL.
+func (p Path) URL() *url.URL {
+	u, _ := p.URI()
+	return u.URL()
 }
 
 // Filepath returns a clean, absolute path on the filesystem.
-func (p Path) Filepath() (string, error) {
-	if !p.isAbs() {
-		return "", fmt.Errorf("path is not absolute: %s", p.RawPath)
-	}
-	return filepath.Clean(p.RawPath), nil
+func (p Path) Filepath() string {
+	return filepath.Clean(p.RawPath)
 }
