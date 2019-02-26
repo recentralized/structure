@@ -146,6 +146,89 @@ func TestParseDir(t *testing.T) {
 	}
 }
 
+func TestParsePath(t *testing.T) {
+	newURI := func(s string) URI {
+		// allow invalid URIs to be created
+		u, _ := New(s)
+		return u
+	}
+	tests := []struct {
+		desc    string
+		uri     URI
+		want    Path
+		wantErr error
+	}{
+		{
+			desc: "file uri",
+			uri:  newURI("file:///tmp/file"),
+			want: Path{
+				RawPath: "/tmp/file",
+			},
+		},
+		{
+			desc: "dir uri",
+			uri:  newURI("file:///tmp/file/"),
+			want: Path{
+				RawPath: "/tmp/file",
+				IsDir:   true,
+			},
+		},
+		{
+			desc:    "no scheme",
+			uri:     newURI("/tmp/file/"),
+			want:    Path{},
+			wantErr: errors.New("scheme must be file"),
+		},
+		{
+			desc:    "wrong scheme",
+			uri:     newURI("http:///tmp/file/"),
+			want:    Path{},
+			wantErr: errors.New("scheme must be file"),
+		},
+		{
+			// NOTE: we might support host in the future. But for
+			// now this case occurs if you parse a relative path to
+			// url.
+			desc:    "relative file uri",
+			uri:     newURI("file://tmp/file/"),
+			want:    Path{}, // path would be "/file"
+			wantErr: errors.New("host must be empty"),
+		},
+		{
+			desc: "encoded path",
+			uri:  newURI("file:///tmp/file%20with%20space"),
+			want: Path{
+				RawPath: "/tmp/file%20with%20space",
+			},
+		},
+		{
+			desc: "badly encoded path",
+			uri:  newURI("file:///tmp/file%2with%20space"),
+			want: Path{
+				RawPath: "/tmp/file%2with%20space",
+			},
+		},
+		{
+			desc: "path is complex with invalid encoding",
+			uri:  newURI("file:///Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg"),
+			want: Path{
+				RawPath: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			got, err := ParsePath(tt.uri)
+			if !errEqual(err, tt.wantErr) {
+				t.Errorf("Err got %v want %v", err, tt.wantErr)
+			}
+			if got != tt.want {
+				t.Errorf("Got %#v want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestPathURI(t *testing.T) {
 	tests := []struct {
 		desc          string

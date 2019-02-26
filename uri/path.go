@@ -27,15 +27,21 @@ func ParseDir(raw string) (Path, error) {
 	return Path{path, true}, nil
 }
 
-func cleanAbsPath(raw string) (string, error) {
-	raw = strings.TrimSpace(raw)
-	if strings.Contains(raw, "://") {
-		return "", errors.New("must not include scheme")
+// ParsePath converts a URI into a filesystem path.
+func ParsePath(u URI) (Path, error) {
+	url := u.URL()
+	if url != nil {
+		if url.Scheme != "file" {
+			return Path{}, fmt.Errorf("scheme must be file")
+		}
+		if url.Host != "" {
+			return Path{}, fmt.Errorf("host must be empty")
+		}
+		return parsePath(url.EscapedPath())
 	}
-	if !path.IsAbs(raw) {
-		return "", errors.New("must be absolute")
-	}
-	return filepath.Clean(raw), nil
+	str := u.String()
+	str = strings.TrimPrefix(str, "file://")
+	return parsePath(str)
 }
 
 // Path is a filesystem path.
@@ -79,4 +85,22 @@ func (p Path) URL() *url.URL {
 // Filepath returns a clean, absolute path on the filesystem.
 func (p Path) Filepath() string {
 	return filepath.Clean(p.RawPath)
+}
+
+func parsePath(raw string) (Path, error) {
+	if raw[len(raw)-1:] == "/" {
+		return ParseDir(raw)
+	}
+	return ParseFile(raw)
+}
+
+func cleanAbsPath(raw string) (string, error) {
+	raw = strings.TrimSpace(raw)
+	if strings.Contains(raw, "://") {
+		return "", errors.New("must not include scheme")
+	}
+	if !path.IsAbs(raw) {
+		return "", errors.New("must be absolute")
+	}
+	return filepath.Clean(raw), nil
 }
