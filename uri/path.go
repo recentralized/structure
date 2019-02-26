@@ -64,6 +64,11 @@ func (p Path) String() string {
 	return u.String()
 }
 
+// IsZero returns true if the Path has no value.
+func (p Path) IsZero() bool {
+	return p.RawPath == ""
+}
+
 // URI returns the path as a URI. A directory path will have "/" appended.
 func (p Path) URI() (URI, error) {
 	path := p.RawPath

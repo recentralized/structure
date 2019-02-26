@@ -305,6 +305,81 @@ func TestParseFileURI(t *testing.T) {
 	}
 }
 
+func TestPathString(t *testing.T) {
+	tests := []struct {
+		desc string
+		path Path
+		want string
+	}{
+		{
+			desc: "zero value",
+			want: "",
+		},
+		{
+			desc: "empty dir",
+			path: Path{
+				IsDir: true,
+			},
+			want: "",
+		},
+		{
+			desc: "file path",
+			path: Path{
+				RawPath: "/tmp",
+			},
+			want: "file:///tmp",
+		},
+		{
+			desc: "dir path",
+			path: Path{
+				RawPath: "/tmp",
+				IsDir:   true,
+			},
+			want: "file:///tmp/",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			if got, want := tt.path.String(), tt.want; got != want {
+				t.Errorf("String got %s want %s", got, want)
+			}
+		})
+	}
+}
+func TestPathIsZero(t *testing.T) {
+	tests := []struct {
+		desc     string
+		path     Path
+		wantZero bool
+	}{
+		{
+			desc:     "zero value",
+			wantZero: true,
+		},
+		{
+			desc: "empty dir",
+			path: Path{
+				IsDir: true,
+			},
+			wantZero: true,
+		},
+		{
+			desc: "path",
+			path: Path{
+				RawPath: "/tmp",
+			},
+			wantZero: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			if got, want := tt.path.IsZero(), tt.wantZero; got != want {
+				t.Errorf("IsZero got %t want %t", got, want)
+			}
+		})
+	}
+}
+
 func TestPathURI(t *testing.T) {
 	tests := []struct {
 		desc          string
