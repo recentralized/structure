@@ -11,26 +11,31 @@ func TestNewFileFromPath(t *testing.T) {
 		path    string
 		wantStr string
 		wantErr bool
+		wantAbs bool
 	}{
 		{
 			desc:    "blank string",
 			path:    "  ",
 			wantStr: "file://.",
+			wantAbs: false,
 		},
 		{
 			desc:    "relative path",
-			path:    "path",
-			wantStr: "file://path",
+			path:    "path/to/thing",
+			wantStr: "file://path/to/thing",
+			wantAbs: false,
 		},
 		{
 			desc:    "rooted path",
 			path:    "/abs/path",
 			wantStr: "file:///abs/path",
+			wantAbs: true,
 		},
 		{
 			desc:    "funky path",
 			path:    "/../abs/../path",
 			wantStr: "file:///path",
+			wantAbs: true,
 		},
 		{
 			desc:    "file scheme",
@@ -46,6 +51,7 @@ func TestNewFileFromPath(t *testing.T) {
 			desc:    "path with encoding problems",
 			path:    "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
 			wantStr: "file:///Photos%20Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%25oVA/thumb_IMG_7220.jpg",
+			wantAbs: true,
 		},
 	}
 	for _, tt := range tests {
@@ -62,6 +68,9 @@ func TestNewFileFromPath(t *testing.T) {
 			if gotStr := got.String(); gotStr != tt.wantStr {
 				t.Errorf("%q NewFileFromPath() String()\ngot  %#v\nwant %#v", tt.desc, gotStr, tt.wantStr)
 			}
+			if got, want := got.IsAbs(), tt.wantAbs; got != want {
+				t.Errorf("%q IsAbs got %t want %t", tt.desc, got, want)
+			}
 		}
 	}
 }
@@ -72,36 +81,43 @@ func TestNewDirFromPath(t *testing.T) {
 		path    string
 		wantStr string
 		wantErr bool
+		wantAbs bool
 	}{
 		{
 			desc:    "blank string",
 			path:    "   ",
 			wantStr: "file://./",
+			wantAbs: false,
 		},
 		{
 			desc:    "relative path without trailing slash",
-			path:    "path",
-			wantStr: "file://path/",
+			path:    "path/to/thing",
+			wantStr: "file://path/to/thing/",
+			wantAbs: false,
 		},
 		{
 			desc:    "relative path with trailing slash",
-			path:    "path/",
-			wantStr: "file://path/",
+			path:    "path/to/",
+			wantStr: "file://path/to/",
+			wantAbs: false,
 		},
 		{
 			desc:    "absolute path without trailing slash",
 			path:    "/abs/path",
 			wantStr: "file:///abs/path/",
+			wantAbs: true,
 		},
 		{
 			desc:    "absolute path with trailing slash",
 			path:    "/abs/path/",
 			wantStr: "file:///abs/path/",
+			wantAbs: true,
 		},
 		{
 			desc:    "funky path",
-			path:    "/../abs/../path",
-			wantStr: "file:///path/",
+			path:    "/../abs/../path/to",
+			wantStr: "file:///path/to/",
+			wantAbs: true,
 		},
 		{
 			desc:    "file scheme",
@@ -122,6 +138,9 @@ func TestNewDirFromPath(t *testing.T) {
 			}
 			if gotStr := got.String(); gotStr != tt.wantStr {
 				t.Errorf("%q NewFileDir() String() got %#v, want %#v", tt.desc, gotStr, tt.wantStr)
+			}
+			if got, want := got.IsAbs(), tt.wantAbs; got != want {
+				t.Errorf("%q IsAbs got %t want %t", tt.desc, got, want)
 			}
 		}
 	}

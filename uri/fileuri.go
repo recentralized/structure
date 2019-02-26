@@ -19,7 +19,7 @@ func NewFilePath(path string) (FilePath, error) {
 		return FilePath{zero}, err
 	}
 	url := &url.URL{Scheme: "file", Path: path}
-	return FilePath{NewFromURL(url)}, nil
+	return FilePath{URI{url: url}}, nil
 }
 
 // NewDirPath converts the path (abs or rel) to a file:// URI, assuming that
@@ -36,7 +36,7 @@ func NewDirPath(path string) (FilePath, error) {
 		path = path + "/"
 	}
 	url := &url.URL{Scheme: "file", Path: path}
-	return FilePath{NewFromURL(url)}, nil
+	return FilePath{URI{url: url}}, nil
 }
 
 func cleanPath(path string) (string, error) {
