@@ -93,6 +93,12 @@ func TestParseFile(t *testing.T) {
 		wantErr error
 	}{
 		{
+			desc:    "empty string",
+			raw:     "",
+			want:    Path{},
+			wantErr: errors.New("path is empty"),
+		},
+		{
 			desc: "absolute path",
 			raw:  "/tmp/foo",
 			want: Path{
@@ -153,6 +159,12 @@ func TestParseDir(t *testing.T) {
 		wantErr error
 	}{
 		{
+			desc:    "empty string",
+			raw:     "",
+			want:    Path{IsDir: true},
+			wantErr: errors.New("path is empty"),
+		},
+		{
 			desc: "absolute path",
 			raw:  "/tmp/foo",
 			want: Path{
@@ -185,19 +197,15 @@ func TestParseDir(t *testing.T) {
 			},
 		},
 		{
-			desc: "input with scheme",
-			raw:  "file:///tmp/foo",
-			want: Path{
-				IsDir: true,
-			},
+			desc:    "input with scheme",
+			raw:     "file:///tmp/foo",
+			want:    Path{IsDir: true},
 			wantErr: errors.New("must not include scheme"),
 		},
 		{
-			desc: "relative path",
-			raw:  "tmp/foo",
-			want: Path{
-				IsDir: true,
-			},
+			desc:    "relative path",
+			raw:     "tmp/foo",
+			want:    Path{IsDir: true},
 			wantErr: errors.New("must be absolute"),
 		},
 	}
@@ -306,6 +314,12 @@ func TestPathURI(t *testing.T) {
 		wantURIString string
 	}{
 		{
+			desc:          "zero value",
+			path:          Path{},
+			wantURI:       URI{},
+			wantURIString: "",
+		},
+		{
 			desc: "file path",
 			path: Path{
 				RawPath: "/tmp/file",
@@ -388,6 +402,11 @@ func TestPathFilepath(t *testing.T) {
 		path Path
 		want string
 	}{
+		{
+			desc: "zero value",
+			path: Path{},
+			want: ".",
+		},
 		{
 			desc: "file path",
 			path: Path{

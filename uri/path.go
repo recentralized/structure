@@ -67,6 +67,9 @@ func (p Path) String() string {
 // URI returns the path as a URI. A directory path will have "/" appended.
 func (p Path) URI() (URI, error) {
 	path := p.RawPath
+	if path == "" {
+		return zero, nil
+	}
 	if p.IsDir {
 		if !isDir(path) {
 			path = path + "/"
@@ -102,6 +105,9 @@ func (p Path) Filepath() string {
 
 func cleanAbsPath(raw string) (string, error) {
 	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return "", errors.New("path is empty")
+	}
 	if strings.Contains(raw, "://") {
 		return "", errors.New("must not include scheme")
 	}
@@ -112,6 +118,9 @@ func cleanAbsPath(raw string) (string, error) {
 }
 
 func isDir(raw string) bool {
+	if raw == "" {
+		return false
+	}
 	// NOTE: ASCII-Only. Is that ok?
 	return raw[len(raw)-1:] == "/"
 }
