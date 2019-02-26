@@ -10,33 +10,33 @@ import (
 	"strings"
 )
 
-// NewFilePath converts the path (abs or rel) to a file:// URI. If the path is
+// ParseFile converts the path (abs or rel) to a file:// URI. If the path is
 // empty or the input already contains a scheme (even file://) an error is
 // returned. The path of the returned URI is normalized via filepath.Clean.
-func NewFilePath(path string) (FilePath, error) {
+func ParseFile(path string) (Path, error) {
 	var err error
 	if path, err = cleanPath(path); err != nil {
-		return FilePath{zero}, err
+		return Path{zero}, err
 	}
 	url := &url.URL{Scheme: "file", Path: path}
-	return FilePath{URI{url: url}}, nil
+	return Path{URI{url: url}}, nil
 }
 
-// NewDirPath converts the path (abs or rel) to a file:// URI, assuming that
-// the path is intended to be a directory. Unlike files, directories always end
+// ParseDir converts the path (abs or rel) to a file:// URI, assuming that the
+// path is intended to be a directory. Unlike files, directories always end
 // with a slash ('/') in a URI. The path of the returned URI is normalized via
 // filepath.Clean.
-func NewDirPath(path string) (FilePath, error) {
+func ParseDir(path string) (Path, error) {
 	var err error
 	if path, err = cleanPath(path); err != nil {
-		return FilePath{zero}, err
+		return Path{zero}, err
 	}
 	// NOTE: ASCII-Only. Is that ok?
 	if path[len(path)-1:] != "/" {
 		path = path + "/"
 	}
 	url := &url.URL{Scheme: "file", Path: path}
-	return FilePath{URI{url: url}}, nil
+	return Path{URI{url: url}}, nil
 }
 
 func cleanPath(path string) (string, error) {
@@ -47,14 +47,14 @@ func cleanPath(path string) (string, error) {
 	return filepath.Clean(path), nil
 }
 
-// FilePath extends URI, adding special handling for filesystem paths. To
-// convert to standard URI, use filepath.URI.
-type FilePath struct {
+// Path wraps URI, adding special handling for filesystem paths. To
+// convert to standard URI, use path.URI.
+type Path struct {
 	URI
 }
 
 // IsAbs returns true if the path begins at root.
-func (u FilePath) IsAbs() bool {
+func (u Path) IsAbs() bool {
 	url := u.URL()
 	if url == nil {
 		return false
@@ -64,10 +64,10 @@ func (u FilePath) IsAbs() bool {
 
 var encodePlus = regexp.MustCompile(`\+`)
 
-// FilePath returns the absolute path for use on a filesystem. If the path
+// Filepath returns the absolute path for use on a filesystem. If the path
 // is not absolute or the URI is not a "file" scheme" an error is returned.
 // The resulting path is normalized via filepath.Clean.
-func (u FilePath) FilePath() (string, error) {
+func (u Path) Filepath() (string, error) {
 	if !u.IsAbs() {
 		return "", fmt.Errorf("URI is not absolute")
 	}
