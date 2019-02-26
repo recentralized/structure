@@ -229,9 +229,9 @@ func TestFilepath(t *testing.T) {
 			want: "/path with space",
 		},
 		{
-			desc:    "path has invalid encoding",
-			path:    Path{URI{url: &url.URL{Scheme: "file", Path: "file:///path%2with%20invalid"}}},
-			wantErr: true,
+			desc: "path has invalid encoding",
+			path: Path{URI{url: &url.URL{Scheme: "file", Path: "/path%2with%20invalid"}}},
+			want: "/path%2with%20invalid",
 		},
 		{
 			desc: "path has funky references",
