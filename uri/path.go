@@ -27,8 +27,17 @@ func ParseDir(raw string) (Path, error) {
 	return Path{path, true}, nil
 }
 
-// ParsePath converts a URI into a filesystem path.
-func ParsePath(u URI) (Path, error) {
+// ParsePath parses raw as a directory if it ends in "/", else as a file. If
+// you're parsing user input and intend it to be a directory, prefer ParseDir.
+func ParsePath(raw string) (Path, error) {
+	if isDir(raw) {
+		return ParseDir(raw)
+	}
+	return ParseFile(raw)
+}
+
+// ParseFileURI converts a URI into a filesystem path.
+func ParseFileURI(u URI) (Path, error) {
 	url := u.URL()
 	if url != nil {
 		if url.Scheme != "file" {
@@ -37,11 +46,11 @@ func ParsePath(u URI) (Path, error) {
 		if url.Host != "" {
 			return Path{}, fmt.Errorf("host must be empty")
 		}
-		return parsePath(url.EscapedPath())
+		return ParsePath(url.EscapedPath())
 	}
 	str := u.String()
 	str = strings.TrimPrefix(str, "file://")
-	return parsePath(str)
+	return ParsePath(str)
 }
 
 // Path is a filesystem path.
@@ -59,8 +68,7 @@ func (p Path) String() string {
 func (p Path) URI() (URI, error) {
 	path := p.RawPath
 	if p.IsDir {
-		// NOTE: ASCII-Only. Is that ok?
-		if path[len(path)-1:] != "/" {
+		if !isDir(path) {
 			path = path + "/"
 		}
 	}
@@ -84,14 +92,12 @@ func (p Path) URL() *url.URL {
 
 // Filepath returns a clean, absolute path on the filesystem.
 func (p Path) Filepath() string {
-	return filepath.Clean(p.RawPath)
-}
-
-func parsePath(raw string) (Path, error) {
-	if raw[len(raw)-1:] == "/" {
-		return ParseDir(raw)
+	raw := p.RawPath
+	un, err := url.QueryUnescape(raw)
+	if err != nil {
+		return filepath.Clean(raw)
 	}
-	return ParseFile(raw)
+	return filepath.Clean(un)
 }
 
 func cleanAbsPath(raw string) (string, error) {
@@ -103,4 +109,9 @@ func cleanAbsPath(raw string) (string, error) {
 		return "", errors.New("must be absolute")
 	}
 	return filepath.Clean(raw), nil
+}
+
+func isDir(raw string) bool {
+	// NOTE: ASCII-Only. Is that ok?
+	return raw[len(raw)-1:] == "/"
 }

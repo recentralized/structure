@@ -17,6 +17,74 @@ func errEqual(e1, e2 error) bool {
 	return false
 }
 
+func TestPathRoundtrip(t *testing.T) {
+	tests := []struct {
+		desc         string
+		raw          string
+		wantURI      string
+		wantFilepath string
+	}{
+		{
+			desc:         "file path",
+			raw:          "/tmp/path",
+			wantURI:      "file:///tmp/path",
+			wantFilepath: "/tmp/path",
+		},
+		{
+			desc:         "dir path",
+			raw:          "/tmp/path/",
+			wantURI:      "file:///tmp/path/",
+			wantFilepath: "/tmp/path",
+		},
+		{
+			desc:         "encoded path",
+			raw:          "/tmp/file%20with%20space",
+			wantURI:      "file:///tmp/file%20with%20space",
+			wantFilepath: "/tmp/file with space",
+		},
+		{
+			desc:         "badly encoded path",
+			raw:          "/tmp/file%2with%20space",
+			wantURI:      "file:///tmp/file%2with%20space",
+			wantFilepath: "/tmp/file%2with%20space",
+		},
+		{
+			desc:         "complex path with invalid encoding",
+			raw:          "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
+			wantURI:      "file:///Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
+			wantFilepath: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			path, err := ParsePath(tt.raw)
+			if err != nil {
+				t.Fatalf("ParsePath: %v", err)
+			}
+			uri, err := path.URI()
+			if err != nil {
+				t.Fatalf("URI: %v", err)
+			}
+			if got, want := uri.String(), tt.wantURI; got != want {
+				t.Errorf("URI\ngot  %s\nwant %s", got, want)
+			}
+			if got, want := uri.String(), tt.wantURI; got != want {
+				t.Errorf("URI\ngot  %s\nwant %s", got, want)
+			}
+			if got, want := path.Filepath(), tt.wantFilepath; got != want {
+				t.Errorf("Filepath\ngot  %s\nwant %s", got, want)
+			}
+			path2, err := ParseFileURI(uri)
+			if err != nil {
+				t.Fatalf("ParseFileURI: %s", err)
+			}
+			if path != path2 {
+				t.Errorf("Path roundtrip\ngot  %#v\nwant %#v", path2, path)
+			}
+		})
+	}
+}
+
 func TestParseFile(t *testing.T) {
 	tests := []struct {
 		desc    string
@@ -146,7 +214,7 @@ func TestParseDir(t *testing.T) {
 	}
 }
 
-func TestParsePath(t *testing.T) {
+func TestParseFileURI(t *testing.T) {
 	newURI := func(s string) URI {
 		// allow invalid URIs to be created
 		u, _ := New(s)
@@ -209,7 +277,7 @@ func TestParsePath(t *testing.T) {
 			},
 		},
 		{
-			desc: "path is complex with invalid encoding",
+			desc: "complex path with invalid encoding",
 			uri:  newURI("file:///Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg"),
 			want: Path{
 				RawPath: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
@@ -218,7 +286,7 @@ func TestParsePath(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
-			got, err := ParsePath(tt.uri)
+			got, err := ParseFileURI(tt.uri)
 			if !errEqual(err, tt.wantErr) {
 				t.Errorf("Err got %v want %v", err, tt.wantErr)
 			}
@@ -288,7 +356,7 @@ func TestPathURI(t *testing.T) {
 			wantURIString: "file:///tmp/file%2with%20space",
 		},
 		{
-			desc: "path is complex with invalid encoding",
+			desc: "complex path with invalid encoding",
 			path: Path{
 				RawPath: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
 			},
@@ -336,7 +404,21 @@ func TestPathFilepath(t *testing.T) {
 			want: "/tmp/dir",
 		},
 		{
-			desc: "path is complex with invalid encoding",
+			desc: "encoded path",
+			path: Path{
+				RawPath: "/tmp/file%20with%20space",
+			},
+			want: "/tmp/file with space",
+		},
+		{
+			desc: "badly encoded path",
+			path: Path{
+				RawPath: "/tmp/file%2with%20space",
+			},
+			want: "/tmp/file%2with%20space",
+		},
+		{
+			desc: "complex path with invalid encoding",
 			path: Path{
 				RawPath: "/Photos Library.photoslibrary/Thumbnails/2015/09/23/20150923-010213/TqFU0duZTV+culxTIy%oVA/thumb_IMG_7220.jpg",
 			},
