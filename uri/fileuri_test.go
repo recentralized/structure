@@ -20,6 +20,12 @@ func TestNewFileFromPath(t *testing.T) {
 			wantAbs: false,
 		},
 		{
+			desc:    "single part path",
+			path:    "path",
+			wantStr: "file://path",
+			wantAbs: false,
+		},
+		{
 			desc:    "relative path",
 			path:    "path/to/thing",
 			wantStr: "file://path/to/thing",
@@ -87,6 +93,12 @@ func TestNewDirFromPath(t *testing.T) {
 			desc:    "blank string",
 			path:    "   ",
 			wantStr: "file://./",
+			wantAbs: false,
+		},
+		{
+			desc:    "single part path",
+			path:    "path",
+			wantStr: "file://path/",
 			wantAbs: false,
 		},
 		{
