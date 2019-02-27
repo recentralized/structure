@@ -53,6 +53,24 @@ func ParseFileURI(u URI) (Path, error) {
 	return ParsePath(str)
 }
 
+// TrustedFile returns a Path. Only use this if you trust the input.
+func TrustedFile(raw string) Path {
+	path, _ := ParseFile(raw)
+	return path
+}
+
+// TrustedDir returns a Path. Only use this if you trust input.
+func TrustedDir(raw string) Path {
+	path, _ := ParseDir(raw)
+	return path
+}
+
+// TrustedFileURI returns a Path. Only use this if you trust the input.
+func TrustedFileURI(u URI) Path {
+	path, _ := ParseFileURI(u)
+	return path
+}
+
 // Path is a filesystem path.
 type Path struct {
 	RawPath string
