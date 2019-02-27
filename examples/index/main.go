@@ -42,18 +42,28 @@ func main() {
 }
 
 func buildIndex() (*index.Index, error) {
-	srcPath, err := uri.NewDirPath("/tmp/src")
+	srcPath, err := uri.ParseDir("/tmp/src")
 	if err != nil {
 		return nil, fmt.Errorf("Could not create src path: %s", err)
 	}
 
-	dstPath, err := uri.NewDirPath("/tmp/dst")
+	dstPath, err := uri.ParseDir("/tmp/dst")
 	if err != nil {
 		return nil, fmt.Errorf("Could not create dst path: %s", err)
 	}
 
-	src := index.NewSrc(srcPath.URI)
-	dst := index.NewDstAllAt(dstPath.URI)
+	srcURI, err := srcPath.URI()
+	if err != nil {
+		return nil, fmt.Errorf("Could not create src uri: %s", err)
+	}
+
+	dstURI, err := dstPath.URI()
+	if err != nil {
+		return nil, fmt.Errorf("Could not create dst uri: %s", err)
+	}
+
+	src := index.NewSrc(srcURI)
+	dst := index.NewDstAllAt(dstURI)
 
 	idx := index.New()
 	idx.Srcs = []index.Src{src}

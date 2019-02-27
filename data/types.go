@@ -16,10 +16,17 @@ const (
 	// UnknownType is the zero value for Type, meaning it is unknown.
 	UnknownType Type = ""
 
-	// Image formats.
-	JPG = "jpg" // Standard JPG file.
-	PNG = "png" // Standard PNG file.
+	// Image types
+	CR2 = "cr2" // Canon RAW file.
+	DNG = "dng" // Adobe Digital Negative file.
 	GIF = "gif" // Standard GIF file.
+	IIQ = "iiq" // Phase One RAW file.
+	JPG = "jpg" // Standard JPG file.
+	NEF = "nef" // Nikon RAW file.
+	PNG = "png" // Standard PNG file.
+	PSD = "psd" // Adobe Photoshop file.
+	RAF = "raf" // Fuji Raw file.
+	TIF = "tif" // Standard TIFF file.
 )
 
 // Encoding definitions.
@@ -57,7 +64,11 @@ func (t Type) Ext() string {
 
 // Class returns the type's class: image, catalog, etc.
 func (t Type) Class() Class {
-	return classOfType[t]
+	td, ok := types[t]
+	if !ok {
+		return Unclassified
+	}
+	return td.class
 }
 
 // Ok return true if the type is defined.
@@ -218,23 +229,27 @@ func (c Class) String() string {
 	return string(c)
 }
 
-var types = map[Type]bool{
-	JPG: true,
-	PNG: true,
-	GIF: true,
+// td is type details
+type td struct {
+	class Class
+}
+
+var types = map[Type]td{
+	// keep alphabetized
+	CR2: {Image},
+	DNG: {Image},
+	GIF: {Image},
+	IIQ: {Image},
+	JPG: {Image},
+	NEF: {Image},
+	PNG: {Image},
+	PSD: {Image},
+	RAF: {Image},
+	TIF: {Image},
 }
 
 var encodings = map[Encoding]bool{
 	Native: true,
 	Tar:    true,
 	GZip:   true,
-}
-
-var classOfType = map[Type]Class{
-	UnknownType: Unclassified,
-
-	// Image formats.
-	JPG: Image,
-	PNG: Image,
-	GIF: Image,
 }
