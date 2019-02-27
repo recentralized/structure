@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/url"
+	"reflect"
 	"testing"
 )
 
@@ -17,7 +18,7 @@ func TestURIJSON(t *testing.T) {
 	}
 	tests := []struct {
 		desc string
-		uri  uriStringer
+		uri  URI
 		json string
 	}{
 		{
@@ -34,16 +35,6 @@ func TestURIJSON(t *testing.T) {
 			desc: "URI",
 			uri:  URI{url: newURL("https://www.example.com")},
 			json: `"https://www.example.com"`,
-		},
-		{
-			desc: "FilePath zero value",
-			uri:  FilePath{},
-			json: `""`,
-		},
-		{
-			desc: "FilePath",
-			uri:  FilePath{URI{url: newURL("file:///path")}},
-			json: `"file:///path"`,
 		},
 	}
 	for _, tt := range tests {
@@ -63,9 +54,64 @@ func TestURIJSON(t *testing.T) {
 			t.Errorf("%q URI error decoding JSON: %s", tt.desc, err)
 			continue
 		}
-		if !got.Equal(tt.uri) {
+		if !reflect.DeepEqual(got, tt.uri) {
 			t.Errorf("%q URI JSON\ngot  %#v\nwant %#v", tt.desc, got, tt.uri)
 		}
+	}
+}
+
+func TestPathJSON(t *testing.T) {
+	tests := []struct {
+		desc string
+		path Path
+		json string
+	}{
+		{
+			desc: "zero value",
+			path: Path{},
+			json: `""`,
+		},
+		{
+			desc: "file path",
+			path: Path{
+				RawPath: "/tmp/file",
+			},
+			json: `"file:///tmp/file"`,
+		},
+		{
+			desc: "dir path",
+			path: Path{
+				RawPath: "/tmp/file",
+				IsDir:   true,
+			},
+			json: `"file:///tmp/file/"`,
+		},
+		{
+			desc: "badly encoded path",
+			path: Path{
+				RawPath: "/tmp/file%2with%20space",
+			},
+			json: `"file:///tmp/file%2with%20space"`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			data, err := json.Marshal(tt.path)
+			if err != nil {
+				t.Fatalf("error encoding JSON: %s", err)
+			}
+			if string(data) != tt.json {
+				t.Fatalf("JSON got, %s, want %s", data, tt.json)
+			}
+			got := Path{}
+			err = json.Unmarshal(data, &got)
+			if err != nil {
+				t.Fatalf("error decoding JSON: %s", err)
+			}
+			if !reflect.DeepEqual(got, tt.path) {
+				t.Errorf("JSON\ngot  %#v\nwant %#v", got, tt.path)
+			}
+		})
 	}
 }
 
@@ -85,5 +131,26 @@ func TestURIDatabase(t *testing.T) {
 	}
 	if !uriIn.Equal(*uriOut) {
 		t.Fatalf("Round-trip failed: got %s want %s", uriOut, uriIn)
+	}
+}
+
+func TestPathDatabase(t *testing.T) {
+	pathIn := Path{
+		RawPath: "/tmp/file",
+	}
+	val, err := pathIn.Value()
+	if err != nil {
+		t.Fatalf("Value() failed: %s", err)
+	}
+	_, ok := val.([]byte)
+	if !ok {
+		t.Fatalf("Value() did not return bytes")
+	}
+	pathOut := &Path{}
+	if err := pathOut.Scan(val); err != nil {
+		t.Fatalf("Scan() failed: %s", err)
+	}
+	if pathIn != *pathOut {
+		t.Fatalf("Round-trip failed: got %s want %s", pathOut, pathIn)
 	}
 }
