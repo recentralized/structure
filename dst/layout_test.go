@@ -64,17 +64,29 @@ func TestFilesystemLayout(t *testing.T) {
 	}
 }
 
-func TestFilesystemLayoutFiles(t *testing.T) {
-	layout := NewFilesystemLayout()
-	files := layout.Files()
-	if len(files) == 0 {
-		t.Fatalf("expect files")
+func TestFilesytemLayoutFiles(t *testing.T) {
+	tests := []struct {
+		desc   string
+		layout Layout
+	}{
+		{
+			desc:   "default",
+			layout: NewFilesystemLayout(),
+		},
 	}
-	file := files[0]
-	if got, want := file.URI, uri.TrustedNew("README.txt"); !got.Equal(want) {
-		t.Errorf("URI got %s want %s", got, want)
-	}
-	if len(file.Data) == 0 {
-		t.Errorf("File has no data")
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			files := tt.layout.Files()
+			if len(files) == 0 {
+				t.Fatalf("expect files")
+			}
+			file := files[0]
+			if got, want := file.URI, uri.TrustedNew("README.txt"); !got.Equal(want) {
+				t.Errorf("URI got %s want %s", got, want)
+			}
+			if len(file.Data) == 0 {
+				t.Errorf("File has no data")
+			}
+		})
 	}
 }
