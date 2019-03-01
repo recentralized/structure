@@ -10,10 +10,24 @@ import (
 	"runtime"
 )
 
-// Read returns file contents.
-var Read readFunc = defaultRead
-
 type readFunc func(string) ([]byte, error)
+
+// Read returns file contents. It's defined as a variable so that it may be
+// replaced with another implementation. For example to support distributing a
+// binary where these files don't exist on disk.
+var Read readFunc = func(name string) ([]byte, error) {
+	path := filepath.Join(getPath(), name)
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
 
 // List returns a list of the non-go file names contained in this package.
 func List() []string {
@@ -28,20 +42,6 @@ func List() []string {
 		}
 	}
 	return out
-}
-
-func defaultRead(name string) ([]byte, error) {
-	path := filepath.Join(getPath(), name)
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	data, err := ioutil.ReadAll(f)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
 }
 
 var pkgPath string
