@@ -2,6 +2,7 @@
 package files
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -9,8 +10,27 @@ import (
 	"runtime"
 )
 
-// Read returns a file contained in this package.
-func Read(name string) ([]byte, error) {
+// Read returns file contents.
+var Read readFunc = defaultRead
+
+type readFunc func(string) ([]byte, error)
+
+// List returns a list of the non-go file names contained in this package.
+func List() []string {
+	out := make([]string, 0)
+	files, err := filepath.Glob(path.Join(getPath(), "*"))
+	if err != nil {
+		panic(fmt.Sprintf("could not glob files: %s", err))
+	}
+	for _, f := range files {
+		if path.Ext(f) != ".go" {
+			out = append(out, path.Base(f))
+		}
+	}
+	return out
+}
+
+func defaultRead(name string) ([]byte, error) {
 	path := filepath.Join(getPath(), name)
 	f, err := os.Open(path)
 	if err != nil {
