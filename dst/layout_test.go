@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/recentralized/structure/data"
+	"github.com/recentralized/structure/dst/files"
 	"github.com/recentralized/structure/meta"
 	"github.com/recentralized/structure/uri"
 )
@@ -64,17 +65,49 @@ func TestFilesystemLayout(t *testing.T) {
 	}
 }
 
-func TestFilesystemLayoutFiles(t *testing.T) {
-	layout := NewFilesystemLayout()
-	files := layout.Files()
-	if len(files) == 0 {
-		t.Fatalf("expect files")
+func TestFilesytemLayoutFiles(t *testing.T) {
+	tests := []struct {
+		desc     string
+		layout   Layout
+		readFunc func(string) ([]byte, error)
+		data     string
+	}{
+		{
+			desc:   "default",
+			layout: NewFilesystemLayout(),
+		},
+		{
+			desc:   "with replaced files.Read",
+			layout: NewFilesystemLayout(),
+			readFunc: func(name string) ([]byte, error) {
+				return []byte(name + "-data"), nil
+			},
+			data: "fslayout_readme.txt-data",
+		},
 	}
-	file := files[0]
-	if got, want := file.URI, uri.TrustedNew("README.txt"); !got.Equal(want) {
-		t.Errorf("URI got %s want %s", got, want)
-	}
-	if len(file.Data) == 0 {
-		t.Errorf("File has no data")
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			if tt.readFunc != nil {
+				var oldRead = files.Read
+				defer func() {
+					files.Read = oldRead
+				}()
+				files.Read = tt.readFunc
+			}
+			files := tt.layout.Files()
+			if len(files) == 0 {
+				t.Fatalf("expect files")
+			}
+			file := files[0]
+			if got, want := file.URI, uri.TrustedNew("README.txt"); !got.Equal(want) {
+				t.Errorf("URI got %s want %s", got, want)
+			}
+			if len(file.Data) == 0 {
+				t.Errorf("File has no data")
+			}
+			if len(tt.data) > 0 && string(file.Data) != tt.data {
+				t.Errorf("File data is not expected, got %s", file.Data)
+			}
+		})
 	}
 }
