@@ -30,7 +30,7 @@ blocks:
         - name: Lint
           commands:
             - go get -u golang.org/x/lint/golint
-            - make build lint
+            - PATH=$HOME/go/bin:$PATH make build lint
         - name: Test
           commands:
             - make test
