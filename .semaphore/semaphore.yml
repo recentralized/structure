@@ -29,7 +29,6 @@ blocks:
       jobs:
         - name: Lint
           commands:
-            - go get -u golang.org/x/lint/golint
             - PATH=$HOME/go/bin:$PATH make build lint
         - name: Test
           commands:

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-export KEY=mod-$(checksum go.mod)
+export KEY=mod-$(checksum go.mod)-with-golint
 
 cd $HOME && cache restore $KEY
