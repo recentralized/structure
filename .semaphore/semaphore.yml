@@ -29,10 +29,9 @@ blocks:
       jobs:
         - name: Lint
           commands:
+            - go get -u golang.org/x/lint/golint
             - make build lint
         - name: Test
           commands:
             - make test
-        - name: Test examples
-          commands:
             - make test-examples
