@@ -1,0 +1,38 @@
+version: v1.0
+name: Build and test
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+execution_time_limit:
+  minutes: 3
+
+blocks:
+  - name: Get dependencies
+    task:
+      prologue:
+        commands:
+          - checkout
+          - sem-version go 1.11
+      jobs:
+        - name: Cache go modules
+          commands:
+            - ./.semaphore/gomod-cache
+
+  - name: Build and test
+    task:
+      prologue:
+        commands:
+          - checkout
+          - sem-version go 1.11
+          - ./.semaphore/gomod-install
+      jobs:
+        - name: Lint
+          commands:
+            - make build lint
+        - name: Test
+          commands:
+            - make test
+        - name: Test examples
+          commands:
+            - make test-examples

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export KEY=mod-$(checksum go.mod)
+
+cache has_key $KEY && exit
+
+go mod download
+
+cd $HOME && cache store $KEY go
+

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export KEY=mod-$(checksum go.mod)
+
+cd $HOME && cache restore $KEY
