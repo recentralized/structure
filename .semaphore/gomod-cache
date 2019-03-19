@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export KEY=mod-$(checksum go.mod)-with-golint
+
+cache has_key $KEY && exit
+
+go mod download
+go get -u golang.org/x/lint/golint
+
+cd $HOME && cache store $KEY go
+
