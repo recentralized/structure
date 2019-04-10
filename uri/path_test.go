@@ -37,16 +37,16 @@ func TestPathRoundtrip(t *testing.T) {
 			wantFilepath: "/tmp/path",
 		},
 		{
-			desc:         "encoded path",
-			raw:          "/tmp/file%20with%20space",
-			wantURI:      "file:///tmp/file%20with%20space",
-			wantFilepath: "/tmp/file with space",
-		},
-		{
 			desc:         "badly encoded path",
 			raw:          "/tmp/file%2with%20space",
 			wantURI:      "file:///tmp/file%2with%20space",
 			wantFilepath: "/tmp/file%2with%20space",
+		},
+		{
+			desc:         "complex path",
+			raw:          "/Users/rcarver/Pictures/Photos Library.photoslibrary/Masters/2016/11/28/20161128-020053/ITG2jAEkQ9eYhgdsN+GW3g/L1007834.jpg",
+			wantURI:      "file:///Users/rcarver/Pictures/Photos%20Library.photoslibrary/Masters/2016/11/28/20161128-020053/ITG2jAEkQ9eYhgdsN+GW3g/L1007834.jpg",
+			wantFilepath: "/Users/rcarver/Pictures/Photos Library.photoslibrary/Masters/2016/11/28/20161128-020053/ITG2jAEkQ9eYhgdsN+GW3g/L1007834.jpg",
 		},
 		{
 			desc:         "complex path with invalid encoding",
@@ -274,7 +274,7 @@ func TestParseFileURI(t *testing.T) {
 			desc: "encoded path",
 			uri:  newURI("file:///tmp/file%20with%20space"),
 			want: Path{
-				RawPath: "/tmp/file%20with%20space",
+				RawPath: "/tmp/file with space",
 			},
 		},
 		{
@@ -282,6 +282,13 @@ func TestParseFileURI(t *testing.T) {
 			uri:  newURI("file:///tmp/file%2with%20space"),
 			want: Path{
 				RawPath: "/tmp/file%2with%20space",
+			},
+		},
+		{
+			desc: "complex path with valid encoding",
+			uri:  newURI("file:///Users/rcarver/Pictures/Photos%20Library.photoslibrary/Masters/2016/11/28/20161128-020053/ITG2jAEkQ9eYhgdsN+GW3g/L1007834.jpg"),
+			want: Path{
+				RawPath: "/Users/rcarver/Pictures/Photos Library.photoslibrary/Masters/2016/11/28/20161128-020053/ITG2jAEkQ9eYhgdsN+GW3g/L1007834.jpg",
 			},
 		},
 		{
@@ -510,6 +517,13 @@ func TestPathFilepath(t *testing.T) {
 				RawPath: "/tmp/file%2with%20space",
 			},
 			want: "/tmp/file%2with%20space",
+		},
+		{
+			desc: "complex path with invalid encoding",
+			path: Path{
+				RawPath: "/Users/rcarver/Pictures/Photos Library.photoslibrary/Masters/2016/11/28/20161128-020053/ITG2jAEkQ9eYhgdsN+GW3g/L1007834.jpg",
+			},
+			want: "/Users/rcarver/Pictures/Photos Library.photoslibrary/Masters/2016/11/28/20161128-020053/ITG2jAEkQ9eYhgdsN+GW3g/L1007834.jpg",
 		},
 		{
 			desc: "complex path with invalid encoding",

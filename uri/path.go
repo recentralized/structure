@@ -46,7 +46,7 @@ func ParseFileURI(u URI) (Path, error) {
 		if url.Host != "" {
 			return Path{}, fmt.Errorf("host must be empty")
 		}
-		return ParsePath(url.EscapedPath())
+		return ParsePath(url.Path)
 	}
 	str := u.String()
 	str = strings.TrimPrefix(str, "file://")
@@ -119,11 +119,11 @@ func (p Path) URL() *url.URL {
 // Filepath returns a clean, absolute path on the filesystem.
 func (p Path) Filepath() string {
 	raw := p.RawPath
-	un, err := url.QueryUnescape(raw)
-	if err != nil {
-		return filepath.Clean(raw)
+	un, err := url.PathUnescape(raw)
+	if err == nil {
+		return filepath.Clean(un)
 	}
-	return filepath.Clean(un)
+	return filepath.Clean(raw)
 }
 
 func cleanAbsPath(raw string) (string, error) {
