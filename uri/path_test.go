@@ -519,7 +519,7 @@ func TestPathFilepath(t *testing.T) {
 			want: "/tmp/file%2with%20space",
 		},
 		{
-			desc: "complex path with invalid encoding",
+			desc: "complex path",
 			path: Path{
 				RawPath: "/Users/rcarver/Pictures/Photos Library.photoslibrary/Masters/2016/11/28/20161128-020053/ITG2jAEkQ9eYhgdsN+GW3g/L1007834.jpg",
 			},
