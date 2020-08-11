@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/recentralized/structure/data"
+	"github.com/recentralized/structure/index"
 )
 
 type metaJSON struct {
@@ -12,24 +13,34 @@ type metaJSON struct {
 	Type        data.Type `json:"type"`
 	ContentType data.Type `json:"content_type,omitempty"`
 	Size        int64     `json:"size"`
-	Inherent    *Content  `json:"inherent,omitempty"`
-	Sidecar     *Content  `json:"sidecar,omitempty"`
-	SrcSpecific           // Embedded fields.
+
+	Inherent *Content                    `json:"inherent,omitempty"`
+	Src      map[index.SrcID]SrcSpecific `json:"src,omitempty"`
+
+	// V0 Fields
+	Sidecar       *Content `json:"sidecar,omitempty"`
+	V0SrcSpecific          // Embedded fields.
 }
 
 // MarshalJSON converts Meta to JSON.
 func (m Meta) MarshalJSON() ([]byte, error) {
 	j := metaJSON{
-		Version:     m.Version,
-		Type:        m.Type,
-		Size:        m.Size,
-		SrcSpecific: m.Srcs,
+		Version:       m.Version,
+		Type:          m.Type,
+		Size:          m.Size,
+		V0SrcSpecific: m.V0Srcs,
 	}
 	if !m.Inherent.isZero() {
 		j.Inherent = &m.Inherent
 	}
-	if !m.Sidecar.isZero() {
-		j.Sidecar = &m.Sidecar
+	if !m.V0Sidecar.isZero() {
+		j.Sidecar = &m.V0Sidecar
+	}
+	if m.Src != nil {
+		j.Src = make(map[index.SrcID]SrcSpecific)
+		for k, v := range m.Src {
+			j.Src[k] = v
+		}
 	}
 	return json.Marshal(j)
 }
@@ -46,13 +57,19 @@ func (m *Meta) UnmarshalJSON(data []byte) error {
 		m.Type = j.ContentType
 	}
 	m.Size = j.Size
+	if j.Src != nil {
+		m.Src = make(map[index.SrcID]SrcSpecific)
+		for k, v := range j.Src {
+			m.Src[k] = v
+		}
+	}
 	if j.Inherent != nil {
 		m.Inherent = *j.Inherent
 	}
 	if j.Sidecar != nil {
-		m.Sidecar = *j.Sidecar
+		m.V0Sidecar = *j.Sidecar
 	}
-	m.Srcs = j.SrcSpecific
+	m.V0Srcs = j.V0SrcSpecific
 	return nil
 }
 

@@ -15,11 +15,15 @@
       }
     }
   },
-  "sidecar": {
-    "exif": {
-      "FNumber": {
-        "id": "0x829d",
-        "val": 1.8
+  "src": {
+    "e8400c72-f7d0-53f9-98ca-ee23238231fe": {
+      "sidecar": {
+        "exif": {
+          "FNumber": {
+            "id": "0x829d",
+            "val": 1.8
+          }
+        }
       }
     }
   }

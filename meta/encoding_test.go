@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/recentralized/structure/data"
+	"github.com/recentralized/structure/index"
 )
 
 func TestMetaJSON(t *testing.T) {
@@ -28,6 +29,13 @@ func TestMetaJSON(t *testing.T) {
 				Version: "v1",
 				Type:    data.JPG,
 				Size:    100,
+			},
+			json: `{"version":"v1","type":"jpg","size":100}`,
+		},
+		{
+			desc: "inherent",
+			meta: Meta{
+				Version: "v1",
 				Inherent: Content{
 					Created: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
 					Image: Image{
@@ -41,23 +49,66 @@ func TestMetaJSON(t *testing.T) {
 						},
 					},
 				},
-				Sidecar: Content{
-					Created: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
-				},
 			},
-			json: `{"version":"v1","type":"jpg","size":100,"inherent":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}},"sidecar":{"created":"0002-02-03T04:05:06.000000007Z"}}`,
+			json: `{"version":"v1","type":"","size":0,"inherent":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}}}`,
 		},
 		{
-			desc: "src-specific fields: flickr",
+			desc: "src-specific: sidecar",
 			meta: Meta{
 				Version: "v1",
-				Srcs: SrcSpecific{
-					Flickr: &FlickrMedia{
-						ID: "123",
+				Src: map[index.SrcID]SrcSpecific{
+					index.SrcID("s1"): {
+						Sidecar: &Content{
+							Created: time.Date(1, 2, 3, 4, 5, 6, 7, time.UTC),
+							Image: Image{
+								Width:  100,
+								Height: 60,
+							},
+							Exif: Exif{
+								"CreateData": ExifValue{
+									ID:  "0x9004",
+									Val: "2013:07:17 19:59:58",
+								},
+							},
+						},
 					},
 				},
 			},
-			json: `{"version":"v1","type":"","size":0,"flickr":{"id":"123"}}`,
+			json: `{"version":"v1","type":"","size":0,"src":{"s1":{"sidecar":{"created":"0001-02-03T04:05:06.000000007Z","image":{"width":100,"height":60},"exif":{"CreateData":{"id":"0x9004","val":"2013:07:17 19:59:58"}}}}}}`,
+		},
+		{
+			desc: "src-specific: flickr",
+			meta: Meta{
+				Version: "v1",
+				Src: map[index.SrcID]SrcSpecific{
+					index.SrcID("s1"): {
+						Flickr: &FlickrMedia{
+							ID: "123",
+						},
+					},
+				},
+			},
+			json: `{"version":"v1","type":"","size":0,"src":{"s1":{"flickr":{"id":"123"}}}}`,
+		},
+		{
+			desc: "v0 sidecar",
+			meta: Meta{
+				Version: "v1",
+				V0Sidecar: Content{
+					Created: time.Date(2, 2, 3, 4, 5, 6, 7, time.UTC),
+				},
+			},
+			json: `{"version":"v1","type":"","size":0,"sidecar":{"created":"0002-02-03T04:05:06.000000007Z"}}`,
+		},
+		{
+			desc: "v0 src-specific",
+			meta: Meta{
+				Version: "v1",
+				V0Srcs:  V0SrcSpecific{
+					//Flickr:
+				},
+			},
+			json: `{"version":"v1","type":"","size":0}`,
 		},
 	}
 	for _, tt := range tests {

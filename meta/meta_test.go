@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/recentralized/structure/index"
 )
 
 func TestMetaDateCreated(t *testing.T) {
@@ -24,25 +26,43 @@ func TestMetaDateCreated(t *testing.T) {
 			want: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC),
 		},
 		{
-			desc: "sidecar with date",
+			desc: "oldest of inherent or sidecars",
 			m: &Meta{
-				Sidecar: Content{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
+				Inherent: Content{Created: time.Date(2009, 1, 1, 1, 1, 1, 1, time.UTC)},
+				Src: map[index.SrcID]SrcSpecific{
+					index.SrcID("a"): {
+						Sidecar: &Content{Created: time.Date(2004, 1, 1, 1, 1, 1, 1, time.UTC)},
+					},
+					index.SrcID("b"): {
+						Sidecar: &Content{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
+					},
+					index.SrcID("c"): {
+						Sidecar: &Content{Created: time.Date(2003, 1, 1, 1, 1, 1, 1, time.UTC)},
+					},
+				},
+			},
+			want: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC),
+		},
+		{
+			desc: "v0: sidecar with date",
+			m: &Meta{
+				V0Sidecar: Content{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
 			},
 			want: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC),
 		},
 		{
-			desc: "prefers sidecar to inherent",
+			desc: "v0: prefers sidecar to inherent",
 			m: &Meta{
-				Inherent: Content{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
-				Sidecar:  Content{Created: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC)},
+				Inherent:  Content{Created: time.Date(2001, 1, 1, 1, 1, 1, 1, time.UTC)},
+				V0Sidecar: Content{Created: time.Date(2002, 1, 1, 1, 1, 1, 1, time.UTC)},
 			},
-			want: time.Date(2001, 2, 1, 1, 1, 1, 1, time.UTC),
+			want: time.Date(2002, 1, 1, 1, 1, 1, 1, time.UTC),
 		},
 	}
 	for _, tt := range tests {
 		got := tt.m.DateCreated()
 		if got, want := got, tt.want; !reflect.DeepEqual(got, want) {
-			t.Errorf("%q Meta.DateCreated()\ngot  %#v\nwant %#v", tt.desc, got, want)
+			t.Errorf("%q Meta.DateCreated()\ngot  %s\nwant %s", tt.desc, got, want)
 		}
 	}
 }

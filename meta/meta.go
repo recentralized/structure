@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"sort"
 	"time"
 
 	"github.com/recentralized/structure/data"
+	"github.com/recentralized/structure/index"
 )
 
 const (
@@ -34,12 +36,17 @@ type Meta struct {
 	// Metadata that came from the content itself.
 	Inherent Content
 
+	// Metadata that came from elsewhere on the source.
+	Src map[index.SrcID]SrcSpecific
+
 	// Metadata that came from nearby, such as an XMP sidecar file or other
 	// source of metadata.
-	Sidecar Content
+	// Deprecated: Read from V0 only. Use Src[srcID] instead.
+	V0Sidecar Content
 
 	// Metadata that came from the source of the data.
-	Srcs SrcSpecific
+	// Deprecated: Read from V0 only. Use Src[srcID] instead.
+	V0Srcs V0SrcSpecific
 }
 
 // New initializes a new Meta at the current version.
@@ -70,8 +77,16 @@ func ParseJSON(r io.Reader) (*Meta, error) {
 // time available it returns time.Time's zero value.
 func (m *Meta) DateCreated() time.Time {
 	times := []time.Time{
-		m.Sidecar.Created,
+		m.V0Sidecar.Created,
 		m.Inherent.Created,
+	}
+	if len(m.Src) > 0 {
+		for _, v := range m.Src {
+			if v.Sidecar != nil {
+				times = append(times, v.Sidecar.Created)
+			}
+		}
+		sort.Slice(times, func(i, j int) bool { return times[i].Before(times[j]) })
 	}
 	for _, t := range times {
 		if !t.IsZero() {
@@ -102,7 +117,13 @@ type Image struct {
 
 // SrcSpecific contains source-specific metadata.
 type SrcSpecific struct {
-	Flickr *FlickrMedia `json:"flickr,omitempty"`
+	Sidecar *Content     `json:"sidecar,omitempty"`
+	Flickr  *FlickrMedia `json:"flickr,omitempty"`
+}
+
+// V0SrcSpecific contains source-specific metadata.
+type V0SrcSpecific struct {
+	// TODO: port v0 sources
 }
 
 func (m Content) isZero() bool {
